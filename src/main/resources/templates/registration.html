@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Inscription</title>
+    <!--===============================================================================================-->
+    <link rel="icon" type="image/png" th:href="@{/images/icons/logo-gestion.png}"/>
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" th:href="@{/vendor/bootstrap/css/bootstrap.min.css}">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" th:href="@{/fonts/font-awesome-4.7.0/css/font-awesome.min.css}">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" th:href="@{/vendor/animate/animate.css}">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" th:href="@{/vendor/css-hamburgers/hamburgers.min.css}">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" th:href="@{/vendor/select2/select2.min.css}">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" th:href="@{/css/util.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}">
+    <!--===============================================================================================-->
+</head>
+<body>
+<div class="limiter" style="">
+        <div class="container-login100 " >
+            <div class="wrap-login100 d-flex align-items-center justify-content-center">
+                <form class="login100-form validate-form" th:object="${user}" method="post" th:action="@{/registration}">
+                    <a th:href="@{/}" class="login100-form-title" style="padding: 0">
+                        <img  src="images/icons/logo-gestion.png" >
+                    </a>
+                    
+                    <span class="login100-form-title">
+                        Inscription
+                    </span>
+
+                    <div class="wrap-input100 validate-input" data-validate = "Pseudo name is required">
+                        <label th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class=" validation-message" for="materialRegisterFormLastName">Nom</label>
+                        <input class="input100" type="text" id="materialRegisterFormLastName" th:field="*{name}"placeholder="Nom ">
+                        <span class="focus-input100"></span>
+                        <span class="symbol-input100">
+                            <i class="fa fa-user" aria-hidden="true"></i>
+                        </span>
+                    </div>
+
+                    <div class="wrap-input100 validate-input" data-validate = " Name is required">
+                         <label th:if="${#fields.hasErrors('lastName')}" class="validation-message" th:errors="*{lastName}" for="materialRegisterFormFirstName">Prenom</label>
+                        <input class="input100" type="text" id="materialRegisterFormFirstName" th:field="*{lastName}" placeholder=" Prenom">
+                        <span class="focus-input100"></span>
+                        <span class="symbol-input100">
+                            <i class="fa fa-user" aria-hidden="true"></i>
+                        </span>
+                    </div>
+
+                    <div class="wrap-input100 validate-input" data-validate = "Valid email is required: ex@abc.xyz">
+                        <label th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="validation-message" for="materialRegisterFormEmail">E-mail</label>
+                        <input class="input100" type="email" id="materialRegisterFormEmail" th:field="*{email}" placeholder="Adresse Email">
+                        <span class="focus-input100"></span>
+                        <span class="symbol-input100">
+                            <i class="fa fa-send" aria-hidden="true"></i>
+                        </span>
+                    </div>
+
+                    <div class="wrap-input100 validate-input" data-validate = "Password is required">
+                        <label th:if="${#fields.hasErrors('password')}" class="validation-message" th:errors="*{password}" for="materialRegisterFormPassword">Mot de passe</label>
+                        <input class="input100" type="password" id="materialRegisterFormPassword" th:field="*{password}" placeholder="Mot de passe">
+                        <span class="focus-input100"></span>
+                        <span class="symbol-input100">
+                            <i class="fa fa-lock" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    
+                    <div class="container-login100-form-btn">
+                        <button class="login100-form-btn" type="submit">
+                            Enregistre
+                        </button>
+                    </div>
+                    <div class="text-center p-t-90">
+                        <a class="txt2" th:href="@{/login}">
+                            <i class="fa fa-long-arrow-left m-l-5" aria-hidden="true"></i>
+                            Déja un Compte? Connectez vous
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+<!--===============================================================================================-->
+<script src="vendor/jquery/jquery-3.2.1.min.js"></script>
+<!--===============================================================================================-->
+<script src="vendor/bootstrap/js/popper.js"></script>
+<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+<!--===============================================================================================-->
+<script src="vendor/select2/select2.min.js"></script>
+<!--===============================================================================================-->
+<script src="vendor/tilt/tilt.jquery.min.js"></script>
+<script >
+    $('.js-tilt').tilt({
+        scale: 1.1
+    })
+</script>
+<!--===============================================================================================-->
+<script src="js/main.js"></script>
+
+</body>
+</html>

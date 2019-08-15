@@ -1,0 +1,59 @@
+<header th:fragment="header" class="header-area main-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3">
+                <div class="logo-area">
+                    <a th:href="@{/}"><img th:src="@{/images/logo-solution.png}"   alt="logo" ></a>
+                </div>
+            </div>
+            <div class="col-lg-9">
+                <div class="custom-navbar">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <div class="main-menu">
+                    <ul>
+                        <form action="#" class="form-inline">
+                            <input type="email" placeholder="Recherche rapide" class="form-control" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Recherche rapide'" required>
+                            <button type="submit" class="ml-2 btn btn-secondary"><i class="fa fa-search"></i></button>
+                        </form>
+                        </li>
+                        <li class="active"><a href="index.html">Accueil</a></li>
+                        <li sec:authorize="hasAnyAuthorty('USER')"><a href="#">Commandes</a>
+                            <ul class="sub-menu">
+                                <li><a th:href="@{/commande/commandes}">Historique des commandes</a></li>
+                                <li><a href="#">Ajouter une commandes</a></li>
+                                <li><a href="pricing-plan.html">Commandes sécrétariat</a></li>
+                                <li><a href="pricing-plan.html">Commandes imprimérie</a></li>
+                                <li><a href="pricing-plan.html">Commandes caisses</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="#">Caisses</a>
+                            <ul class="sub-menu">
+                                <li><a href="job-search.html">Etats de toutes les commandes</a></li>
+                                <li><a href="job-single.html">Etats Sécrétariat</a></li>
+                                <li><a href="pricing-plan.html">Etats impression</a></li>
+                                <li><a href="elements.html">Etats Caisses</a></li>
+                            </ul>
+                        </li>
+                        <!--li><a href="job-category.html">category</a></li>
+                        <li><a href="#">blog</a>
+                            <ul class="sub-menu">
+                                <li><a href="blog-home.html">Blog Home</a></li>
+                                <li><a href="blog-details.html">Blog Details</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="contact-us.html">contact</a></li-->
+                        <li><a th:href="@{/user/users}">Utilisateurs</a>
+                        </li>
+                        <li class="menu-btn">
+                            <a href="#" class="login">Image Profile</a>
+                            <a href="register.html" class="template-btn">Nom utilisateur</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
