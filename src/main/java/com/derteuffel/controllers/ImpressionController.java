@@ -1,10 +1,11 @@
 package com.derteuffel.controllers;
 
 import com.derteuffel.entities.Commande;
+import com.derteuffel.entities.Impression;
 import com.derteuffel.entities.Role;
 import com.derteuffel.entities.User;
-import com.derteuffel.repositories.CommandeRepository;
 import com.derteuffel.services.CommandeService;
+import com.derteuffel.services.ImpressionService;
 import com.derteuffel.services.RoleService;
 import com.derteuffel.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,58 +21,55 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 @Controller
-public class CommandeController {
+public class ImpressionController {
 
     @Autowired
-    private CommandeService commandeService;
+    private ImpressionService impressionService;
     @Autowired
     private UserService userService;
     @Autowired
     private RoleService roleService;
 
-    @GetMapping("/commande/form")
+    @GetMapping("/impression/form")
     public String form(Model model, HttpServletRequest request, HttpSession session){
         session.setAttribute("lastUrl", request.getHeader("referer"));
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = userService.findUserByEmail(auth.getName());
-        session.setAttribute("loggedName", user.getName() + " " + user.getLastName());
-        model.addAttribute("commande", new Commande());
-        return "commande/form";
+        model.addAttribute("impression", new Impression());
+        return "impression/form";
     }
 
-    /*@PostMapping("/commande/save")
-    public String save(Commande commande, String price, HttpSession session,Model model){
+    @PostMapping("/impression/save")
+    public String save(Impression commande, String price, HttpSession session,Model model){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
         commande.getUsers().add(user);
-        commandeService.save(commande,price);
-        user.getCommandes().add(commande);
+        impressionService.save(commande,price);
+        user.getImpressions().add(commande);
         userService.updateUser(user);
 
-        model.addAttribute("commande",commande);
-        return "commande/confirmation";
-    }*/
+        model.addAttribute("impression",commande);
+        return "impression/confirmation";
+    }
 
 
-    @GetMapping("/commande/commande/{commandeId}")
+    @GetMapping("/commande/impression/{commandeId}")
     public String getOne(@PathVariable int commandeId, Model model){
-        model.addAttribute("commande", commandeService.getOne(commandeId));
-        return "commande/detail";
+        model.addAttribute("impression", impressionService.getOne(commandeId));
+        return "impression/detail";
 
     }
 
-   /* @GetMapping("/commande/validation/{commandeId}")
+    @GetMapping("/impression/validation/{commandeId}")
     public String validation(@PathVariable int commandeId){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
-        Commande commande=commandeService.getOne(commandeId);
+        Impression commande=impressionService.getOne(commandeId);
         commande.getUsers().add(user);
-        commandeService.update(commande);
-        return "redirect:/commande/commande/"+commande.getCommandeId();
+        impressionService.update(commande);
+        return "redirect:/commande/impression/"+commande.getCommandeId();
     }
 
 
-    @GetMapping("/commande/commandes")
+    @GetMapping("/impression/impressions")
     public String findAll(Model model){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
@@ -79,10 +77,10 @@ public class CommandeController {
         Role role1= roleService.findByRole("ROOT");
         Role role2= roleService.findByRole("GERANT");
         if (user.getRoles().contains(role) || user.getRoles().contains(role1) || user.getRoles().contains(role2)){
-            model.addAttribute("commandes",commandeService.findll());
+            model.addAttribute("impressions",impressionService.findll());
         }else {
-            model.addAttribute("commandes", commandeService.findByUser(user.getId()));
+            model.addAttribute("impressions", impressionService.findByUser(user.getId()));
         }
-        return "/commande/commandes";
-    }*/
+        return "/impression/impressions";
+    }
 }

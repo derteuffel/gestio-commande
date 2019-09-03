@@ -7,7 +7,7 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<!--===============================================================================================-->
-	<link rel="icon" type="image/png" th:href="@{/images/icons/logo-gestion.png}"/>
+	<link rel="icon" type="image/png" th:href="@{/images/solution-logo.png}"/>
 	<!--===============================================================================================-->
 	<link rel="stylesheet" type="text/css" th:href="@{/vendor/bootstrap/css/bootstrap.min.css}">
 	<!--===============================================================================================-->
@@ -38,7 +38,13 @@
 	<div class="limiter" style="">
 		<div class="container-login100 ">
 			<div class="wrap-login100 d-flex align-items-center justify-content-center">
-				Bienvenue dans l'espaec de gestion de commandes de SOLUTION AFRICA SARL
+				<div class=" alert alert-success">
+					<span th:text="${userName}"></span>
+				</div>
+				<div class="text-center">
+					<h4>Bienvenue dans l'espaec de gestion de commandes de SOLUTION AFRICA SARL</h4>
+				</div>
+
 			</div>
 		</div>
 	</div>

@@ -37,8 +37,16 @@ public class User {
     private Set<Role> roles;
 
     @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "user_commande", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "commande_id"))
-    private Set<Commande> commandes;
+    @JoinTable(name = "user_location", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "commande_id"))
+    private Set<Location> locations;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "user_impression", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "commande_id"))
+    private Set<Impression> impressions ;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "user_conception", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "commande_id"))
+    private Set<Conception> conceptions ;
 
 
 }

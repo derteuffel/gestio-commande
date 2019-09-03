@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 @Controller
@@ -55,12 +56,13 @@ public class LoginController {
     }
 
     @GetMapping("/admin/home")
-    public String home(Model model){
+    public String home(Model model, HttpSession session){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
         System.out.println(user.getName());
         model.addAttribute("userName", "Welcome " + user.getName() + " " + user.getLastName() + " (" + user.getEmail() + ")");
         model.addAttribute("adminMessage","Content Available Only for Users with Admin Role");
+        session.setAttribute("loggedName", user.getName() + " " + user.getLastName());
         return "index";
     }
 }

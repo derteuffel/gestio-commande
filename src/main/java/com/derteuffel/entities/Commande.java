@@ -12,6 +12,7 @@ import java.util.Set;
 @Data
 @Entity
 @Table(name = "commande")
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Commande {
 
     @Id
@@ -29,8 +30,7 @@ public class Commande {
     private Date sellingDate;
     private ArrayList<Date> authorizations= new ArrayList<>();
 
-    @ManyToMany
-    private Set<User> users;
+
 
 
 }

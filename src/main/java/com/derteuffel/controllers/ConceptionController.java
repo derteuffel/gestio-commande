@@ -1,10 +1,11 @@
 package com.derteuffel.controllers;
 
 import com.derteuffel.entities.Commande;
+import com.derteuffel.entities.Conception;
 import com.derteuffel.entities.Role;
 import com.derteuffel.entities.User;
-import com.derteuffel.repositories.CommandeRepository;
 import com.derteuffel.services.CommandeService;
+import com.derteuffel.services.ConceptionService;
 import com.derteuffel.services.RoleService;
 import com.derteuffel.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,58 +21,55 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 @Controller
-public class CommandeController {
+public class ConceptionController {
 
     @Autowired
-    private CommandeService commandeService;
+    private ConceptionService conceptionService;
     @Autowired
     private UserService userService;
     @Autowired
     private RoleService roleService;
 
-    @GetMapping("/commande/form")
+    @GetMapping("/conception/form")
     public String form(Model model, HttpServletRequest request, HttpSession session){
         session.setAttribute("lastUrl", request.getHeader("referer"));
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = userService.findUserByEmail(auth.getName());
-        session.setAttribute("loggedName", user.getName() + " " + user.getLastName());
-        model.addAttribute("commande", new Commande());
-        return "commande/form";
+        model.addAttribute("conception", new Conception());
+        return "conception/form";
     }
 
-    /*@PostMapping("/commande/save")
-    public String save(Commande commande, String price, HttpSession session,Model model){
+    @PostMapping("/conception/save")
+    public String save(Conception commande, String price, HttpSession session,Model model){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
         commande.getUsers().add(user);
-        commandeService.save(commande,price);
-        user.getCommandes().add(commande);
+        conceptionService.save(commande,price);
+        user.getConceptions().add(commande);
         userService.updateUser(user);
 
-        model.addAttribute("commande",commande);
-        return "commande/confirmation";
-    }*/
+        model.addAttribute("conception",commande);
+        return "conception/confirmation";
+    }
 
 
-    @GetMapping("/commande/commande/{commandeId}")
+    @GetMapping("/commande/conception/{commandeId}")
     public String getOne(@PathVariable int commandeId, Model model){
-        model.addAttribute("commande", commandeService.getOne(commandeId));
-        return "commande/detail";
+        model.addAttribute("conception", conceptionService.getOne(commandeId));
+        return "conception/detail";
 
     }
 
-   /* @GetMapping("/commande/validation/{commandeId}")
+    @GetMapping("/conception/validation/{commandeId}")
     public String validation(@PathVariable int commandeId){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
-        Commande commande=commandeService.getOne(commandeId);
+        Conception commande=conceptionService.getOne(commandeId);
         commande.getUsers().add(user);
-        commandeService.update(commande);
-        return "redirect:/commande/commande/"+commande.getCommandeId();
+        conceptionService.update(commande);
+        return "redirect:/commande/conception/"+commande.getCommandeId();
     }
 
 
-    @GetMapping("/commande/commandes")
+    @GetMapping("/conception/conceptions")
     public String findAll(Model model){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
@@ -79,10 +77,10 @@ public class CommandeController {
         Role role1= roleService.findByRole("ROOT");
         Role role2= roleService.findByRole("GERANT");
         if (user.getRoles().contains(role) || user.getRoles().contains(role1) || user.getRoles().contains(role2)){
-            model.addAttribute("commandes",commandeService.findll());
+            model.addAttribute("conceptions",conceptionService.findll());
         }else {
-            model.addAttribute("commandes", commandeService.findByUser(user.getId()));
+            model.addAttribute("conceptions", conceptionService.findByUser(user.getId()));
         }
-        return "/commande/commandes";
-    }*/
+        return "/conception/conceptions";
+    }
 }

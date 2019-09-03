@@ -2,7 +2,6 @@ package com.derteuffel.controllers;
 
 import com.derteuffel.entities.Role;
 import com.derteuffel.entities.User;
-import com.derteuffel.entities.UserAndRole;
 import com.derteuffel.services.RoleService;
 import com.derteuffel.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

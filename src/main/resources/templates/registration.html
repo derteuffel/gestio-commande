@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <title>Inscription</title>
     <!--===============================================================================================-->
-    <link rel="icon" type="image/png" th:href="@{/images/icons/logo-gestion.png}"/>
+    <link rel="icon" type="image/png" th:href="@{/images/solution-logo.png}"/>
     <!--===============================================================================================-->
     <link rel="stylesheet" type="text/css" th:href="@{/vendor/bootstrap/css/bootstrap.min.css}">
     <!--===============================================================================================-->
@@ -26,8 +26,8 @@
         <div class="container-login100 " >
             <div class="wrap-login100 d-flex align-items-center justify-content-center">
                 <form class="login100-form validate-form" th:object="${user}" method="post" th:action="@{/registration}">
-                    <a th:href="@{/}" class="login100-form-title" style="padding: 0">
-                        <img  src="images/icons/logo-gestion.png" >
+                    <a th:href="@{/}" class="login100-form-title d-flex align-items-center justify-content-center" style="padding: 0">
+                        <img  src="images/solution-logo.png" >
                     </a>
                     
                     <span class="login100-form-title">

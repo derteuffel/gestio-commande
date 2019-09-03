@@ -34,6 +34,7 @@ public class CommandeService {
         commandeRepository.save(commande);
     }
 
+
     public List<Commande> findll(){
         return commandeRepository.findAll(Sort.by(Sort.Direction.DESC,"commandeId"));
     }
@@ -42,7 +43,7 @@ public class CommandeService {
         commandeRepository.save(commande);
     }
 
-    public List<Commande> findByUser(int id){
+   /* public List<Commande> findByUser(int id){
         return commandeRepository.findByUsers_Id(id);
-    }
+    }*/
 }

@@ -3,7 +3,7 @@
         <div class="row">
             <div class="col-lg-3">
                 <div class="logo-area">
-                    <a th:href="@{/}"><img th:src="@{/images/logo-solution.png}"   alt="logo" ></a>
+                    <a th:href="@{/}"><img th:src="@{/images/solution-logo.png}" style="width: 255px;height: 134px"  alt="logo" ></a>
                 </div>
             </div>
             <div class="col-lg-9">
@@ -19,11 +19,11 @@
                             <button type="submit" class="ml-2 btn btn-secondary"><i class="fa fa-search"></i></button>
                         </form>
                         </li>
-                        <li class="active"><a href="index.html">Accueil</a></li>
+                        <li class="active"><a th:href="@{/admin/home}">Accueil</a></li>
                         <li sec:authorize="hasAnyAuthorty('USER')"><a href="#">Commandes</a>
                             <ul class="sub-menu">
                                 <li><a th:href="@{/commande/commandes}">Historique des commandes</a></li>
-                                <li><a href="#">Ajouter une commandes</a></li>
+                                <li><a th:href="@{/commande/form}">Ajouter une commandes</a></li>
                                 <li><a href="pricing-plan.html">Commandes sécrétariat</a></li>
                                 <li><a href="pricing-plan.html">Commandes imprimérie</a></li>
                                 <li><a href="pricing-plan.html">Commandes caisses</a></li>
@@ -48,8 +48,13 @@
                         <li><a th:href="@{/user/users}">Utilisateurs</a>
                         </li>
                         <li class="menu-btn">
-                            <a href="#" class="login">Image Profile</a>
-                            <a href="register.html" class="template-btn">Nom utilisateur</a>
+                            <a href="#" class="login"><img class="rounded-circle" th:src="@{/images/avatar.png}" height="90" width="90"></a>
+                            <a href="#" class="template-btn dropdown-toggle" data-toggle="dropdown" ><span th:text="${session.loggedName}"> </span></a>
+                            <ul class="sub-menu">
+                                <li ><a  href="#">Acount settings</a></li>
+                                <div class="dropdown-divider"></div>
+                                <li ><a  href="#">Log out</a></li>
+                            </ul>
                         </li>
                     </ul>
                 </div>
