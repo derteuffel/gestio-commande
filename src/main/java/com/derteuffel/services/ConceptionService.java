@@ -17,11 +17,10 @@ public class ConceptionService {
     @Autowired
     ConceptionRepository conceptionRepository;
 
-    public void save(Conception commande, String price){
-        commande.setUnit_price(Double.parseDouble(price));
+    public void save(Conception commande){
         commande.getValidations().add(true);
         commande.getAuthorizations().add(new Date());
-        commande.setTotal_price(commande.getQuantite()*Double.parseDouble(price));
+        commande.setTotal_price(commande.getQuantite()*commande.getUnit_price());
         conceptionRepository.save(commande);
     }
 

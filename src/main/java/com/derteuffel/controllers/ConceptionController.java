@@ -41,12 +41,12 @@ public class ConceptionController {
     public String save(Conception commande, String price, HttpSession session,Model model){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
-        commande.getUsers().add(user);
-        conceptionService.save(commande,price);
+        commande.setUnit_price(Double.parseDouble(price));
+        conceptionService.save(commande);
         user.getConceptions().add(commande);
         userService.updateUser(user);
 
-        model.addAttribute("conception",commande);
+        model.addAttribute("commande",commande);
         return "conception/confirmation";
     }
 
@@ -63,7 +63,8 @@ public class ConceptionController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
         Conception commande=conceptionService.getOne(commandeId);
-        commande.getUsers().add(user);
+        user.getConceptions().add(commande);
+        userService.updateUser(user);
         conceptionService.update(commande);
         return "redirect:/commande/conception/"+commande.getCommandeId();
     }
@@ -82,5 +83,11 @@ public class ConceptionController {
             model.addAttribute("conceptions", conceptionService.findByUser(user.getId()));
         }
         return "/conception/conceptions";
+    }
+
+    @GetMapping("/conception/confirm/{commandeId}")
+    public String confirm(@PathVariable int commandeId){
+
+        return "redirect:/commande/conception/"+commandeId;
     }
 }

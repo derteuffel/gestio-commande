@@ -17,11 +17,10 @@ public class LocationService {
     @Autowired
     LocationRepository locationRepository;
 
-    public void save(Location commande, String price){
-        commande.setUnit_price(Double.parseDouble(price));
+    public void save(Location commande){
         commande.getValidations().add(true);
         commande.getAuthorizations().add(new Date());
-        commande.setTotal_price(commande.getQuantite()*Double.parseDouble(price));
+        commande.setTotal_price(commande.getQuantite()*commande.getUnit_price());
         locationRepository.save(commande);
     }
 

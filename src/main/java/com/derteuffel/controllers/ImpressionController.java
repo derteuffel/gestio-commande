@@ -41,12 +41,12 @@ public class ImpressionController {
     public String save(Impression commande, String price, HttpSession session,Model model){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
-        commande.getUsers().add(user);
-        impressionService.save(commande,price);
+        commande.setUnit_price(Double.parseDouble(price));
+        impressionService.save(commande);
         user.getImpressions().add(commande);
         userService.updateUser(user);
 
-        model.addAttribute("impression",commande);
+        model.addAttribute("commande",commande);
         return "impression/confirmation";
     }
 
@@ -63,7 +63,8 @@ public class ImpressionController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
         Impression commande=impressionService.getOne(commandeId);
-        commande.getUsers().add(user);
+        user.getImpressions().add(commande);
+        userService.updateUser(user);
         impressionService.update(commande);
         return "redirect:/commande/impression/"+commande.getCommandeId();
     }
@@ -82,5 +83,12 @@ public class ImpressionController {
             model.addAttribute("impressions", impressionService.findByUser(user.getId()));
         }
         return "/impression/impressions";
+    }
+
+
+    @GetMapping("/impressio/confirm/{commandeId}")
+    public String confirm(@PathVariable int commandeId){
+
+        return "redirect:/commande/impression/"+commandeId;
     }
 }

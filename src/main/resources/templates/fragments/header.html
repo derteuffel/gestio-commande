@@ -20,16 +20,21 @@
                         </form>
                         </li>
                         <li class="active"><a th:href="@{/admin/home}">Accueil</a></li>
-                        <li sec:authorize="hasAnyAuthorty('USER')"><a href="#">Commandes</a>
+                        <li sec:authorize="hasAnyAuthorty('USER')"><a href="#" class="dropdown-toggle">Commandes</a>
                             <ul class="sub-menu">
-                                <li><a th:href="@{/commande/commandes}">Historique des commandes</a></li>
-                                <li><a th:href="@{/commande/form}">Ajouter une commandes</a></li>
-                                <li><a href="pricing-plan.html">Commandes sécrétariat</a></li>
-                                <li><a href="pricing-plan.html">Commandes imprimérie</a></li>
-                                <li><a href="pricing-plan.html">Commandes caisses</a></li>
+                                <li><a th:href="@{/impression/impressions}">Impressions</a></li>
+                                <li><a th:href="@{/conception/conceptions}">Conceptions</a></li>
+                                <li><a th:href="@{/location/locations}">Locations</a></li>
                             </ul>
                         </li>
-                        <li><a href="#">Caisses</a>
+                        <li><a href="#">Ajouter&nbsp;<i class="fa fa-plus-circle"></i></a>
+                            <ul class="sub-menu">
+                                <li><a th:href="@{/impression/form}">Impression</a></li>
+                                <li><a th:href="@{/conception/form}">Conception</a></li>
+                                <li><a th:href="@{/location/form}">Location</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="#" class="dropdown-toggle">Caisses</a>
                             <ul class="sub-menu">
                                 <li><a href="job-search.html">Etats de toutes les commandes</a></li>
                                 <li><a href="job-single.html">Etats Sécrétariat</a></li>
@@ -47,10 +52,18 @@
                         <li><a href="contact-us.html">contact</a></li-->
                         <li><a th:href="@{/user/users}">Utilisateurs</a>
                         </li>
-                        <li class="menu-btn">
-                            <a href="#" class="login"><img class="rounded-circle" th:src="@{/images/avatar.png}" height="90" width="90"></a>
-                            <a href="#" class="template-btn dropdown-toggle" data-toggle="dropdown" ><span th:text="${session.loggedName}"> </span></a>
+                        <li><a href="#" class="dropdown-toggle">GRH Solution</a>
                             <ul class="sub-menu">
+                                <li><a href="#">Etat des lieux</a></li>
+                                <li><a href="#">Etat des besoins</a></li>
+                                <li><a href="#">Consomations</a></li>
+                            </ul>
+                        </li>
+                        <li class="menu-btn">
+                            <br href="#" class="login"><img class="rounded-circle" th:src="@{/images/avatar.png}" data-toggle="dropdown" height="90" width="90"></a>
+                            <!--a href="#" class="dropdown-toggle" data-toggle="dropdown" ><span th:text="${session.loggedName}"> </span></a-->
+                            <ul class="sub-menu">
+                                <li ><a  href="#"><span th:text="${session.loggedName}"> </span></a></li>
                                 <li ><a  href="#">Acount settings</a></li>
                                 <div class="dropdown-divider"></div>
                                 <li ><a  href="#">Log out</a></li>

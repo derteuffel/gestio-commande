@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en"  xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Detail d'une commande de location</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <link th:href="@{/css/dataTablesResponsive.css}" rel="stylesheet">
+
+    <!--===============================================================================================-->
+    <link rel="icon" type="image/png" th:href="@{/images/solution-logo.png}"/>
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" th:href="@{/vendor/bootstrap/css/bootstrap.min.css}">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" th:href="@{/fonts/font-awesome-4.7.0/css/font-awesome.min.css}">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" th:href="@{/vendor/animate/animate.css}">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" th:href="@{/vendor/css-hamburgers/hamburgers.min.css}">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" th:href="@{/vendor/select2/select2.min.css}">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" th:href="@{/css/util.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/animate-3.7.0.css}">
+    <link rel="stylesheet" th:href="@{/css/font-awesome-4.7.0.min.css}">
+    <link rel="stylesheet" th:href="@{/fonts/flat-icon/flaticon.css}">
+    <link rel="stylesheet" th:href="@{/css/bootstrap-4.1.3.min.css}">
+    <link rel="stylesheet" th:href="@{/css/owl-carousel.min.css}">
+    <link rel="stylesheet" th:href="@{/css/nice-select.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <!--===============================================================================================-->
+</head>
+<body>
+<header th:replace="~{../templates/fragments/header :: header}"></header>
+<!-- Header Area Starts -->
+
+<!-- Header Area End -->
+<div class="limiter container mb-30" style="">
+    <div class="card  p-5">
+        <form class="text-center border border-light p-5" >
+
+            <div class="alert alert-info text-center">
+                <p class="h4 mb-4">Contenu detailler d'une commande de location</p>
+            </div>
+
+            <div class="">
+                <div class="form-group mx-2 row">
+                    <div class="text-left mx-2">
+                        <p><span>Designation : </span></p>
+                    </div>
+                    <div class="text-center mx-2">
+                        <!-- Name -->
+                       <p> <span th:text="${location.designation}"></span></p>
+                    </div>
+
+                </div>
+                <div class="form-group mx-2 row">
+                    <div class="text-left mx-2">
+                        <p><span>Nom de l'appareil : </span></p>
+                    </div>
+                    <div class="text-center mx-2">
+                        <!-- Email -->
+                        <p><span th:text="${location.deviceName}"></span></p>
+                    </div>
+                </div>
+                <div class="form-group mx-2 row">
+
+                    <div class="text-left mx-2">
+                        <p><span>Duree de la location : </span></p>
+                    </div>
+                    <div class="text-center mx-2">
+                        <!-- Email -->
+                        <p><span th:text="${location.duration}"></span></p>
+                    </div>
+
+                </div>
+                <div class="form-group mx-2 row">
+                    <div class="text-left mx-2">
+                        <p><span>Quantite : </span></p>
+                    </div>
+                    <div class="text-center mx-2">
+                        <!-- Email -->
+                        <p><span th:text="${location.quantite}"></span></p>
+                    </div>
+
+                </div>
+                <div class="form-group mx-2 row">
+                    <div class="text-left mx-2">
+                        <p><span>Prix unitaire : </span></p>
+                    </div>
+                    <div class="text-center mx-2">
+                        <!-- Email -->
+                        <p><span th:text="${location.unit_price}"></span></p>
+                    </div>
+
+                </div>
+                <div class="form-group mx-2 row">
+                    <div class="text-left mx-2">
+                        <p><span>Prix total : </span></p>
+                    </div>
+                    <div class="text-center mx-2">
+                        <!-- Email -->
+                        <p><span th:text="${location.total_price}"></span></p>
+                    </div>
+
+                </div>
+                <div class="form-group mx-2 row">
+                    <div class="text-left mx-2">
+                        <p><span>Demandeur : </span></p>
+                    </div>
+                    <div class="text-center mx-2">
+                        <!-- Email -->
+                        <p><span th:text="${location.demandeur}"></span></p>
+                    </div>
+
+                </div>
+                <div class="form-group mx-2 row">
+                    <div class="text-left mx-2">
+                        <p><span>Date de commande : </span></p>
+                    </div>
+                    <div class="text-center mx-2">
+                        <!-- Email -->
+                        <p><span th:text="${location.requestDate}"></span></p>
+                    </div>
+
+                </div>
+                <div class="form-group mx-2 row">
+                    <div class="text-left mx-2">
+                        <p><span>Date de livraison : </span></p>
+                    </div>
+                    <div class="text-center mx-2">
+                        <!-- Email -->
+                        <p><span th:text="${location.sellingDate}"></span></p>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class=""></div>
+
+
+
+
+            <!-- Subject >
+            <label>Subject</label>
+            <select class="browser-default custom-select mb-4">
+                <option value="" disabled>Choose option</option>
+                <option value="1" selected>Feedback</option>
+                <option value="2">Report a bug</option>
+                <option value="3">Feature request</option>
+                <option value="4">Feature request</option>
+            </select>
+
+            <!-- Message >
+            <div class="form-group">
+                <textarea class="form-control rounded-0" id="exampleFormControlTextarea2" rows="3" placeholder="Message"></textarea>
+            </div>
+
+            <!-- Copy >
+            <div class="custom-control custom-checkbox mb-4">
+                <input type="checkbox" class="custom-control-input" id="defaultContactFormCopy">
+                <label class="custom-control-label" for="defaultContactFormCopy">Send me a copy of this message</label>
+            </div-->
+
+            <!-- Send button -->
+            <div class="row">
+                <div class="mx-5">
+                    <a class="btn btn-danger btn-block" th:href="@{/location/locations}">Retour</a>
+                </div>
+                <div class="mx-5">
+                    <a class="btn btn-warning btn-block" th:href="@{/commande/edit/form/}+${location.commandeId}">Modifier</a>
+                </div>
+            </div>
+
+        </form>
+        <!-- Default form contact -->
+    </div>
+    <div class="row">
+        <div class="p-2" >
+            <a href="#" class="btn btn-secondary rounded-circle"><i class="fa fa-check"></i></a>
+            <span>Enregistrement deja valider</span>
+        </div>
+        <div class="p-2" th:if="${session.roles[0].role=='ROOT_MASTER'} or ${session.roles[0].role=='ROOT'} or ${session.roles[0].role=='IMPRIMERIE'}">
+            <div th:if="${#lists.size(location.authorizations)}>0 and ${#lists.size(location.authorizations)}<2">
+                <a  th:href="@{/location/validation/}+${location.commandeId}" class="btn btn-success rounded-circle"><i class="fa fa-check"></i></a>
+                <span>Imprimerie non valider</span>
+            </div>
+            <div th:if="${#lists.size(location.authorizations)}>0 and ${#lists.size(location.authorizations)}>1">
+                <a  href="#" class="btn btn-secondary rounded-circle"><i class="fa fa-check"></i></a>
+                <span>Imprimerie deja valider</span>
+            </div>
+        </div>
+        <div class="p-2" th:if="${session.roles[0].role=='ROOT_MASTER'} or ${session.roles[0].role=='ROOT'} or ${session.roles[0].role=='CAISSE'}">
+            <div th:if="${#lists.size(location.authorizations)}>1 and ${#lists.size(location.authorizations)}<3">
+                <a  th:href="@{/location/validation/}+${location.commandeId}" class="btn btn-success rounded-circle"><i class="fa fa-check"></i></a>
+                <span>Caisse non valider</span>
+            </div>
+            <div th:if="${#lists.size(location.authorizations)}>2">
+                <a  href="#" class="btn btn-secondary rounded-circle"><i class="fa fa-check"></i></a>
+                <span>Caisse deja valider</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer Area Starts -->
+<footer th:replace="~{../templates/fragments/footer :: footer}"></footer>
+<!-- Footer Area End -->
+
+
+<!--===============================================================================================-->
+<!--script th:src="@{/vendor/jquery/jquery-3.2.1.min.js}"></script-->
+<!--===============================================================================================-->
+<script th:src="@{/vendor/bootstrap/js/popper.js}"></script>
+<script th:src="@{/vendor/bootstrap/js/bootstrap.min.js}"></script>
+<!--===============================================================================================-->
+<script th:src="@{/vendor/select2/select2.min.js}"></script>
+<!--===============================================================================================-->
+<script th:src="@{/vendor/tilt/tilt.jquery.min.js}"></script>
+<script >
+    $('.js-tilt').tilt({
+        scale: 1.1
+    })
+</script>
+<!--===============================================================================================-->
+<script th:src="@{/js/main.js}"></script>
+<!--script th:src="@{/vendor/jquery-2.2.4.min.js}"></script-->
+<script th:src="@{/vendor/bootstrap-4.1.3.min.js}"></script>
+<script th:src="@{/vendor/wow.min.js}"></script>
+<script th:src="@{/vendor/owl-carousel.min.js}"></script>
+<script th:src="@{/vendor/jquery.nice-select.min.js}"></script>
+<script th:src="@{/vendor/ion.rangeSlider.js}"></script>
+<script th:src="@{/vendor/main.js}"></script>
+<script th:src="@{/js/users.js}"></script>
+<script th:src="@{/js/dataTablesResponsive.js}"></script>
+</body>
+</html>

@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.Arrays;
+import java.util.HashSet;
 
 @Controller
 public class LocationController {
@@ -33,16 +35,25 @@ public class LocationController {
     @GetMapping("/location/form")
     public String form(Model model, HttpServletRequest request, HttpSession session){
         session.setAttribute("lastUrl", request.getHeader("referer"));
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userService.findUserByEmail(auth.getName());
         model.addAttribute("location", new Location());
+        session.setAttribute("loggedName",user.getName()+" "+ user.getLastName());
         return "location/form";
+    }
+
+    public  String edit(@PathVariable int commandeId){
+        return "";
     }
 
     @PostMapping("/location/save")
     public String save(Location commande, String price, HttpSession session,Model model){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
-        commande.getUsers().add(user);
-        locationService.save(commande,price);
+        System.out.println(user.getName());
+        commande.setUnit_price(Double.parseDouble(price));
+        System.out.println(commande.getUnit_price());
+        locationService.save(commande);
         user.getLocations().add(commande);
         userService.updateUser(user);
 
@@ -63,13 +74,15 @@ public class LocationController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
         Location commande=locationService.getOne(commandeId);
-        commande.getUsers().add(user);
-        locationService.update(commande);
+        //user.getLocations().add(commande);
+        userService.updateUser(user);
+        locationService.valid(commandeId);
+        System.out.println(commande.getAuthorizations().size());
         return "redirect:/commande/location/"+commande.getCommandeId();
     }
 
 
-    @GetMapping("/commande/locations")
+    @GetMapping("/location/locations")
     public String findAll(Model model){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
@@ -82,5 +95,12 @@ public class LocationController {
             model.addAttribute("localtions", locationService.findByUser(user.getId()));
         }
         return "/location/locations";
+    }
+
+
+    @GetMapping("/location/confirm/{commandeId}")
+    public String confirm(@PathVariable int commandeId){
+
+        return "redirect:/commande/location/"+commandeId;
     }
 }

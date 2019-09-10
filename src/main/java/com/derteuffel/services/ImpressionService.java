@@ -17,11 +17,10 @@ public class ImpressionService {
     @Autowired
     ImpressionRepository impressionRepository;
 
-    public void save(Impression commande, String price){
-        commande.setUnit_price(Double.parseDouble(price));
+    public void save(Impression commande){
         commande.getValidations().add(true);
         commande.getAuthorizations().add(new Date());
-        commande.setTotal_price(commande.getQuantite()*Double.parseDouble(price));
+        commande.setTotal_price(commande.getQuantite()*commande.getUnit_price());
         impressionRepository.save(commande);
     }
 

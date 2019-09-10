@@ -63,6 +63,7 @@ public class LoginController {
         model.addAttribute("userName", "Welcome " + user.getName() + " " + user.getLastName() + " (" + user.getEmail() + ")");
         model.addAttribute("adminMessage","Content Available Only for Users with Admin Role");
         session.setAttribute("loggedName", user.getName() + " " + user.getLastName());
+        session.setAttribute("roles",user.getRoles());
         return "index";
     }
 }
