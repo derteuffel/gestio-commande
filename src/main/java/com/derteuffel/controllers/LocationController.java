@@ -51,10 +51,7 @@ public class LocationController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
         System.out.println(user.getName());
-        commande.setUnit_price(Double.parseDouble(price));
-        System.out.println(commande.getUnit_price());
         locationService.save(commande);
-        user.getLocations().add(commande);
         userService.updateUser(user);
 
         model.addAttribute("location",commande);
@@ -77,8 +74,7 @@ public class LocationController {
         //user.getLocations().add(commande);
         userService.updateUser(user);
         locationService.valid(commandeId);
-        System.out.println(commande.getAuthorizations().size());
-        return "redirect:/commande/location/"+commande.getCommandeId();
+        return "redirect:/commande/location/"+commande.getLocationId();
     }
 
 
@@ -89,11 +85,8 @@ public class LocationController {
         Role role= roleService.findByRole("ROOT_MASTER");
         Role role1= roleService.findByRole("ROOT");
         Role role2= roleService.findByRole("GERANT");
-        if (user.getRoles().contains(role) || user.getRoles().contains(role1) || user.getRoles().contains(role2)){
             model.addAttribute("locations",locationService.findll());
-        }else {
-            model.addAttribute("localtions", locationService.findByUser(user.getId()));
-        }
+
         return "/location/locations";
     }
 

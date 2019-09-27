@@ -7,6 +7,7 @@ import org.hibernate.validator.constraints.Length;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -38,17 +39,8 @@ public class User {
     @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "user_location", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "commande_id"))
-    private Set<Location> locations;
-
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "user_impression", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "commande_id"))
-    private Set<Impression> impressions ;
-
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "user_conception", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "commande_id"))
-    private Set<Conception> conceptions ;
-
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(name = "user_commande", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "commandeId_id"))
+    private List<Commande> commandes;
 
 }

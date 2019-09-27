@@ -1,9 +1,11 @@
 package com.derteuffel.controllers;
 
+import com.derteuffel.entities.Client;
 import com.derteuffel.entities.Commande;
 import com.derteuffel.entities.Role;
 import com.derteuffel.entities.User;
 import com.derteuffel.repositories.CommandeRepository;
+import com.derteuffel.services.ClientService;
 import com.derteuffel.services.CommandeService;
 import com.derteuffel.services.RoleService;
 import com.derteuffel.services.UserService;
@@ -29,28 +31,30 @@ public class CommandeController {
     @Autowired
     private RoleService roleService;
 
-    @GetMapping("/commande/form")
-    public String form(Model model, HttpServletRequest request, HttpSession session){
+    @Autowired
+    private ClientService clientService;
+    @GetMapping("/commande/form/{clientId}")
+    public String form(Model model, HttpServletRequest request, HttpSession session, @PathVariable int clientId){
         session.setAttribute("lastUrl", request.getHeader("referer"));
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Client client= clientService.getOne(clientId);
+        model.addAttribute("client",client);
         User user = userService.findUserByEmail(auth.getName());
         session.setAttribute("loggedName", user.getName() + " " + user.getLastName());
         model.addAttribute("commande", new Commande());
         return "commande/form";
     }
 
-    /*@PostMapping("/commande/save")
-    public String save(Commande commande, String price, HttpSession session,Model model){
+    @PostMapping("/commande/save")
+    public String save(Commande commande, int clientId, HttpSession session,Model model){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
-        commande.getUsers().add(user);
-        commandeService.save(commande,price);
+        commandeService.save(commande, clientId);
         user.getCommandes().add(commande);
         userService.updateUser(user);
 
-        model.addAttribute("commande",commande);
-        return "commande/confirmation";
-    }*/
+        return "redirect:/commande/commande/"+commande.getCommandeId();
+    }
 
 
     @GetMapping("/commande/commande/{commandeId}")
@@ -60,7 +64,7 @@ public class CommandeController {
 
     }
 
-   /* @GetMapping("/commande/validation/{commandeId}")
+    @GetMapping("/commande/validation/{commandeId}")
     public String validation(@PathVariable int commandeId){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
@@ -68,6 +72,13 @@ public class CommandeController {
         commande.getUsers().add(user);
         commandeService.update(commande);
         return "redirect:/commande/commande/"+commande.getCommandeId();
+    }
+
+
+    @GetMapping("/commande/elements/impressions/{commandeId}")
+    public String findByCommande(@PathVariable int commandeId, Model model){
+        model.addAttribute("impressions", commandeService.findByCommande(commandeId));
+        return "impression/papier/papiers";
     }
 
 
@@ -84,5 +95,5 @@ public class CommandeController {
             model.addAttribute("commandes", commandeService.findByUser(user.getId()));
         }
         return "/commande/commandes";
-    }*/
+    }
 }

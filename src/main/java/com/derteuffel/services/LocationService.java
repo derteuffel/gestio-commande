@@ -18,9 +18,6 @@ public class LocationService {
     LocationRepository locationRepository;
 
     public void save(Location commande){
-        commande.getValidations().add(true);
-        commande.getAuthorizations().add(new Date());
-        commande.setTotal_price(commande.getQuantite()*commande.getUnit_price());
         locationRepository.save(commande);
     }
 
@@ -30,8 +27,6 @@ public class LocationService {
 
     public void valid(int commandeId){
         Location commande= locationRepository.getOne(commandeId);
-        commande.getValidations().add(true);
-        commande.getAuthorizations().add(new Date());
         locationRepository.save(commande);
     }
 
@@ -44,7 +39,4 @@ public class LocationService {
         locationRepository.save(commande);
     }
 
-    public List<Location> findByUser(int id){
-        return locationRepository.findByUsers_Id(id);
-    }
 }

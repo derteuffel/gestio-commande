@@ -1,9 +1,7 @@
 package com.derteuffel.services;
 
-import com.derteuffel.entities.Commande;
-import com.derteuffel.entities.Impression;
-import com.derteuffel.repositories.CommandeRepository;
-import com.derteuffel.repositories.ImpressionRepository;
+import com.derteuffel.entities.*;
+import com.derteuffel.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -17,11 +15,53 @@ public class ImpressionService {
     @Autowired
     ImpressionRepository impressionRepository;
 
+    @Autowired
+    private PapierRepository papierRepository;
+
+    @Autowired
+    private AutreRepository autreRepository;
+
+    @Autowired
+    private VetementRepository vetementRepository;
+
     public void save(Impression commande){
-        commande.getValidations().add(true);
-        commande.getAuthorizations().add(new Date());
-        commande.setTotal_price(commande.getQuantite()*commande.getUnit_price());
         impressionRepository.save(commande);
+    }
+
+    public void  savePapier(Papier papier){
+        papierRepository.save(papier);
+    }
+
+    public void saveVetement(Vetement vetement){
+        vetementRepository.save(vetement);
+    }
+
+    public  void saveAutre(Autre autre){
+        autreRepository.save(autre);
+    }
+
+    public Papier getOnePapier(int impressionId){
+        return papierRepository.getOne(impressionId);
+    }
+
+    public Vetement getOneVetement(int impressionId){
+        return vetementRepository.getOne(impressionId);
+    }
+
+    public Autre getOneAutre(int impresionId){
+        return autreRepository.getOne(impresionId);
+    }
+
+    public List<Papier> findAllPapiers(int commandeId){
+        return papierRepository.findAllByCommande_CommandeId(commandeId);
+    }
+
+    public List<Vetement> findAllVetements(int commandeId){
+        return vetementRepository.findAllByCommande_CommandeId(commandeId);
+    }
+
+    public List<Autre> findAllAutres(int commandeId){
+        return autreRepository.findAllByCommande_CommandeId(commandeId);
     }
 
     public Impression getOne(int commandeId){
@@ -30,8 +70,6 @@ public class ImpressionService {
 
     public void valid(int commandeId){
         Impression commande= impressionRepository.getOne(commandeId);
-        commande.getValidations().add(true);
-        commande.getAuthorizations().add(new Date());
         impressionRepository.save(commande);
     }
 
@@ -44,7 +82,4 @@ public class ImpressionService {
         impressionRepository.save(commande);
     }
 
-    public List<Impression> findByUser(int id){
-        return impressionRepository.findByUsers_Id(id);
-    }
 }

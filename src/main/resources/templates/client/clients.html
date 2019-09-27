@@ -2,7 +2,7 @@
 <html lang="en"  xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Formulaire d'ajout d'une commande</title>
+    <title>Touts les clients</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
@@ -13,7 +13,7 @@
     <link th:href="@{/css/dataTablesResponsive.css}" rel="stylesheet">
 
     <!--===============================================================================================-->
-    <link rel="icon" type="image/png" th:href="@{/images/solution-logo.png}"/>
+    <link rel="icon" type="image/png" th:href="@{/images/icons/logo-gestion.png}"/>
     <!--===============================================================================================-->
     <link rel="stylesheet" type="text/css" th:href="@{/vendor/bootstrap/css/bootstrap.min.css}">
     <!--===============================================================================================-->
@@ -42,49 +42,57 @@
 
 <!-- Header Area End -->
 <div class="limiter container mb-30" style="">
-    <div class="card  p-5">
-        <form class="text-center  d-flex justify-content-center align-items-center border border-light p-5" th:action="@{/commande/save}" th:object="${commande}" method="post">
-
-            <p class="h4 mb-4">Formulaire d'ajout d'une commande</p>
-
-            <div class="col-md-6 ">
-                <div class="form-group mx-2">
-                    <!-- Name -->
-                    <input type="text" id="defaultContactFormName" th:field="*{designation}" class="form-control mb-4" placeholder="Titre de la Commande">
-                    <!--Associated client -->
-                    <input type="hidden"  name="clientId" th:value="${client.clientId}" class="form-control mb-4" >
+    <div class="card  p-2 my-2">
+        <table  class="table text-center card-body table-hover dt-responsive table-lg display" id="users">
+            <thead class="text-white bg-secondary">
+            <th>Nom du Client</th>
+            <th>E-Mail du Client</th>
+            <th>Adresse du Client</th>
+            <th>Code du Client</th>
+            <th>Date d'ajout dans la BD</th>
+            <th>Action</th>
+            </thead>
+            <tbody>
+            <tr th:each="commande: ${clients}">
+                <td th:text="${commande.nomClient}"></td>
+                <td th:text="${commande.emailClient}"></td>
+                <td th:text="${commande.adresseClient}"></td>
+                <td th:text="${commande.codeClient}"></td>
+                <td th:text="${commande.createdDate}"></td>
+                <td>
+                    <a  th:href="@{/client/client/}+${commande.clientId}" ><i class="fa fa-eye text-success"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;
+                    <a data-toggle="modal" data-target="#modal-warning" th:attr="data-target='#modal-warning'+${commande.clientId }"  ><i class="fa fa-trash text-danger"></i></a>
+                </td>
+                <!-- Delete user modal -->
+                <div class="modal card modal-warning fade in" th:id="modal-warning+${commande.clientId}" >
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header text-center">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span></button>
+                                <h5 class="modal-title">Supprimer cette commande</h5>
+                            </div>
+                            <div class="modal-body text-center">
+                                <h3>Etes vous sure de vouloir supprimer définitivement ce client de la base de donnee</h3>
+                            </div>
+                            <div class="modal-footer text-center">
+                                <button type="button" class="btn btn-warning pull-left" data-dismiss="modal">Fermer</button>
+                                <a type="button" class="btn btn-danger" th:href="@{/#}"><i class="fa fa-check"></i>&nbsp;Oui</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+                <!-- Delete user modal -->
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="card row border-info px-5 py-2">
+            <div class="justify-content-center  ">
+                <a class="btn btn-outline-danger mx-2 " style="border-radius: 5px" th:href="@{/commande/commandes}" ><i class="fa fa-chevron-left"></i>&nbsp;Retour</a>
+                <a class="btn btn-info mx-2 pull-right" style="border-radius: 5px" th:href="@{/client/form}" >Ajouter un client <i class="fa fa-plus"></i></a>
             </div>
 
-
-
-
-            <!-- Subject >
-            <label>Subject</label>
-            <select class="browser-default custom-select mb-4">
-                <option value="" disabled>Choose option</option>
-                <option value="1" selected>Feedback</option>
-                <option value="2">Report a bug</option>
-                <option value="3">Feature request</option>
-                <option value="4">Feature request</option>
-            </select>
-
-            <!-- Message >
-            <div class="form-group">
-                <textarea class="form-control rounded-0" id="exampleFormControlTextarea2" rows="3" placeholder="Message"></textarea>
-            </div>
-
-            <!-- Copy >
-            <div class="custom-control custom-checkbox mb-4">
-                <input type="checkbox" class="custom-control-input" id="defaultContactFormCopy">
-                <label class="custom-control-label" for="defaultContactFormCopy">Send me a copy of this message</label>
-            </div-->
-
-            <!-- Send button -->
-            <button class="btn btn-info btn-block" type="submit" style="width: 75%">Enregistrer</button>
-
-        </form>
-        <!-- Default form contact -->
     </div>
 </div>
 

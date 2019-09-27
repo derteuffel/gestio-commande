@@ -18,9 +18,7 @@ public class ConceptionService {
     ConceptionRepository conceptionRepository;
 
     public void save(Conception commande){
-        commande.getValidations().add(true);
-        commande.getAuthorizations().add(new Date());
-        commande.setTotal_price(commande.getQuantite()*commande.getUnit_price());
+
         conceptionRepository.save(commande);
     }
 
@@ -30,8 +28,6 @@ public class ConceptionService {
 
     public void valid(int commandeId){
         Conception commande= conceptionRepository.getOne(commandeId);
-        commande.getValidations().add(true);
-        commande.getAuthorizations().add(new Date());
         conceptionRepository.save(commande);
     }
 
@@ -44,7 +40,5 @@ public class ConceptionService {
         conceptionRepository.save(commande);
     }
 
-    public List<Conception> findByUser(int id){
-        return conceptionRepository.findByUsers_Id(id);
-    }
+
 }

@@ -9,4 +9,7 @@ import java.util.List;
 @Repository
 public interface CommandeRepository extends JpaRepository<Commande, Integer> {
 
+
+    List<Commande> findByUsers_Id(int id);
+
 }

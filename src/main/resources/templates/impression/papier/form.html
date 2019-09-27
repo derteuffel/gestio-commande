@@ -43,17 +43,55 @@
 <!-- Header Area End -->
 <div class="limiter container mb-30" style="">
     <div class="card  p-5">
-        <form class="text-center  d-flex justify-content-center align-items-center border border-light p-5" th:action="@{/commande/save}" th:object="${commande}" method="post">
+        <form class="text-left  d-flex justify-content-center align-items-center border border-light p-5" th:action="@{/impression/papier/save}" th:object="${papier}" method="post">
 
-            <p class="h4 mb-4">Formulaire d'ajout d'une commande</p>
+            <div class="col-md-3">
+                <p class="h4 mb-4">Formulaire d'ajout d'une commande de impression sur support papier</p>
+            </div>
 
             <div class="col-md-6 ">
                 <div class="form-group mx-2">
-                    <!-- Name -->
-                    <input type="text" id="defaultContactFormName" th:field="*{designation}" class="form-control mb-4" placeholder="Titre de la Commande">
-                    <!--Associated client -->
-                    <input type="hidden"  name="clientId" th:value="${client.clientId}" class="form-control mb-4" >
+                    <!-- Email -->
+                    <select class="form-control mb-4" type="text" th:field="*{supportType}">
+                        <option value="">Choisir la couleur d'impression</option>
+                        <option value="couleur">Couleur</option>
+                        <option value="noir/blanc">Noir sur Blanc</option>
+                    </select>
                 </div>
+                <div class="form-group mx-2">
+                    <!-- Name -->
+                    <select class="form-control mb-4" type="text" th:field="*{supportQuality}">
+                        <option value="">Choisir la qualite du papier</option>
+                        <option value="ordinaire">Papier ordinaire</option>
+                        <option value="couche 135">Papier couche 135g</option>
+                        <option value="couche 200">Papier couche 200g</option>
+                        <option value="couche 250">Papier couche 250g</option>
+                        <option value="couche 300">Papier couche 300g</option>
+                    </select>
+                </div>
+                <div class="form-group mx-2">
+                    <!-- Name -->
+                    <select class="form-control mb-4" type="text" th:field="*{format}">
+                        <option value="">Choisir un type de format</option>
+                        <option value="A0">A0</option>
+                        <option value="A1">A1</option>
+                        <option value="A2">A2</option>
+                        <option value="A3">A3</option>
+                        <option value="A4">A4</option>
+                        <option value="A5">A5</option>
+                        <option value="A6">A6</option>
+                    </select>
+                </div>
+                <div class="form-group mx-2">
+                    <!-- Email -->
+                    <input type="number" id="defaultContactFormEmail" th:field="*{quantite}" class="form-control mb-4" placeholder="Quantite">
+                    <input type="hidden"  name="commandeId" th:value="${commande.commandeId}" class="form-control mb-4" >
+                </div>
+                <div class="form-group mx-2">
+                    <!-- Email -->
+                    <input type="text" id="defaultContactFormEmail1" name="price" class="form-control mb-4" placeholder="Prix unitaire">
+                </div>
+
             </div>
 
 
@@ -80,8 +118,11 @@
                 <label class="custom-control-label" for="defaultContactFormCopy">Send me a copy of this message</label>
             </div-->
 
-            <!-- Send button -->
-            <button class="btn btn-info btn-block" type="submit" style="width: 75%">Enregistrer</button>
+            <div class="col-md-3">
+                <!-- Send button -->
+                <button class="btn btn-info btn-block" type="submit" style="width: 75%">Enregistrer</button>
+            </div>
+
 
         </form>
         <!-- Default form contact -->

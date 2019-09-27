@@ -2,7 +2,7 @@
 <html lang="en"  xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Formulaire d'ajout d'une commande</title>
+    <title>Detail d'une commande d'impression</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
@@ -43,18 +43,89 @@
 <!-- Header Area End -->
 <div class="limiter container mb-30" style="">
     <div class="card  p-5">
-        <form class="text-center  d-flex justify-content-center align-items-center border border-light p-5" th:action="@{/commande/save}" th:object="${commande}" method="post">
+        <form class="text-center border border-light p-5" >
 
-            <p class="h4 mb-4">Formulaire d'ajout d'une commande</p>
-
-            <div class="col-md-6 ">
-                <div class="form-group mx-2">
-                    <!-- Name -->
-                    <input type="text" id="defaultContactFormName" th:field="*{designation}" class="form-control mb-4" placeholder="Titre de la Commande">
-                    <!--Associated client -->
-                    <input type="hidden"  name="clientId" th:value="${client.clientId}" class="form-control mb-4" >
-                </div>
+            <div class="alert alert-info text-center">
+                <p class="h4 mb-4">Contenu detailler d'une commande d'impression sur un support papier</p>
             </div>
+
+            <div class="">
+                <div class="form-group mx-2 row">
+                    <div class="text-left mx-2">
+                        <p><span>Type de papier : </span></p>
+                    </div>
+                    <div class="text-center mx-2">
+                        <!-- Name -->
+                       <p> <span th:text="${papier.format}"></span></p>
+                    </div>
+
+                </div>
+                <div class="form-group mx-2 row">
+                    <div class="text-left mx-2">
+                        <p><span>Qualite du papier : </span></p>
+                    </div>
+                    <div class="text-center mx-2">
+                        <!-- Email -->
+                        <p><span th:text="${papier.supportQuality}"></span></p>
+                    </div>
+                </div>
+                <div class="form-group mx-2 row">
+
+                    <div class="text-left mx-2">
+                        <p><span>Couleur de l'impression : </span></p>
+                    </div>
+                    <div class="text-center mx-2">
+                        <!-- Email -->
+                        <p><span th:text="${papier.supportType}"></span></p>
+                    </div>
+
+                </div>
+                <div class="form-group mx-2 row">
+                    <div class="text-left mx-2">
+                        <p><span>Quantite : </span></p>
+                    </div>
+                    <div class="text-center mx-2">
+                        <!-- Email -->
+                        <p><span th:text="${papier.quantite}"></span></p>
+                    </div>
+
+                </div>
+                <div class="form-group mx-2 row">
+                    <div class="text-left mx-2">
+                        <p><span>Prix unitaire : </span></p>
+                    </div>
+                    <div class="text-center mx-2">
+                        <!-- Email -->
+                        <p><span th:text="${papier.unit_price}"></span></p>
+                    </div>
+
+                </div>
+                <div class="form-group mx-2 row">
+                    <div class="text-left mx-2">
+                        <p><span>Prix total : </span></p>
+                    </div>
+                    <div class="text-center mx-2">
+                        <!-- Email -->
+                        <p><span th:text="${papier.total_price}"></span></p>
+                    </div>
+
+                </div>
+
+                <div class="form-group mx-2 row">
+                    <div class="text-left mx-2">
+                        <p><span>Date de commande : </span></p>
+                    </div>
+                    <div class="text-center mx-2">
+                        <!-- Email -->
+                        <p><span th:text="${papier.createdDate}"></span></p>
+                    </div>
+
+                </div>
+
+
+            </div>
+
+            <div class=""></div>
 
 
 
@@ -81,11 +152,46 @@
             </div-->
 
             <!-- Send button -->
-            <button class="btn btn-info btn-block" type="submit" style="width: 75%">Enregistrer</button>
+            <div class="row">
+                <div class="mx-5">
+                    <a class="btn btn-danger btn-block" th:href="@{/impression/impressions}">Retour</a>
+                </div>
+                <div class="mx-5">
+                    <a class="btn btn-warning btn-block" th:href="@{/impression/edit/form/}+${papier.impressionId}">Modifier</a>
+                </div>
+            </div>
 
         </form>
         <!-- Default form contact -->
     </div>
+
+    <!--
+    <div class="row">
+        <div class="p-2" >
+            <a href="#" class="btn btn-secondary rounded-circle"><i class="fa fa-check"></i></a>
+            <span>Enregistrement deja valider</span>
+        </div>
+        <div class="p-2" th:if="${session.roles[0].role=='ROOT_MASTER'} or ${session.roles[0].role=='ROOT'} or ${session.roles[0].role=='IMPRIMERIE'}">
+            <div th:if="${#lists.size(impression.authorizations)}>0 and ${#lists.size(impression.authorizations)}<2">
+                <a  th:href="@{/impression/validation/}+${impression.commandeId}" class="btn btn-success rounded-circle"><i class="fa fa-check"></i></a>
+                <span>Imprimerie non valider</span>
+            </div>
+            <div th:if="${#lists.size(impression.authorizations)}>0 and ${#lists.size(impression.authorizations)}>1">
+                <a  href="#" class="btn btn-secondary rounded-circle"><i class="fa fa-check"></i></a>
+                <span>Imprimerie deja valider</span>
+            </div>
+        </div>
+        <div class="p-2" th:if="${session.roles[0].role=='ROOT_MASTER'} or ${session.roles[0].role=='ROOT'} or ${session.roles[0].role=='CAISSE'}">
+            <div th:if="${#lists.size(impression.authorizations)}>1 and ${#lists.size(impression.authorizations)}<3">
+                <a  th:href="@{/impression/validation/}+${impression.commandeId}" class="btn btn-success rounded-circle"><i class="fa fa-check"></i></a>
+                <span>Caisse non valider</span>
+            </div>
+            <div th:if="${#lists.size(impression.authorizations)}>2">
+                <a  href="#" class="btn btn-secondary rounded-circle"><i class="fa fa-check"></i></a>
+                <span>Caisse deja valider</span>
+            </div>
+        </div>
+    </div-->
 </div>
 
 <!-- Footer Area Starts -->

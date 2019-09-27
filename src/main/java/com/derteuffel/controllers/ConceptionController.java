@@ -43,7 +43,6 @@ public class ConceptionController {
         User user = userService.findUserByEmail(auth.getName());
         commande.setUnit_price(Double.parseDouble(price));
         conceptionService.save(commande);
-        user.getConceptions().add(commande);
         userService.updateUser(user);
 
         model.addAttribute("commande",commande);
@@ -63,10 +62,9 @@ public class ConceptionController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
         Conception commande=conceptionService.getOne(commandeId);
-        user.getConceptions().add(commande);
         userService.updateUser(user);
         conceptionService.update(commande);
-        return "redirect:/commande/conception/"+commande.getCommandeId();
+        return "redirect:/commande/conception/"+commande.getConceptionId();
     }
 
 
@@ -77,11 +75,8 @@ public class ConceptionController {
         Role role= roleService.findByRole("ROOT_MASTER");
         Role role1= roleService.findByRole("ROOT");
         Role role2= roleService.findByRole("GERANT");
-        if (user.getRoles().contains(role) || user.getRoles().contains(role1) || user.getRoles().contains(role2)){
             model.addAttribute("conceptions",conceptionService.findll());
-        }else {
-            model.addAttribute("conceptions", conceptionService.findByUser(user.getId()));
-        }
+
         return "/conception/conceptions";
     }
 

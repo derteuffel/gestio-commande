@@ -2,7 +2,7 @@
 <html lang="en"  xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Formulaire d'ajout d'une commande</title>
+    <title>Formulaire d'ajout d'un client</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
@@ -42,17 +42,27 @@
 
 <!-- Header Area End -->
 <div class="limiter container mb-30" style="">
-    <div class="card  p-5">
-        <form class="text-center  d-flex justify-content-center align-items-center border border-light p-5" th:action="@{/commande/save}" th:object="${commande}" method="post">
+    <div class="card border border-info p-5">
+        <form class="text-center  d-flex justify-content-center align-items-center border border-light p-5" th:action="@{/client/save}" th:object="${client}" method="post">
 
-            <p class="h4 mb-4">Formulaire d'ajout d'une commande</p>
+            <p class="h4 mb-4">Formulaire d'ajout d'un client</p>
 
             <div class="col-md-6 ">
                 <div class="form-group mx-2">
                     <!-- Name -->
-                    <input type="text" id="defaultContactFormName" th:field="*{designation}" class="form-control mb-4" placeholder="Titre de la Commande">
-                    <!--Associated client -->
-                    <input type="hidden"  name="clientId" th:value="${client.clientId}" class="form-control mb-4" >
+                    <input type="text" id="defaultContactFormName" th:field="*{nomClient}" class="form-control mb-4" placeholder="Nom du client">
+                </div>
+                <div class="form-group mx-2">
+                    <!-- Email -->
+                    <input type="email" id="defaultContactFormEmail" th:field="*{emailClient}" class="form-control mb-4" placeholder="Email du client">
+                </div>
+                <div class="form-group mx-2">
+                    <!-- Email -->
+                    <input type="text" id="defaultContactFormEmail1" th:field="*{phoneClient}" class="form-control mb-4" placeholder="Telephone Client">
+                </div>
+                <div class="form-group mx-2">
+                    <!-- Email -->
+                    <input type="text" id="defaultContactFormEmail2" th:field="*{adresseClient}" class="form-control mb-4" placeholder="Adresse du client">
                 </div>
             </div>
 
@@ -81,10 +91,20 @@
             </div-->
 
             <!-- Send button -->
-            <button class="btn btn-info btn-block" type="submit" style="width: 75%">Enregistrer</button>
+            <button class="btn btn-info btn-block" type="submit" style="width: 75%">Enregistrer&nbsp; <i class="fa fa-check"></i></button>
 
         </form>
         <!-- Default form contact -->
+    </div>
+    <div class="border info my-4 py-2 px-5 text-center">
+        <p class="text-white" style="font-size: 24px">Rechercher un client existant</p>
+        <div class="d-flex justify-content-center align-content-center">
+            <form th:action="@{/search/client}" method="get" class="form-inline">
+                <input type="text" placeholder="Recherche rapide" name="searched" class="form-control" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Rechercher un client...'" required>
+                <button type="submit" class="ml-2 btn btn-secondary"><i class="fa fa-search"></i></button>
+            </form>
+        </div>
+
     </div>
 </div>
 

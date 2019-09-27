@@ -8,5 +8,4 @@ import java.util.List;
 
 @Repository
 public interface ConceptionRepository extends JpaRepository<Conception,Integer> {
-    List<Conception> findByUsers_Id(int id);
 }
