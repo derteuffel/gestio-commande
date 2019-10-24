@@ -33,7 +33,7 @@ public class ProductController {
 
     @GetMapping("/form")
     public String formProduct(Model model){
-        model.addAttribute("produit", new Product());
+        model.addAttribute("product", new Product());
         model.addAttribute("categories", categoryService.findAllCategory());
         return "product/form";
     }
@@ -56,7 +56,7 @@ public class ProductController {
     public String detailProduct (@PathVariable Long idProduct, Model model)
     {
         Product product = productService.findProductByIdProduct(idProduct);
-        model.addAttribute("products", product);
+        model.addAttribute("product", product);
         return"product/detail";
 
     }
@@ -76,7 +76,7 @@ public class ProductController {
                                 BindingResult result, Model model) {
         if (result.hasErrors()) {
             product.setIdProduct(idProduct);
-            return "product/formProduct";
+            return "product/form";
         }
 
         productService.saveOrUpdateProduct(product);

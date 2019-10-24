@@ -18,11 +18,18 @@ public class CategoryController {
     @Autowired
     private CategoryService categoryService;
 
-    @GetMapping("/ListCategory")
+    @GetMapping("/ListCategories")
     public String ListCategory(Model model){
-        model.addAttribute("category",categoryService.findAllCategory());
+        model.addAttribute("categories",categoryService.findAllCategory());
 
         return "category/categories";
+
+    }
+
+    @GetMapping("/{idCat}")
+    public String getOne(@PathVariable Long idCat, Model model){
+        model.addAttribute("category", categoryService.findCategoryById(idCat));
+        return "category/detail";
 
     }
 
@@ -37,7 +44,7 @@ public class CategoryController {
     @PostMapping("/save")
     public String saveCategorie(Category category){
         categoryService.saveOrUpdate(category);
-        return "redirect:/category/ListCategory";
+        return "redirect:/category/ListCategories";
     }
 
     @GetMapping("/delete/{idCat}")
