@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en"  xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Formulaire d'ajout d'un produit</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <link th:href="@{/css/dataTablesResponsive.css}" rel="stylesheet">
+
+    <!--===============================================================================================-->
+    <link rel="icon" type="image/png" th:href="@{/images/solution-logo.png}"/>
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" th:href="@{/vendor/bootstrap/css/bootstrap.min.css}">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" th:href="@{/fonts/font-awesome-4.7.0/css/font-awesome.min.css}">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" th:href="@{/vendor/animate/animate.css}">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" th:href="@{/vendor/css-hamburgers/hamburgers.min.css}">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" th:href="@{/vendor/select2/select2.min.css}">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" th:href="@{/css/util.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/animate-3.7.0.css}">
+    <link rel="stylesheet" th:href="@{/css/font-awesome-4.7.0.min.css}">
+    <link rel="stylesheet" th:href="@{/fonts/flat-icon/flaticon.css}">
+    <link rel="stylesheet" th:href="@{/css/bootstrap-4.1.3.min.css}">
+    <link rel="stylesheet" th:href="@{/css/owl-carousel.min.css}">
+    <link rel="stylesheet" th:href="@{/css/nice-select.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <!--===============================================================================================-->
+</head>
+<body>
+<header th:replace="~{../templates/fragments/header :: header}"></header>
+<!-- Header Area Starts -->
+
+<!-- Header Area End -->
+<div class="limiter container mb-30" style="">
+    <div class="card  p-5">
+        <form class="text-center  d-flex justify-content-center align-items-center border border-light p-5" th:action="@{/product/save}" th:object="${product}" method="post">
+
+            <p class="h4 mb-4">Formulaire d'ajout d'un produit</p>
+
+            <div class="col-md-6 ">
+                <div class="form-group mx-2">
+                    <!-- Name -->
+                    <input type="text" id="defaultNomCategorie" th:field="*{nomProduit}" class="form-control mb-4" placeholder="Nom du produi">
+                    <label>Date de fabrication</label>
+                    <input type="date" th:field="*{dateFabrication}" id="dateFabrication" class="form-control mb-4" placeholder="Date de fabrication">
+                    <label >Date de peremption</label>
+                    <input type="date" th:field="*{datePeremption}" id="datePeremption" class="form-control mb-4" placeholder="Date de Peremption">
+                    <input type="text" th:field="*{qty}" id="qtitProduit" class="form-control mb-4" placeholder="Quantité">
+                    <input type="text" th:field="*{prix_achat}" id="prix_achat" class="form-control mb-4" placeholder="Prix d'achat">
+                    <input type="text" th:field="*{prix_vente}" id="prix_vente" class="form-control mb-4" placeholder="prix de vente">
+                    <input type="text" th:field="*{prix_unitaire}" id="prix_unitaire" class="form-control mb-4" placeholder="Prix unitaire">
+                    <input type="text" th:field="*{perissable}" id="perissable" class="form-control mb-4" placeholder="Perissable">
+                    <input type="text" th:field="*{TVA}" id="TVA" class="form-control mb-4" placeholder="TVA">
+                    <select type="text" th:field="*{category}">
+                        <option value="">Liste de catégories</option>
+                        <option th:each="category : ${categories}"
+                        th:value="${category.idCat}"
+                        th:text="${category.nomCat}">
+                        </option>
+
+                    </select>
+                </div>
+            </div>
+            <button class="btn btn-info btn-block" type="submit" style="width: 75%">Enregistrer</button>
+        </form>
+    </div>
+</div>
+
+<!-- Footer Area Starts -->
+<footer th:replace="~{../templates/fragments/footer :: footer}"></footer>
+<!-- Footer Area End -->
+
+
+<!--===============================================================================================-->
+<!--script th:src="@{/vendor/jquery/jquery-3.2.1.min.js}"></script-->
+<!--===============================================================================================-->
+<script th:src="@{/vendor/bootstrap/js/popper.js}"></script>
+<script th:src="@{/vendor/bootstrap/js/bootstrap.min.js}"></script>
+<!--===============================================================================================-->
+<script th:src="@{/vendor/select2/select2.min.js}"></script>
+<!--===============================================================================================-->
+<script th:src="@{/vendor/tilt/tilt.jquery.min.js}"></script>
+<script >
+    $('.js-tilt').tilt({
+        scale: 1.1
+    })
+</script>
+<!--===============================================================================================-->
+<script th:src="@{/js/main.js}"></script>
+<!--script th:src="@{/vendor/jquery-2.2.4.min.js}"></script-->
+<script th:src="@{/vendor/bootstrap-4.1.3.min.js}"></script>
+<script th:src="@{/vendor/wow.min.js}"></script>
+<script th:src="@{/vendor/owl-carousel.min.js}"></script>
+<script th:src="@{/vendor/jquery.nice-select.min.js}"></script>
+<script th:src="@{/vendor/ion.rangeSlider.js}"></script>
+<script th:src="@{/vendor/main.js}"></script>
+<script th:src="@{/js/users.js}"></script>
+<script th:src="@{/js/dataTablesResponsive.js}"></script>
+</body>
+</html>
