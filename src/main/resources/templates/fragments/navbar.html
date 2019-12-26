@@ -1,0 +1,37 @@
+<div th:fragment="header">
+    <div class="row bg-light">
+        <div class="col-md-4">
+            <img th:src="@{/images/logo.png}" width="" alt="">
+        </div>
+        <div class="card-body py-4 col-md-8 text-center">
+            <h1 class="text-info" style="width:inherit"><strong>Faites vous connaitre</strong></h1>
+            <h3><i>Communication a 360°</i></h3>
+        </div>
+    </div>
+    <nav class="navbar navbar-expand-lg sticky-top navbar-light  py-4" style="background-color:lightblue">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+            <a class="navbar-brand" th:href="@{/}">Solution Africa</a>
+            <ul class="navbar-nav mr-auto mt-2  mt-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/}"><i class="fa fa-home"></i>&nbsp;Accueil <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#"><i class="fa fa-shopping-basket"></i>&nbsp;Commandes</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " href="#"><i class="fa fa-print"></i>&nbsp;Produits</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " href="#"><i class="fa fa-users"></i>&nbsp; Utilisateurs</a>
+                </li>
+            </ul>
+            <form class="form-inline my-2 my-lg-0">
+                <input class="form-control mr-sm-2" type="search" placeholder="Chercher..." aria-label="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Chercher</button>
+            </form>
+        </div>
+    </nav>
+</div>
