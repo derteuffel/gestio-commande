@@ -50,10 +50,14 @@ public class ArticleService {
         return articleRepository.findAllByCategory_CategoryId(categoryId);
     }
 
-    public <S extends Article> S save(S s, Long commandId, Long categoryId) {
+    public  Article  save(Article s, Long commandId, Long categoryId) {
 
         Commande commande = commandeRepository.getOne(commandId);
         s.setCommande(commande);
+        commande.setQuantity(commande.getArticles().size()+1);
+        commande.setAmount(commande.getAmount()+ s.getTotalPrice());
+
+        commandeRepository.save(commande);
 
         Category category = categoryRepository.getOne(categoryId);
         s.setCategory(category);

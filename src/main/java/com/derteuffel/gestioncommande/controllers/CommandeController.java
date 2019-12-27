@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.time.Year;
+
 @Controller
 @RequestMapping("/commande")
 public class CommandeController {
@@ -22,6 +24,7 @@ public class CommandeController {
 
     @Autowired
     private ClientService clientService;
+    private Year year;
 
 
     //------------ Save Command method Start -----------------//
@@ -42,6 +45,8 @@ public class CommandeController {
 
             commande.setClient(client);
         }
+
+        commande.setCode(commandeService.count()+1+"/"+year);
         commandeService.save(commande,15L);
         return "redirect:/";
 

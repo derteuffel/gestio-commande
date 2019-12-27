@@ -9,8 +9,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Pageable;
 
-import java.awt.print.Pageable;
 import java.util.List;
 
 @Service
@@ -50,7 +50,7 @@ public class CommandeService {
         commandeRepository.save(commande);
     }
 
-    public Page<Commande> findAll(org.springframework.data.domain.Pageable pageable) {
+    public Page<Commande> findAll(Pageable pageable) {
         return commandeRepository.findAll(pageable);
     }
 }

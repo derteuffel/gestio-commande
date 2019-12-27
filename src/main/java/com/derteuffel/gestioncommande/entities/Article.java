@@ -16,9 +16,15 @@ public class Article  {
     private String name;
 
 
-    private double price;
+    private Double price;
 
     private int quantity;
+
+    private String type;
+
+    private String Description;
+
+    private Double totalPrice = 0.0;
 
     @ManyToOne
     private Commande commande;

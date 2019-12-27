@@ -3,6 +3,7 @@ package com.derteuffel.gestioncommande.entities;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -21,11 +22,15 @@ public class Commande  {
 
     private Date createdDate = new Date();
 
+    @Temporal(TemporalType.DATE)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date realeseDate;
+
     private Double amount=0.0;
 
     private Boolean status;
 
-    private int code=0;
+    private String code;
 
     private int quantity=0;
 
