@@ -1,6 +1,7 @@
 package com.derteuffel.gestioncommande.controllers;
 
 import com.derteuffel.gestioncommande.Services.ArticleService;
+import com.derteuffel.gestioncommande.Services.CategoryService;
 import com.derteuffel.gestioncommande.entities.Article;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,12 +20,25 @@ public class ArticleController {
     @Autowired
     private ArticleService articleService;
 
+    @Autowired
+    private CategoryService categoryService;
+
     public List<Article> findAll() {
         return articleService.findAll();
     }
 
     public <S extends Article> List<S> saveAll(List<S> iterable, Long commandeId, List<Long> categoryIds) {
         return articleService.saveAll(iterable, commandeId, categoryIds);
+    }
+
+
+    @GetMapping("/edit/form/{articleId}")
+    public String editForm(Model model, @PathVariable Long articleId){
+        Article article = articleService.getOne(articleId);
+        model.addAttribute("commandeId",article.getCommande().getCommandeId());
+        model.addAttribute("article",article);
+        model.addAttribute("categories", categoryService.findAll());
+        return "article/edit";
     }
 
     @GetMapping("/get/{articleId}")
@@ -50,6 +64,15 @@ public class ArticleController {
         articleService.save(s, commandId, Long.parseLong(categoryId));
 
          return "redirect:/";
+    }
+
+    @PostMapping("/update")
+    public String update(Article s, Long commandId, String montant,  String categoryId) {
+        s.setPrice(Double.parseDouble(montant));
+        s.setTotalPrice(s.getPrice()*s.getQuantity());
+        articleService.save(s, commandId, Long.parseLong(categoryId));
+
+        return "redirect:/article/get/"+ s.getArticleId();
     }
 
     public long count() {

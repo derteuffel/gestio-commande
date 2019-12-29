@@ -53,7 +53,7 @@ public class CommandeController {
     }
 
     //------------ Find all Command method Start -----------------//
-    @GetMapping("/commands")
+    @GetMapping("/commandes")
     public String commands(){
         return "redirect:/";
     }

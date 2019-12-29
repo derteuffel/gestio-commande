@@ -26,7 +26,7 @@
 </head>
 <body>
 <div th:replace="~{../templates/fragments/navbar :: header}"></div>
-<div class="px-5 pt-2 bg-light text-center">
+<div class="px-5 pt-2 mb-5 bg-light text-center">
     <div class="alert-primary py-4">
         <h2>Detail d'un article</h2>
     </div>
@@ -45,6 +45,14 @@
             <tr><td>Prix Total </td><td th:text="${article.totalPrice}"></td></tr>
             </tbody>
         </table>
+    </div>
+    <div class="py-2  px-5">
+        <div class="button pull-left">
+            <a th:href="@{/}" class="btn-outline-danger btn"><i class="fa fa-long-arrow-left"></i>&nbsp;Retour</a>
+        </div>
+        <div class="button pull-right">
+            <a th:href="@{/article/edit/form/}+${article.articleId}" class="btn-outline-primary btn">Editer&nbsp;<i class="fa fa-pencil"></i></a>
+        </div>
     </div>
 </div>
 

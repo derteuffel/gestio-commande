@@ -19,13 +19,13 @@
                     <a class="nav-link" th:href="@{/}"><i class="fa fa-home"></i>&nbsp;Accueil <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#"><i class="fa fa-shopping-basket"></i>&nbsp;Commandes</a>
+                    <a class="nav-link" th:href="@{/commande/commandes}"><i class="fa fa-shopping-basket"></i>&nbsp;Commandes</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link " href="#"><i class="fa fa-print"></i>&nbsp;Produits</a>
+                    <a class="nav-link " th:href="@{/produit/produits}"><i class="fa fa-print"></i>&nbsp;Produits</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link " href="#"><i class="fa fa-users"></i>&nbsp; Utilisateurs</a>
+                    <a class="nav-link " th:href="@{/user/users}"><i class="fa fa-users"></i>&nbsp; Utilisateurs</a>
                 </li>
             </ul>
             <form class="form-inline my-2 my-lg-0">

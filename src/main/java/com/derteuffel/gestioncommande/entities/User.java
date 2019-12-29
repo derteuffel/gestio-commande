@@ -1,8 +1,11 @@
 package com.derteuffel.gestioncommande.entities;
 
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -20,9 +23,28 @@ public class User{
 
     private String email;
 
+    @Temporal(TemporalType.DATE)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date bornDate;
+
+    private String sexe;
+
     private String password;
 
     private String avatar;
+    @Temporal(TemporalType.DATE)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date dateEngagement;
+
+    private ArrayList<String> postes = new ArrayList<>();
+    private String cv;
+    private String contratActuel;
+    private String posteActuel;
+    private String profession;
+
+    @OneToMany(mappedBy = "user")
+    private List<Contract> contracts;
+
 
     @ManyToMany
     @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
@@ -30,4 +52,8 @@ public class User{
 
     @OneToMany(mappedBy = "user")
     private  List<Commande> commandes;
+
+    public void addPost(String  poste){
+        this.postes.add(poste);
+    }
 }

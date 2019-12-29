@@ -3,6 +3,9 @@ package com.derteuffel.gestioncommande.Services;
 import com.derteuffel.gestioncommande.entities.User;
 import com.derteuffel.gestioncommande.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,7 +18,15 @@ public class UserService {
     private UserRepository userRepository;
 
     public List<User> findAll() {
-        return userRepository.findAll();
+        return userRepository.findAll(Sort.by(Sort.Direction.DESC,"userId"));
+    }
+
+    public Page<User> findAll(Pageable pageable) {
+        return userRepository.findAll(pageable);
+    }
+
+    public Page<User> findAllByContratActuel(String contratActuel, Pageable pageable) {
+        return userRepository.findAllByContratActuel(contratActuel, pageable);
     }
 
     public User getOne(Long userId) {
