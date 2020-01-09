@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.1.3/css/bootstrap.min.css}" />
+    <!--link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.bootstrap4.min.css"-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css">
+
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script th:src="@{/webjars/bootstrap/4.1.3/js/bootstrap.min.js}"></script>
+    <script th:src="@{/webjars/jquery/3.3.1/jquery.min.js}"></script>
+
+
+
+
+    <title>Contrats d'un Utilisateur</title>
+    <style>
+        .nav-item{
+            color: #ffffff;
+        }
+
+        #sticky-footer {
+            flex-shrink: none;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="~{../templates/fragments/navbar :: header}"></div>
+<div class="px-5 pt-2 mb-5 bg-light text-center">
+    <div class="alert-primary py-4">
+        <h2>Ensemble des Contrats Avec l'Agent</h2>
+    </div>
+    <div class="row py-2">
+        <div  class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    Informations Agent
+                </div>
+                <div class="card-body">
+                    <h4>Contrat actuel : <span th:text="${user.contratActuel}"></span></h4>
+                    <hr>
+                    <a class="btn" data-toggle="modal" data-target="#postesModal" th:attr="data-target='#postesModal'">Quelques Informations&nbsp;<i class="fa fa-hand-o-right"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <span th:text="${message}" class="text-success"></span>
+            <div class="card">
+                <div class="card-header">
+                    Les Contrats
+                </div>
+                <div class="card-body">
+                    <table class="table-bordered" style="width: 100%">
+                        <thead>
+                        <th>Type de Contrat</th>
+                        <th>Debut-Contrat</th>
+                        <th>Fin-Contrat</th>
+                        <th>Duree-Contrat</th>
+                        <th>Actions</th>
+                        </thead>
+                        <tbody>
+                        <tr th:each="contract : ${lists}">
+                            <td th:text="${contract.type}"></td>
+                            <td th:text="${#strings.substring(contract.debutContrat,0,10)}"></td>
+                            <td th:text="${#strings.substring(contract.finContrat,0,10)}"></td>
+                            <td th:text="${contract.dureeContrat}"></td>
+                            <td >
+                                <a class="btn btn-info" data-toggle="modal" data-target="#detailModal" th:attr="data-target='#detailModal'+${contract.contractId}">Plus...</a>
+                                <a class="btn btn-outline-danger" data-toggle="modal" data-target="#deleteModal" th:attr="data-target='#deleteModal'+${contract.contractId}"><i class="fa fa-trash"></i></a>
+                            </td>
+                            <!-- Modal Detail For Contract -->
+                            <div class="modal fade" th:id="detailModal+${contract.contractId}" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel" >
+                                <div class="modal-dialog" >
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="detailModalLabel">Plus de Detail</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body" >
+                                            <ul>
+                                                <li><span th:text="${contract.salaire}"></span></li>
+                                                <li><span th:text="${contract.description}"></span></li>
+                                            </ul>
+                                            <ul th:each=" document : ${contract.documents}">
+                                                <li><a th:href="${document}" th:text="${document}"></a></li>
+                                            </ul>
+
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Modal Delete Contract -->
+                            <div class="modal fade" th:id="deleteModal+${contract.contractId}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" >
+                                <div class="modal-dialog" >
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="deleteModalLabel">Page de suppression</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Etes vous sure de vouloir supprimer ce contrat?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                                            <a th:href="@{/contract/delete/}+${contract.contractId}" class="btn btn-primary">Supprimer...</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </tr>
+
+                        </tbody>
+                    </table>
+                    <!-- Pagination -->
+                    <nav aria-label="Pagination" th:if="${lists.totalPages gt 0}">
+                        <ul class="pagination justify-content-center font-weight-bold">
+                            <li class="page-item" th:classappend="${lists.number eq 0} ? 'disabled'">
+                                <a class="page-link"
+                                   th:href="@{/contract/contracts?page={id}(id=${lists.number lt 2 ? 1 : lists.number})}"
+                                   aria-label="Previous" title="Previous Page" data-toggle="tooltip">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item" th:classappend="${i eq lists.number + 1} ? 'active'"
+                                th:each="i : ${#numbers.sequence( 1, lists.totalPages, 1)}">
+                                <a class="page-link" th:href="@{/contract/contracts?page={id}(id=${i})}" th:text="${i}"
+                                   th:title="${'Page '+ i}" data-toggle="tooltip"></a>
+                            </li>
+                            <li class="page-item" th:classappend="${lists.number + 1 eq lists.totalPages} ? 'disabled'">
+                                <a class="page-link"
+                                   th:href="@{/contract/contracts?page={id}(id=${lists.number + 2})}"
+                                   aria-label="Next" title="Next Page" data-toggle="tooltip">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="py-2  px-5">
+        <div class="button pull-left">
+            <a th:href="@{/user/detail/}+${user.userId}" class="btn-outline-danger btn"><i class="fa fa-long-arrow-left"></i>&nbsp;Retour</a>
+        </div>
+        <div class="button pull-right">
+            <a class="btn btn-outline-primary" data-toggle="modal" data-target="#addContractModal" th:attr="data-target='#addContractModal'">Ajouter&nbsp;<i class="fa fa-plus"></i></a>
+        </div>
+    </div>
+</div>
+<!-- Modal Detail For posts Updated-->
+<div class="modal fade" th:id="postesModal" tabindex="-1" role="dialog" aria-labelledby="postesModalLabel" >
+    <div class="modal-dialog" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="postesModalLabel">Profil de l'agent</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" >
+                <ul>
+                    <li><span th:text="${user.name}"></span></li>
+                    <li><span th:text="${user.email}"></span></li>
+                    <li><span th:text="${user.bornDate}"></span></li>
+                    <li><span th:text="${user.profession}"></span></li>
+                    <li><span th:text="${user.dateEngagement}"></span></li>
+                    <li><span th:text="${user.sexe}"></span></li>
+                </ul>
+                <hr>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Add Contract for User -->
+<div class="modal fade" th:id="addContractModal" tabindex="-1" role="dialog" aria-labelledby="addContractModalLabel" >
+    <div class="modal-dialog" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addContractModalLabel">Formulaire d'insertion d'un contrat</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" >
+                <form  th:action="@{/contract/save/}+${user.userId}" method="post" th:object="${addContract}" enctype="multipart/form-data">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="type">Type de contrat :</label>
+                            <select th:field="*{type}" id="type" class="form-control">
+                                <option value="">Choisir une valeur...</option>
+                                <option value="staff">Contrat Staff</option>
+                                <option value="consultant">Contrat Consultant</option>
+                                <option value="stagiaire">Contrat Stagiaire</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="salaire">Salaire associer :</label>
+                            <input type="text" class="form-control" id="salaire" th:field="*{salaire}" placeholder="Entrer un montant">
+                        </div>
+                        <div class="form-group">
+                            <label for="description">Description  du contrat :</label>
+                            <textarea th:field="*{description}" id="description" class="form-control"  rows="5" placeholder="Entrer une breve description du contrat"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="debutContrat">Date debut du contrat :</label>
+                            <input type="date" class="form-control" id="debutContrat" th:field="*{debutContrat}">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="finContrat">Date fin de contrat :</label>
+                            <input type="date" class="form-control" th:field="*{finContrat}" id="finContrat" >
+                        </div>
+                        <div class="form-group">
+                            <label for="dureeContrat">Duree du contrat :</label>
+                            <input type="text" class="form-control" th:field="*{dureeContrat}" id="dureeContrat" placeholder="Duree du contrat...">
+                        </div>
+                        <div class="form-group">
+                            <label for="ram">Documents du contrat :</label>
+                            <input type="file" class="form-control-file" name="files" id="ram" multiple>
+                        </div>
+
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                            <button type="submit" class="btn btn-primary">Enregistrer</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Footer div -->
+<footer th:replace="~{../templates/fragments/footer :: footer}"></footer>
+
+<!-- Java Script files adding -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+<scrip th:src="@{/fonts/dataTables/index.js}" ></scrip>
+</body>
+</html>

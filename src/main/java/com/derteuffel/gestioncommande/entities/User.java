@@ -41,6 +41,7 @@ public class User{
     private String contratActuel;
     private String posteActuel;
     private String profession;
+    private Boolean active;
 
     @OneToMany(mappedBy = "user")
     private List<Contract> contracts;
@@ -56,4 +57,7 @@ public class User{
     public void addPost(String  poste){
         this.postes.add(poste);
     }
+
+    @OneToMany(mappedBy = "user")
+    private List<Materiel> materiels;
 }

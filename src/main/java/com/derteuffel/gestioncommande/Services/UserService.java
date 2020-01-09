@@ -34,6 +34,7 @@ public class UserService {
     }
 
     public <S extends User> S save(S s) {
+        s.setActive(true);
         return userRepository.save(s);
     }
 

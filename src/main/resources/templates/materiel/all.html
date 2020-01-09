@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.1.3/css/bootstrap.min.css}" />
+    <!--link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.bootstrap4.min.css"-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css">
+
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script th:src="@{/webjars/bootstrap/4.1.3/js/bootstrap.min.js}"></script>
+    <script th:src="@{/webjars/jquery/3.3.1/jquery.min.js}"></script>
+
+
+
+
+    <title>Materiel</title>
+    <style>
+        .nav-item{
+            color: #ffffff;
+        }
+
+        #sticky-footer {
+            flex-shrink: none;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="~{../templates/fragments/navbar :: header}"></div>
+<div class="px-5 pt-2 mb-5 bg-light text-center">
+    <div class="alert-primary py-4">
+        <h2>Tableau de gestion de materiel | <span th:text="${title}"></span></h2>
+    </div>
+    <div class="row py-2">
+        <div  class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    Type de materiel
+                </div>
+                <div class="card-body">
+                    <a th:href="@{/materiel/}+'ordinateurs'">Ordinateurs</a>
+                    <hr>
+                    <a th:href="@{/materiel/}+'imprimantes'">Imprimantes</a>
+                    <hr>
+                    <a th:href="@{/materiel/}+'autres'">Autres Materiels</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <span th:text="${message}" class="text-success"></span>
+            <span th:text="${deleteMessage}" class="text-success"></span>
+            <div class="card">
+                <div class="card-header">
+                    Materiels
+                </div>
+                <div class="card-body">
+                    <table class="table-bordered" style="width: 100%">
+                        <thead>
+                        <th>Nom </th>
+                        <th>Marque</th>
+                        <th>Description</th>
+                        <th>Actions</th>
+                        </thead>
+                        <tbody>
+                        <tr th:each="materiel : ${lists}">
+                            <td th:text="${materiel.nom}"></td>
+                            <td th:text="${materiel.marque}"></td>
+                            <td th:text="${materiel.description}"></td>
+                            <td >
+                                <a class="btn btn-info" data-toggle="modal" data-target="#detailModal" th:attr="data-target='#detailModal'+${materiel.materielId}">Plus...</a>
+                                <a class="btn btn-outline-danger" data-toggle="modal" data-target="#deleteModal" th:attr="data-target='#deleteModal'+${materiel.materielId}"><i class="fa fa-trash"></i></a>
+                            </td>
+                            <!-- Modal Detail For Contract -->
+                            <div th:switch="${title}">
+                                <!-- ordinateurs case -->
+                                <div th:case="'Ordinateurs'">
+
+                                    <div  class="modal fade" th:id="detailModal+${materiel.materielId}" tabindex="-1" role="dialog" aria-labelledby="ordimodallabel" >
+                                        <div class="modal-dialog" >
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="ordimodallabel">plus de detail</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body text-left" >
+                                                    <ul>
+                                                        <li>Capacite Disque dur : <span th:text="${materiel.disqueDur}"></span></li>
+                                                        <li>Capacite RAM : <span th:text="${materiel.ram}"></span></li>
+                                                        <li>Nombre de coeurs : <span th:text="${materiel.nombreCoeur}"></span></li>
+                                                        <li>Mot de passe :<span th:text="${materiel.password}"></span></li>
+                                                    </ul>
+
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">fermer</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Modal Delete Contract -->
+                                    <div class="modal fade" th:id="deleteModal+${materiel.materielId}" tabindex="-1" role="dialog" aria-labelledby="deleteOrdiModalLabel" >
+                                        <div class="modal-dialog" >
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="deleteOrdiModalLabel">Page de suppression</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Etes vous sure de vouloir supprimer cet ordinateur?
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                                                    <a th:href="@{/materiel/ordinateur/delete/}+${materiel.materielId}" class="btn btn-primary">Supprimer...</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+
+                                <!-- imprimantes case -->
+                                <div th:case="'Imprimantes'">
+                                    <div  class="modal fade" th:id="detailModal+${materiel.materielId}" tabindex="-1" role="dialog" aria-labelledby="imprimodallabel" >
+                                        <div class="modal-dialog" >
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="imprimodallabel">plus de detail</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body text-left" >
+                                                    <ul>
+                                                        <li>Nombre de Bac : <span th:text="${materiel.nbreBac}"></span></li>
+                                                        <li>Type de l'imprimante : <span th:text="${materiel.typeImprimante}"></span></li>
+                                                        <li>Numero de l'imprimante : <span th:text="${materiel.numeroImprimante}"></span></li>
+                                                    </ul>
+
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">fermer</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Modal Delete Imprimante -->
+                                    <div class="modal fade" th:id="deleteModal+${materiel.materielId}" tabindex="-1" role="dialog" aria-labelledby="deleteImpriModalLabel" >
+                                        <div class="modal-dialog" >
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="deleteImpriModalLabel">Page de suppression</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Etes vous sure de vouloir supprimer cet Imprimante?
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                                                    <a th:href="@{/materiel/imprimante/delete/}+${materiel.materielId}" class="btn btn-primary">Supprimer...</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div th:case="'autres materiels'">
+                                    <!-- autres materiels case -->
+                                    <div  class="modal fade" th:id="detailModal+${materiel.materielId}" tabindex="-1" role="dialog" aria-labelledby="autremodallabel" >
+                                        <div class="modal-dialog" >
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="autremodallabel">plus de detail</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body" >
+                                                    <ul>
+                                                        <li><span th:text="${materiel.utilite}"></span></li>
+                                                    </ul>
+
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">fermer</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Modal Delete Contract -->
+                                    <div class="modal fade" th:id="deleteModal+${materiel.materielId}" tabindex="-1" role="dialog" aria-labelledby="deleteAutreModalLabel" >
+                                        <div class="modal-dialog" >
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="deleteAutreModalLabel">Page de suppression</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Etes vous sure de vouloir supprimer cet Autre Materiel?
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                                                    <a th:href="@{/materiel/autres/delete/}+${materiel.materielId}" class="btn btn-primary">Supprimer...</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </tr>
+
+                        </tbody>
+                    </table>
+                    <!-- Pagination -->
+                    <nav aria-label="Pagination" th:switch="${title}" th:if="${lists.totalPages gt 0}">
+                        <ul class="pagination justify-content-center font-weight-bold" th:case="'Ordinateurs'">
+                            <li class="page-item" th:classappend="${lists.number eq 0} ? 'disabled'">
+                                <a class="page-link"
+                                   th:href="@{/materiel/ordinateurs?page={id}(id=${lists.number lt 2 ? 1 : lists.number})}"
+                                   aria-label="Previous" title="Previous Page" data-toggle="tooltip">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item" th:classappend="${i eq lists.number + 1} ? 'active'"
+                                th:each="i : ${#numbers.sequence( 1, lists.totalPages, 1)}">
+                                <a class="page-link" th:href="@{/materiel/ordinateurs?page={id}(id=${i})}" th:text="${i}"
+                                   th:title="${'Page '+ i}" data-toggle="tooltip"></a>
+                            </li>
+                            <li class="page-item" th:classappend="${lists.number + 1 eq lists.totalPages} ? 'disabled'">
+                                <a class="page-link"
+                                   th:href="@{/materiel/ordinateurs?page={id}(id=${lists.number + 2})}"
+                                   aria-label="Next" title="Next Page" data-toggle="tooltip">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        </ul>
+                        <ul class="pagination justify-content-center font-weight-bold" th:case="'Imprimantes'">
+                            <li class="page-item" th:classappend="${lists.number eq 0} ? 'disabled'">
+                                <a class="page-link"
+                                   th:href="@{/materiel/imprimantes?page={id}(id=${lists.number lt 2 ? 1 : lists.number})}"
+                                   aria-label="Previous" title="Previous Page" data-toggle="tooltip">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item" th:classappend="${i eq lists.number + 1} ? 'active'"
+                                th:each="i : ${#numbers.sequence( 1, lists.totalPages, 1)}">
+                                <a class="page-link" th:href="@{/materiel/imprimantes?page={id}(id=${i})}" th:text="${i}"
+                                   th:title="${'Page '+ i}" data-toggle="tooltip"></a>
+                            </li>
+                            <li class="page-item" th:classappend="${lists.number + 1 eq lists.totalPages} ? 'disabled'">
+                                <a class="page-link"
+                                   th:href="@{/materiel/imprimantes?page={id}(id=${lists.number + 2})}"
+                                   aria-label="Next" title="Next Page" data-toggle="tooltip">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        </ul>
+                        <ul class="pagination justify-content-center font-weight-bold" th:case="'Autres Materiels'">
+                            <li class="page-item" th:classappend="${lists.number eq 0} ? 'disabled'">
+                                <a class="page-link"
+                                   th:href="@{/materiel/autres?page={id}(id=${lists.number lt 2 ? 1 : lists.number})}"
+                                   aria-label="Previous" title="Previous Page" data-toggle="tooltip">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item" th:classappend="${i eq lists.number + 1} ? 'active'"
+                                th:each="i : ${#numbers.sequence( 1, lists.totalPages, 1)}">
+                                <a class="page-link" th:href="@{/materiel/autres?page={id}(id=${i})}" th:text="${i}"
+                                   th:title="${'Page '+ i}" data-toggle="tooltip"></a>
+                            </li>
+                            <li class="page-item" th:classappend="${lists.number + 1 eq lists.totalPages} ? 'disabled'">
+                                <a class="page-link"
+                                   th:href="@{/materiel/autres?page={id}(id=${lists.number + 2})}"
+                                   aria-label="Next" title="Next Page" data-toggle="tooltip">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="py-2  px-5">
+        <div class="button mt-2">
+                        <!-- Button trigger modal -->
+            <div class="button pull-right">
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createUserModal">    <!--a th:href="@{/article/edit/form/}+${article.articleId}" class="btn-outline-primary btn">Editer&nbsp;<i class="fa fa-pencil"></i></a-->
+                            Nouveau Materiel &nbsp;<i class="fa fa-plus"></i>
+                        </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Modal Detail For Product Updated-->
+<div class="modal fade" th:id="createUserModal" tabindex="-1" role="dialog" aria-labelledby="createUserModalLabel" >
+    <div class="modal-dialog" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="postesModalLabel">Ajout d'un materiel</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" th:switch="${title}" >
+                <form th:case="'Ordinateurs'" th:action="@{/materiel/ordinateur/save}" method="post" th:object="${ordinateur}" >
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="name">Nom ordinateur :</label>
+                            <input type="text" class="form-control" th:field="*{nom}" id="name" placeholder="Entrer le nom complet de l'ordinateur...">
+                        </div>
+                        <div class="form-group">
+                            <label for="marque">Marque ordinateur :</label>
+                            <input type="text" class="form-control" id="marque" th:field="*{marque}" placeholder="Entrer la marque">
+                        </div>
+                        <div class="form-group">
+                            <label for="description">Description  :</label>
+                            <textarea th:field="*{description}" id="description" class="form-control"  rows="5"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="disqueDur">Disque Dur :</label>
+                            <input type="text" class="form-control" id="disqueDur" th:field="*{disqueDur}" placeholder="Entrer la capacite du disque dur">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="nbreCoeur">Nombre de coeurs :</label>
+                            <input type="text" class="form-control" th:field="*{nombreCoeur}" id="nbreCoeur" placeholder="Entrer le nombre de coeur...">
+                        </div>
+                        <div class="form-group">
+                            <label for="ram">RAM :</label>
+                            <input type="text" class="form-control" th:field="*{ram}" id="ram" placeholder="Entrer le nombre de coeur...">
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Mot de passe de l'ordinateur :</label>
+                            <input type="text" class="form-control" th:field="*{password}" id="password" placeholder="Mot de passe de cet ordinateur...">
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                            <button type="submit" class="btn btn-primary">Enregistrer</button>
+                        </div>
+                    </div>
+                </form>
+                <form th:case="'Imprimantes'" th:action="@{/materiel/imprimante/save}" method="post" th:object="${imprimante}" >
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="name">Nom Appereil :</label>
+                            <input type="text" class="form-control" th:field="*{nom}" id="name" placeholder="Entrer le nom complet de l'ordinateur...">
+                        </div>
+                        <div class="form-group">
+                            <label for="marque">Marque Appereil :</label>
+                            <input type="text" class="form-control" id="marque" th:field="*{marque}" placeholder="Entrer la marque">
+                        </div>
+                        <div class="form-group">
+                            <label for="description">Description  :</label>
+                            <textarea th:field="*{description}" id="description" class="form-control"  rows="5"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="nbreBac">Nombre de Bac de l'imprimante :</label>
+                            <input type="text" class="form-control" id="nbreBac" th:field="*{nbreBac}" placeholder="Entrer le nombre de bac a papier de l'imprimante">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="typeImprimante">Type de l'imprimante :</label>
+                            <input type="text" class="form-control" th:field="*{typeImprimante}" id="typeImprimante" placeholder="Entrer le type de l'imprmante...">
+                        </div>
+                        <div class="form-group">
+                            <label for="numeroImprimante">Numero de l'imprimante :</label>
+                            <input type="text" class="form-control" th:field="*{numeroImprimante}" id="numeroImprimante" placeholder="Entrer le numero de l'imprimante...">
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                            <button type="submit" class="btn btn-primary">Enregistrer</button>
+                        </div>
+                    </div>
+                </form>
+                <form th:case="'Autres Materiels'" th:action="@{/materiel/autres/save}" method="post" th:object="${autre}" >
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="name">Nom Appereil :</label>
+                            <input type="text" class="form-control" th:field="*{nom}" id="name" placeholder="Entrer le nom complet de l'ordinateur...">
+                        </div>
+                        <div class="form-group">
+                            <label for="marque">Marque Appereil :</label>
+                            <input type="text" class="form-control" id="marque" th:field="*{marque}" placeholder="Entrer la marque">
+                        </div>
+                        <div class="form-group">
+                            <label for="description">Description  :</label>
+                            <textarea th:field="*{description}" id="description" class="form-control"  rows="5"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="utilite">Utilisation :</label>
+                            <input type="text" class="form-control" id="utilite" th:field="*{utilite}" placeholder="Entrer une desciption de l'utilisation de l'appareil...">
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                            <button type="submit" class="btn btn-primary">Enregistrer</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Footer div -->
+<footer th:replace="~{../templates/fragments/footer :: footer}"></footer>
+
+<!-- Java Script files adding -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+<scrip th:src="@{/fonts/dataTables/index.js}" ></scrip>
+</body>
+</html>

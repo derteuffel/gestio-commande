@@ -1,6 +1,8 @@
 package com.derteuffel.gestioncommande.controllers;
 
+import com.derteuffel.gestioncommande.Services.ContractService;
 import com.derteuffel.gestioncommande.Services.UserService;
+import com.derteuffel.gestioncommande.entities.Contract;
 import com.derteuffel.gestioncommande.entities.User;
 import com.derteuffel.gestioncommande.helpers.PageModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,6 +31,9 @@ public class UserController {
 
     @Autowired
     private PageModel pageModel;
+
+    @Autowired
+    private ContractService contractService;
 
     @Value("${file.upload-dir}")
     private  String fileStorage;
@@ -55,7 +61,7 @@ public class UserController {
     }
 
     @PostMapping("/save")
-    public String save(User user, @RequestParam("file") MultipartFile file ) throws IOException {
+    public String save(User user, @RequestParam("file") MultipartFile file , RedirectAttributes redirectAttributes) throws IOException {
         /*if (!(file.isEmpty())){
             System.out.println("Here is"+System.getProperty(fileStorage)+file.getOriginalFilename());
             file.transferTo(new File(fileStorage + file.getOriginalFilename()));
@@ -72,7 +78,7 @@ public class UserController {
             }
         }
 
-        user.setCv(file.getOriginalFilename());
+        user.setCv("/downloadFile/"+file.getOriginalFilename());
         System.out.println("This is storage place"+fileStorage + file.getOriginalFilename());
 
         System.out.println("This is poste actuel :"+user.getPosteActuel());
@@ -80,6 +86,13 @@ public class UserController {
         user.getPostes().add(user.getPosteActuel());
         userService.save(user);
 
+        Contract contract = new Contract();
+        contract.setDebutContrat(user.getDateEngagement());
+        contract.setType(user.getContratActuel());
+        contract.setUser(user);
+        redirectAttributes.addFlashAttribute("message","Vous avez initialiser un nouveau contrat pour ce nouvel agent- "+user.getName()+" Bien vouloir completer les informations liees a son contrat ");
+
+        contractService.save(contract);
         return "redirect:/user/users";
     }
 
