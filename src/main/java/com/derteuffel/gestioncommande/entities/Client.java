@@ -30,4 +30,8 @@ public class Client {
 
     @OneToMany(mappedBy = "client")
     List<Commande> commandes;
+    
+    
+    
+    
 }

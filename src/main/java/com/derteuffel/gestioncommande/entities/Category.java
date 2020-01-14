@@ -24,4 +24,7 @@ public class Category {
 
     @OneToMany(mappedBy = "category")
     private List<Article> articles;
+    
+   
+    
 }

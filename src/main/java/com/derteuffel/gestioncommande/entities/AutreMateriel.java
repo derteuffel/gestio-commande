@@ -13,4 +13,9 @@ import javax.persistence.Table;
 public class AutreMateriel extends Materiel {
 
     private String utilite;
+    
+    
+
+	
+    
 }

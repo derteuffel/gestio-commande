@@ -32,4 +32,7 @@ public class Contract implements Serializable {
 
     @ManyToOne
     private User user;
+    
+    
+    
 }

@@ -20,4 +20,8 @@ public class AddedProduct {
 
     @ManyToOne
     private Product product;
+    
+    
+    
+    
 }

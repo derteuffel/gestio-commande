@@ -15,4 +15,6 @@ public class Imprimante extends Materiel {
     private int nbreBac;
     private String typeImprimante;
     private String numeroImprimante;
+    
+    
 }

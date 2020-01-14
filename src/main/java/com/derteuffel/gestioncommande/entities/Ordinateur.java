@@ -16,4 +16,7 @@ public class Ordinateur extends Materiel{
     private String ram;
     private String nombreCoeur;
     private String password;
+    
+    
+    
 }
