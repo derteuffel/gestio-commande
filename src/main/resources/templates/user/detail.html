@@ -1,19 +1,38 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.1.3/css/bootstrap.min.css}" />
-    <!--link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.bootstrap4.min.css"-->
+    <!--link rel="stylesheet" th:href="@{/webjars/bootstrap/4.1.3/css/bootstrap.min.css}" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.bootstrap4.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css">
 
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <script th:src="@{/webjars/bootstrap/4.1.3/js/bootstrap.min.js}"></script>
-    <script th:src="@{/webjars/jquery/3.3.1/jquery.min.js}"></script>
+    <script th:src="@{/webjars/jquery/3.3.1/jquery.min.js}"></script-->
+
+    <!-- Fonts and icons -->
+    <script th:src="@{/js/plugin/webfont/webfont.min.js}"></script>
+    <script>
+        WebFont.load({
+            google: {"families":["Lato:300,400,700,900"]},
+            custom: {"families":["Flaticon", "Font Awesome 5 Solid", "Font Awesome 5 Regular", "Font Awesome 5 Brands", "simple-line-icons"], urls: ['../../css/fonts.min.css']},
+            active: function() {
+                sessionStorage.fonts = true;
+            }
+        });
+    </script>
+
+    <!-- CSS Files -->
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/atlantis.min.css}">
+
+    <!-- CSS Just for demo purpose, don't include it in your project -->
+    <link rel="stylesheet" th:href="@{/css/demo.css}">
 
 
 
 
-    <title>Detail Utilisateur</title>
+    <title>Utilisateur</title>
     <style>
         .nav-item{
             color: #ffffff;
@@ -25,95 +44,402 @@
     </style>
 </head>
 <body>
-<div th:replace="~{../templates/fragments/navbar :: header}"></div>
-<div class="px-5 pt-2 mb-5 bg-light text-center">
-    <div class="alert-primary py-4">
-        <h2>Detail d'un Utilisateur</h2>
-    </div>
-    <div class="row py-2">
-        <div  class="col-md-4">
-            <div class="card">
-                <div class="card-header">
-                    Autres Informations
-                </div>
-                <div class="card-body">
-                    <a th:href="@{/contract/contracts/}+${user.userId}" >Contrats avec l'Entreprise</a>
-                    <hr>
-                    <a class="btn" data-toggle="modal" data-target="#postesModal" th:attr="data-target='#postesModal'">Postes Occupees <i class="fa fa-hand-o-right"></i></a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">
-                    Informations de l'agent
-                </div>
-                <div class="card-body">
-                    <table class="table-bordered" style="width: 100%">
-                        <thead>
-                        <th>Designation</th>
-                        <th>Valeur</th>
-                        </thead>
-                        <tbody class="text-left ">
-                        <tr><td>Nom complet </td><td th:text="${user.name}"></td></tr>
-                        <tr><td>Pseudonyme </td><td th:text="${user.login}"></td></tr>
-                        <tr><td>Adresse E-mail </td><td th:text="${user.email}"></td></tr>
-                        <tr><td>Date de naissance </td><td th:text="${#strings.substring(user.bornDate,0,10)}"></td></tr>
-                        <tr><td>Sexe </td><td th:text="${user.sexe}"></td></tr>
-                        <tr><td>Curiculum Vitae </td><td>
-                            <a th:href="${user.cv}" th:text="${user.cv}"></a>
-                        </td></tr>
-                        <tr><td>Date d'engagement </td><td th:text="${#strings.substring(user.dateEngagement,0,10)}"></td></tr>
-                        <tr><td>Contrat Actuel </td><td th:text="${user.contratActuel}"></td></tr>
-                        <tr><td>Poste Actuel </td><td th:text="${user.posteActuel}"></td></tr>
-                        <tr><td>Profession </td><td th:text="${user.profession}"></td></tr>
+<div class="wrapper">
+    <div th:replace="~{../templates/fragments/navbar :: navbar}"></div>
+    <div th:replace="~{../templates/fragments/sidebar :: sidebar}"></div>
 
-                        </tbody>
-                    </table>
+    <div class="main-panel">
+        <div class="content">
+            <div class="panel-header bg-primary-gradient">
+                <div class="page-inner py-5">
+                    <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
+                        <div>
+                            <h2 class="text-white pb-2 fw-bold"><span th:text="${user.name}"></span></h2>
+                            <h5 class="text-white op-7 mb-2">Contenu detaille</h5>
+                        </div>
+                        <div class="ml-md-auto py-2 py-md-0">
+                            <a th:href="@{/contract/contracts/}+${user.userId}" class="btn btn-white btn-border btn-round mr-2">Contrats</a>
+                            <a data-toggle="modal" data-target="#createArticleModal" th:attr="data-target='#createArticleModal'"  class="btn btn-secondary btn-round">Postes</a>
+                        </div>
+                        <!-- Modal create Article -->
+                        <div class="modal fade" th:id="createArticleModal" tabindex="-1" role="dialog" aria-labelledby="postesModalLabel" >
+                            <div class="modal-dialog" >
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="postesModalLabel">Liste de postes occupees par le personnel</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body" >
+                                        <ul th:each="poste : ${user.postes}">
+                                            <li><span th:text="${poste}"></span></li>
+                                        </ul>
+                                        <hr>
+
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title">Description de l'utilisateur</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row my--2">
+                                <div class="col-md-5">
+                                    <strong>Image de profile :</strong>
+                                </div>
+                                <div class="col-md-7">
+                                    <img th:src="${user.avatar}" class="rounded-circle" alt="profile">
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row my--2">
+                                <div class="col-md-5">
+                                    <strong>Nom :</strong>
+                                </div>
+                                <div class="col-md-7">
+                                    <span th:text="${user.name}"></span>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row my--2">
+                                <div class="col-md-5">
+                                    <strong>Pseudonyme :</strong>
+                                </div>
+                                <div class="col-md-7">
+                                    <span th:text="${user.login}"></span>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row my--2">
+                                <div class="col-md-5">
+                                    <strong>E-mail :</strong>
+                                </div>
+                                <div class="col-md-7">
+                                    <span th:text="${user.email}"></span>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row my--2">
+                                <div class="col-md-5">
+                                    <strong>Date de naissance :</strong>
+                                </div>
+                                <div class="col-md-7">
+                                    <span th:text="${user.bornDate}"></span>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row my--2">
+                                <div class="col-md-5">
+                                    <strong>Sexe :</strong>
+                                </div>
+                                <div class="col-md-7">
+                                    <span th:text="${user.sexe}"></span>
+                                </div>
+                            </div>
+
+                            <hr>
+                            <div class="row my--2">
+                                <div class="col-md-5">
+                                    <strong>Date d'engagement :</strong>
+                                </div>
+                                <div class="col-md-7">
+                                    <span th:text="${user.dateEngagement}"></span>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row my--2">
+                                <div class="col-md-5">
+                                    <strong>Curriculum Vitae :</strong>
+                                </div>
+                                <div class="col-md-7">
+                                    <a th:href="${user.cv}" th:text="${user.cv}"></a>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row my--2">
+                                <div class="col-md-5">
+                                    <strong>Postes Actuel :</strong>
+                                </div>
+                                <div class="col-md-7">
+                                    <span th:text="${user.posteActuel}"></span>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row my--2">
+                                <div class="col-md-5">
+                                    <strong>Postes occupes :</strong>
+                                </div>
+                                <div class="col-md-7">
+                                    <p th:each="poste : ${user.postes}">
+                                        <span th:text="${poste}"></span>
+                                    </p>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row my--2">
+                                <div class="col-md-5">
+                                    <strong>Profession :</strong>
+                                </div>
+                                <div class="col-md-7">
+                                    <span th:text="${user.profession}"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <footer th:replace="~{../templates/fragments/footer :: footer}"></footer>
+        </div>
+    </div>
+    <!-- Custom template | don't include it in your project!-->
+    <div class="custom-template">
+        <div class="title">Settings</div>
+        <div class="custom-content">
+            <div class="switcher">
+                <div class="switch-block">
+                    <h4>Logo Header</h4>
+                    <div class="btnSwitch">
+                        <button type="button" class="changeLogoHeaderColor" data-color="dark"></button>
+                        <button type="button" class="selected changeLogoHeaderColor" data-color="blue"></button>
+                        <button type="button" class="changeLogoHeaderColor" data-color="purple"></button>
+                        <button type="button" class="changeLogoHeaderColor" data-color="light-blue"></button>
+                        <button type="button" class="changeLogoHeaderColor" data-color="green"></button>
+                        <button type="button" class="changeLogoHeaderColor" data-color="orange"></button>
+                        <button type="button" class="changeLogoHeaderColor" data-color="red"></button>
+                        <button type="button" class="changeLogoHeaderColor" data-color="white"></button>
+                        <br/>
+                        <button type="button" class="changeLogoHeaderColor" data-color="dark2"></button>
+                        <button type="button" class="changeLogoHeaderColor" data-color="blue2"></button>
+                        <button type="button" class="changeLogoHeaderColor" data-color="purple2"></button>
+                        <button type="button" class="changeLogoHeaderColor" data-color="light-blue2"></button>
+                        <button type="button" class="changeLogoHeaderColor" data-color="green2"></button>
+                        <button type="button" class="changeLogoHeaderColor" data-color="orange2"></button>
+                        <button type="button" class="changeLogoHeaderColor" data-color="red2"></button>
+                    </div>
+                </div>
+                <div class="switch-block">
+                    <h4>Navbar Header</h4>
+                    <div class="btnSwitch">
+                        <button type="button" class="changeTopBarColor" data-color="dark"></button>
+                        <button type="button" class="changeTopBarColor" data-color="blue"></button>
+                        <button type="button" class="changeTopBarColor" data-color="purple"></button>
+                        <button type="button" class="changeTopBarColor" data-color="light-blue"></button>
+                        <button type="button" class="changeTopBarColor" data-color="green"></button>
+                        <button type="button" class="changeTopBarColor" data-color="orange"></button>
+                        <button type="button" class="changeTopBarColor" data-color="red"></button>
+                        <button type="button" class="changeTopBarColor" data-color="white"></button>
+                        <br/>
+                        <button type="button" class="changeTopBarColor" data-color="dark2"></button>
+                        <button type="button" class="selected changeTopBarColor" data-color="blue2"></button>
+                        <button type="button" class="changeTopBarColor" data-color="purple2"></button>
+                        <button type="button" class="changeTopBarColor" data-color="light-blue2"></button>
+                        <button type="button" class="changeTopBarColor" data-color="green2"></button>
+                        <button type="button" class="changeTopBarColor" data-color="orange2"></button>
+                        <button type="button" class="changeTopBarColor" data-color="red2"></button>
+                    </div>
+                </div>
+                <div class="switch-block">
+                    <h4>Sidebar</h4>
+                    <div class="btnSwitch">
+                        <button type="button" class="selected changeSideBarColor" data-color="white"></button>
+                        <button type="button" class="changeSideBarColor" data-color="dark"></button>
+                        <button type="button" class="changeSideBarColor" data-color="dark2"></button>
+                    </div>
+                </div>
+                <div class="switch-block">
+                    <h4>Background</h4>
+                    <div class="btnSwitch">
+                        <button type="button" class="changeBackgroundColor" data-color="bg2"></button>
+                        <button type="button" class="changeBackgroundColor selected" data-color="bg1"></button>
+                        <button type="button" class="changeBackgroundColor" data-color="bg3"></button>
+                        <button type="button" class="changeBackgroundColor" data-color="dark"></button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="py-2  px-5">
-        <div class="button pull-left">
-            <a th:href="@{/user/users}" class="btn-outline-danger btn"><i class="fa fa-long-arrow-left"></i>&nbsp;Retour</a>
-        </div>
-        <div class="button pull-right">
-            <!--a th:href="@{/article/edit/form/}+${article.articleId}" class="btn-outline-primary btn">Editer&nbsp;<i class="fa fa-pencil"></i></a-->
+        <div class="custom-toggle">
+            <i class="flaticon-settings"></i>
         </div>
     </div>
+    <!-- End Custom template -->
 </div>
-<!-- Modal Detail For Product Updated-->
-<div class="modal fade" th:id="postesModal" tabindex="-1" role="dialog" aria-labelledby="postesModalLabel" >
-    <div class="modal-dialog" >
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="postesModalLabel">Liste de postes occupees par le personnel</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body" >
-                <ul th:each="poste : ${user.postes}">
-                    <li><span th:text="${poste}"></span></li>
-                </ul>
-                <hr>
-
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
-            </div>
-        </div>
-    </div>
-</div>
 
 
-<!-- Footer div -->
-<footer th:replace="~{../templates/fragments/footer :: footer}"></footer>
 
-<!-- Java Script files adding -->
+
+
+<!--   Core JS Files   -->
+<script th:src="@{/js/core/jquery.3.2.1.min.js}"></script>
+<script th:src="@{/js/core/popper.min.js}"></script>
+<script th:src="@{/js/core/bootstrap.min.js}"></script>
+
+<!-- jQuery UI -->
+<script th:src="@{/js/plugin/jquery-ui-1.12.1.custom/jquery-ui.min.js}"></script>
+<script th:src="@{/js/plugin/jquery-ui-touch-punch/jquery.ui.touch-punch.min.js}"></script>
+
+<!-- jQuery Scrollbar -->
+<script th:src="@{/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js}"></script>
+
+
+<!-- Chart JS -->
+<script th:src="@{/js/plugin/chart.js/chart.min.js}"></script>
+
+<!-- jQuery Sparkline -->
+<script th:src="@{/js/plugin/jquery.sparkline/jquery.sparkline.min.js}"></script>
+
+<!-- Chart Circle -->
+<script th:src="@{/js/plugin/chart-circle/circles.min.js}"></script>
+
+<!-- Datatables -->
+<script th:src="@{/js/plugin/datatables/datatables.min.js}"></script>
+
+<!-- Bootstrap Notify -->
+<script th:src="@{/js/plugin/bootstrap-notify/bootstrap-notify.min.js}"></script>
+
+<!-- jQuery Vector Maps -->
+<script th:src="@{/js/plugin/jqvmap/jquery.vmap.min.js}"></script>
+<script th:src="@{/js/plugin/jqvmap/maps/jquery.vmap.world.js}"></script>
+
+<!-- Sweet Alert -->
+<script th:src="@{/js/plugin/sweetalert/sweetalert.min.js}"></script>
+
+<!-- Atlantis JS -->
+<script th:src="@{/js/atlantis.min.js}"></script>
+
+<!-- Atlantis DEMO methods, don't include it in your project! -->
+<script th:src="@{js/setting-demo.js}"></script>
+<script th:src="@{/js/demo.js}"></script>
+<script>
+    Circles.create({
+        id:'circles-1',
+        radius:45,
+        value:60,
+        maxValue:100,
+        width:7,
+        text: 5,
+        colors:['#f1f1f1', '#FF9E27'],
+        duration:400,
+        wrpClass:'circles-wrp',
+        textClass:'circles-text',
+        styleWrapper:true,
+        styleText:true
+    })
+
+    Circles.create({
+        id:'circles-2',
+        radius:45,
+        value:70,
+        maxValue:100,
+        width:7,
+        text: 36,
+        colors:['#f1f1f1', '#2BB930'],
+        duration:400,
+        wrpClass:'circles-wrp',
+        textClass:'circles-text',
+        styleWrapper:true,
+        styleText:true
+    })
+
+    Circles.create({
+        id:'circles-3',
+        radius:45,
+        value:40,
+        maxValue:100,
+        width:7,
+        text: 12,
+        colors:['#f1f1f1', '#F25961'],
+        duration:400,
+        wrpClass:'circles-wrp',
+        textClass:'circles-text',
+        styleWrapper:true,
+        styleText:true
+    })
+
+    var totalIncomeChart = document.getElementById('totalIncomeChart').getContext('2d');
+
+    var mytotalIncomeChart = new Chart(totalIncomeChart, {
+        type: 'bar',
+        data: {
+            labels: ["S", "M", "T", "W", "T", "F", "S", "S", "M", "T"],
+            datasets : [{
+                label: "Total Income",
+                backgroundColor: '#ff9e27',
+                borderColor: 'rgb(23, 125, 255)',
+                data: [6, 4, 9, 5, 4, 6, 4, 3, 8, 10],
+            }],
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            legend: {
+                display: false,
+            },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        display: false //this will remove only the label
+                    },
+                    gridLines : {
+                        drawBorder: false,
+                        display : false
+                    }
+                }],
+                xAxes : [ {
+                    gridLines : {
+                        drawBorder: false,
+                        display : false
+                    }
+                }]
+            },
+        }
+    });
+
+    $('#lineChart').sparkline([105,103,123,100,95,105,115], {
+        type: 'line',
+        height: '70',
+        width: '100%',
+        lineWidth: '2',
+        lineColor: '#ffa534',
+        fillColor: 'rgba(255, 165, 52, .14)'
+    });
+</script>
+<script >
+    $(document).ready(function() {
+        // Add Row
+        $('#add-row').DataTable({
+            "pageLength": 5,
+        });
+
+        var action = '<td> <div class="form-button-action"> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task"> <i class="fa fa-edit"></i> </button> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove"> <i class="fa fa-times"></i> </button> </div> </td>';
+
+        $('#addRowButton').click(function() {
+            $('#add-row').dataTable().fnAddData([
+                $("#addName").val(),
+                $("#addPosition").val(),
+                $("#addOffice").val(),
+                action
+            ]);
+            $('#addRowModal').modal('hide');
+
+        });
+    });
+</script>
+<!-- Java Script files adding >
+
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/js/bootstrap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
-<scrip th:src="@{/fonts/dataTables/index.js}" ></scrip>
+<scrip th:src="@{/fonts/dataTables/index.js}" ></scrip-->
 </body>
 </html>

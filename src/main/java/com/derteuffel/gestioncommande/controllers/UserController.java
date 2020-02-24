@@ -41,10 +41,8 @@ public class UserController {
 
     @GetMapping("/users")
     public String all(Model model){
-        pageModel.setSIZE(5);
-        pageModel.initPageAndSize();
         model.addAttribute("addUser", new User());
-        model.addAttribute("lists",userService.findAll(PageRequest.of(pageModel.getPAGE(), pageModel.getSIZE())));
+        model.addAttribute("lists",userService.findAll());
 
         System.out.println(fileStorage);
         return "user/all";
@@ -52,11 +50,9 @@ public class UserController {
 
     @GetMapping("/users/{contratActuel}")
     public String contracts(Model model, @PathVariable String contratActuel){
-        pageModel.setSIZE(5);
-        pageModel.initPageAndSize();
-
+        model.addAttribute("contrat",contratActuel);
         model.addAttribute("addUser", new User());
-        model.addAttribute("lists",userService.findAllByContratActuel(contratActuel,PageRequest.of(pageModel.getPAGE(),pageModel.getSIZE())));
+        model.addAttribute("lists",userService.findAllByContratActuel(contratActuel));
         return "user/all";
     }
 
@@ -79,6 +75,7 @@ public class UserController {
         }
 
         user.setCv("/downloadFile/"+file.getOriginalFilename());
+        user.setContratActuel(user.getPosteActuel().toString().toLowerCase());
         System.out.println("This is storage place"+fileStorage + file.getOriginalFilename());
 
         System.out.println("This is poste actuel :"+user.getPosteActuel());

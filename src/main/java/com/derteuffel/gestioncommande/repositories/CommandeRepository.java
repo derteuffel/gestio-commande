@@ -12,6 +12,5 @@ import java.util.List;
 @Repository
 public interface CommandeRepository extends JpaRepository<Commande,Long> {
 
-    Page<Commande> findAll(Pageable pageable);
 
 }

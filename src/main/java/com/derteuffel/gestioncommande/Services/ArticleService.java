@@ -3,10 +3,13 @@ package com.derteuffel.gestioncommande.Services;
 import com.derteuffel.gestioncommande.entities.Article;
 import com.derteuffel.gestioncommande.entities.Category;
 import com.derteuffel.gestioncommande.entities.Commande;
+import com.derteuffel.gestioncommande.entities.EAMonaie;
 import com.derteuffel.gestioncommande.repositories.ArticleRepository;
 import com.derteuffel.gestioncommande.repositories.CategoryRepository;
 import com.derteuffel.gestioncommande.repositories.CommandeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,17 +26,19 @@ public class ArticleService {
     @Autowired
     private CategoryRepository categoryRepository;
 
-    public List<Article> findAll() {
+    public Page<Article> findAll(Pageable pageable) {
+        return articleRepository.findAll(pageable);
+    }
+
+    public List<Article> findAll(){
         return articleRepository.findAll();
     }
 
-    public <S extends Article> List<S> saveAll(List<S> iterable, Long commandeId, List<Long> categoryIds) {
+    public <S extends Article> List<S> saveAll(List<S> iterable, Long commandeId) {
 
         Commande commande = commandeRepository.getOne(commandeId);
         for(int i=0; i<=iterable.size();i++){
             iterable.get(i).setCommande(commande);
-            Category category = categoryRepository.getOne(categoryIds.get(i));
-            iterable.get(i).setCategory(category);
         }
         return articleRepository.saveAll(iterable);
     }
@@ -46,21 +51,22 @@ public class ArticleService {
         return articleRepository.findAllByCommande_CommandeId(commandeId);
     }
 
-    public List<Article> findAllByCategory_CategoryId(Long categoryId) {
-        return articleRepository.findAllByCategory_CategoryId(categoryId);
-    }
-
-    public  Article  save(Article s, Long commandId, Long categoryId) {
+    public  Article  save(Article s, Long commandId) {
 
         Commande commande = commandeRepository.getOne(commandId);
         s.setCommande(commande);
         commande.setQuantity(commande.getArticles().size()+1);
-        commande.setAmount(commande.getAmount()+ s.getTotalPrice());
+        if (s.getMonnaie().equals(EAMonaie.CDF.toString())){
+            s.setTotalCDF(s.getPrice() * s.getQuantity());
+            s.setTotalUSD(s.getTotalCDF() / commande.getTauxJour());
+        }else {
+            s.setTotalUSD(s.getQuantity() * s.getPrice());
+            s.setTotalCDF(s.getTotalUSD() * commande.getTauxJour());
+        }
 
+        commande.setAmountCDF(commande.getAmountCDF() + s.getTotalCDF());
+        commande.setAmountUSD(commande.getAmountUSD() + s.getTotalUSD());
         commandeRepository.save(commande);
-
-        Category category = categoryRepository.getOne(categoryId);
-        s.setCategory(category);
 
         return articleRepository.save(s);
     }
@@ -71,5 +77,13 @@ public class ArticleService {
 
     public void deleteById(Long articleId) {
         articleRepository.deleteById(articleId);
+    }
+
+    public List<Article> findAllByType(String type) {
+        return articleRepository.findAllByType(type);
+    }
+
+    public List<Article> findAllByCategory(String category) {
+        return articleRepository.findAllByCategory(category);
     }
 }

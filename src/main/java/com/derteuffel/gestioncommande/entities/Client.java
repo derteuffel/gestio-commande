@@ -5,13 +5,14 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
 @Data
 @Entity
 @Table(name = "client")
-public class Client {
+public class Client implements Serializable {
     @Id
     @GeneratedValue
     private Long  clientId;
@@ -28,8 +29,8 @@ public class Client {
     private Date createdDate = new Date();
 
 
-    @OneToMany(mappedBy = "client")
-    List<Commande> commandes;
+   /* @OneToMany(mappedBy = "client")
+    private List<Commande> commandes;*/
     
     
     

@@ -61,9 +61,6 @@ public class RunnerClass implements CommandLineRunner {
 
         articleService.saveAll(articles);*/
 
-        articleService.findAll().forEach(article -> {
-            logger.info("{}",article);
-        });
 
     }
 }

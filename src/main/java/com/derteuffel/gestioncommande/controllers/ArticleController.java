@@ -3,7 +3,9 @@ package com.derteuffel.gestioncommande.controllers;
 import com.derteuffel.gestioncommande.Services.ArticleService;
 import com.derteuffel.gestioncommande.Services.CategoryService;
 import com.derteuffel.gestioncommande.entities.Article;
+import com.derteuffel.gestioncommande.helpers.PageModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,6 +13,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -23,15 +28,24 @@ public class ArticleController {
     @Autowired
     private CategoryService categoryService;
 
-    public List<Article> findAll() {
-        return articleService.findAll();
+    @Autowired
+    private PageModel pageModel;
+
+    @GetMapping("/articles")
+    public String findAll(Model model) {
+        pageModel.setSIZE(5);
+        pageModel.initPageAndSize();
+
+        //model.addAttribute("lists",articleService.findAll(PageRequest.of(pageModel.getPAGE(), pageModel.getSIZE())));
+        model.addAttribute("lists",articleService.findAll());
+        return "article/articles";
     }
 
-    public <S extends Article> List<S> saveAll(List<S> iterable, Long commandeId, List<Long> categoryIds) {
-        return articleService.saveAll(iterable, commandeId, categoryIds);
+    public <S extends Article> List<S> saveAll(List<S> iterable, Long commandeId) {
+        return articleService.saveAll(iterable, commandeId);
     }
 
-
+/*
     @GetMapping("/edit/form/{articleId}")
     public String editForm(Model model, @PathVariable Long articleId){
         Article article = articleService.getOne(articleId);
@@ -39,7 +53,7 @@ public class ArticleController {
         model.addAttribute("article",article);
         model.addAttribute("categories", categoryService.findAll());
         return "article/edit";
-    }
+    }*/
 
     @GetMapping("/get/{articleId}")
     public String getOne(@PathVariable Long articleId, Model model) {
@@ -53,24 +67,39 @@ public class ArticleController {
         return articleService.findAllByCommande_CommandeId(commandeId);
     }
 
-    public List<Article> findAllByCategory_CategoryId(Long categoryId) {
-        return articleService.findAllByCategory_CategoryId(categoryId);
-    }
+
 
     @PostMapping("/save/{commandId}")
-    public String save(Article s, @PathVariable Long commandId, String montant,  String categoryId) {
-        s.setPrice(Double.parseDouble(montant));
-        s.setTotalPrice(s.getPrice()*s.getQuantity());
-        articleService.save(s, commandId, Long.parseLong(categoryId));
+    public String save(Article s, @PathVariable Long commandId) {
+
+        Date date = new Date();
+        DateFormat dateFormat = new SimpleDateFormat("dd/mm/yyyy hh:mm");
+        s.setDateJour(dateFormat.format(date));
+        s.setType(s.getType().toString());
+        s.setCategory(s.getCategory().toString());
+        //s.setPrice(Double.parseDouble(montant));
+        articleService.save(s, commandId);
 
          return "redirect:/";
     }
 
-    @PostMapping("/update")
-    public String update(Article s, Long commandId, String montant,  String categoryId) {
-        s.setPrice(Double.parseDouble(montant));
-        s.setTotalPrice(s.getPrice()*s.getQuantity());
-        articleService.save(s, commandId, Long.parseLong(categoryId));
+    @PostMapping("/update/{articleId}")
+    public String update(Article s, @PathVariable Long articleId) {
+        s.setType(s.getType().toString());
+        s.setCategory(s.getCategory().toString());
+        Article article = articleService.getOne(articleId);
+        article.setDateJour(s.getDateJour());
+        article.setCategory(s.getCategory());
+        article.setType(s.getType());
+        article.setName(s.getName());
+        Date date = new Date();
+        DateFormat dateFormat = new SimpleDateFormat("dd/mm/yyyy hh:mm");
+        article.setDateJour(dateFormat.format(date));
+        article.setMonnaie(s.getMonnaie());
+        article.setDescription(s.getDescription());
+        article.setPrice(s.getPrice());
+
+        articleService.save(article, article.getCommande().getCommandeId());
 
         return "redirect:/article/get/"+ s.getArticleId();
     }

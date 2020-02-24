@@ -21,12 +21,9 @@ public class UserService {
         return userRepository.findAll(Sort.by(Sort.Direction.DESC,"userId"));
     }
 
-    public Page<User> findAll(Pageable pageable) {
-        return userRepository.findAll(pageable);
-    }
 
-    public Page<User> findAllByContratActuel(String contratActuel, Pageable pageable) {
-        return userRepository.findAllByContratActuel(contratActuel, pageable);
+    public List<User> findAllByContratActuel(String contratActuel) {
+        return userRepository.findAllByContratActuel(contratActuel);
     }
 
     public User getOne(Long userId) {

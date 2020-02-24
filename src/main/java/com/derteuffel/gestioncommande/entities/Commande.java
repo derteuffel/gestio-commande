@@ -6,13 +6,14 @@ import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
 @Data
 @Entity
 @Table(name = "commande")
-public class Commande  {
+public class Commande  implements Serializable {
 
     @Id
     @GeneratedValue
@@ -26,7 +27,10 @@ public class Commande  {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date realeseDate;
 
-    private Double amount=0.0;
+    private int tauxJour;
+
+    private Double amountUSD=0.0;
+    private Double amountCDF=0.0;
 
     private Boolean status;
 

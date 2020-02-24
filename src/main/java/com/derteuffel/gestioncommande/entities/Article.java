@@ -19,18 +19,21 @@ public class Article  {
     private Double price;
 
     private int quantity;
+    private String monnaie;
+    private Double totalUSD;
+    private Double totalCDF;
+
 
     private String type;
+    private String category;
 
     private String Description;
 
-    private Double totalPrice = 0.0;
+    private String dateJour;
 
     @ManyToOne
     private Commande commande;
 
-    @ManyToOne
-    private Category category;
     
     
     

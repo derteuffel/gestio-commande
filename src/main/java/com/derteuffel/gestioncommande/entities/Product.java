@@ -21,8 +21,8 @@ public class Product  {
     private int quantity;
      private Date addedDate = new Date();
 
-     @ManyToOne
-     private Category category;
+
+     private String category;
 
      @OneToMany(mappedBy = "product")
      private List<AddedProduct> addedProducts;

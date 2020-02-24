@@ -10,5 +10,6 @@ import java.util.List;
 public interface ArticleRepository  extends JpaRepository<Article,Long> {
 
     List<Article> findAllByCommande_CommandeId(Long commandeId);
-    List<Article> findAllByCategory_CategoryId(Long categoryId);
+    List<Article> findAllByType(String type);
+    List<Article> findAllByCategory(String category);
 }

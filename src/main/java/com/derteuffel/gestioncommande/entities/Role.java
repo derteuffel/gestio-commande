@@ -12,13 +12,8 @@ public class Role {
 
     @Id
     @GeneratedValue
-    private Long roleId;
+    private Long id;
 
     private String name;
-
-
-    @ManyToMany(mappedBy = "roles")
-    private List<User> users;
-    
     
 }

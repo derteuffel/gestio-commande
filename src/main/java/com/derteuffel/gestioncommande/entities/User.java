@@ -18,9 +18,6 @@ public class User{
     private Long userId;
     private String name;
 
-
-    private String login;
-
     private String email;
 
     @Temporal(TemporalType.DATE)
@@ -28,8 +25,6 @@ public class User{
     private Date bornDate;
 
     private String sexe;
-
-    private String password;
 
     private String avatar;
     @Temporal(TemporalType.DATE)
@@ -45,6 +40,9 @@ public class User{
 
     @OneToMany(mappedBy = "user")
     private List<Contract> contracts;
+
+    @OneToOne(mappedBy = "user")
+    private Compte compte;
 
 
     @ManyToMany

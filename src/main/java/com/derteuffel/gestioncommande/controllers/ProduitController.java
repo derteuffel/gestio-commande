@@ -42,7 +42,7 @@ public class ProduitController {
         pageModel.setSIZE(5);
         pageModel.initPageAndSize();
         model.addAttribute("added_product",new AddedProduct());
-        model.addAttribute("lists",productService.findAll(PageRequest.of(pageModel.getPAGE(), pageModel.getSIZE())));
+        model.addAttribute("lists",productService.findAll());
         model.addAttribute("produit", new Product());
         model.addAttribute("categories",categoryService.findAll());
 
@@ -51,26 +51,20 @@ public class ProduitController {
 
 
     @PostMapping("/save")
-    public String save(Product product, String categoryId){
-        Category category=categoryService.getOne(Long.parseLong(categoryId));
-        product.setCategory(category);
+    public String save(Product product){
 
         productService.save(product);
         return "redirect:/produit/produits";
     }
 
     @PostMapping("/update")
-    public String update(Long productId, String name, int quantity,String categoryId){
+    public String update(Long productId, String name, int quantity){
         Product product = productService.getOne(productId);
         if (!name.isEmpty())
         product.setName(name);
         if (quantity != 0)
         product.setQuantity(quantity);
 
-        if (!categoryId.isEmpty()) {
-            Category category = categoryService.getOne(Long.parseLong(categoryId));
-            product.setCategory(category);
-        }
 
         return "redirect:/produit/produits";
     }

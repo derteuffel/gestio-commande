@@ -31,10 +31,7 @@ public class CommandeService {
         return commandeRepository.getOne(commandeId);
     }
 
-    public <S extends Commande> S save(S s, Long userId) {
-
-        User user = userRepository.getOne(userId);
-        s.setUser(user);
+    public <S extends Commande> S save(S s) {
         return commandeRepository.save(s);
     }
 
