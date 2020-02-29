@@ -7,6 +7,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ImprimanteService {
 
@@ -19,8 +21,8 @@ public class ImprimanteService {
         return imprimanteRepository.getOne(materielId);
     }
 
-    public Page<Imprimante> findAll(Pageable pageable) {
-        return imprimanteRepository.findAll(pageable);
+    public List<Imprimante> findAll() {
+        return imprimanteRepository.findAll();
     }
 
     public <S extends Imprimante> S save(S s) {

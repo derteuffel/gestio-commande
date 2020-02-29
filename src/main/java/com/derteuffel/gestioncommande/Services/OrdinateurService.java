@@ -7,6 +7,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class OrdinateurService {
 
@@ -14,8 +16,8 @@ public class OrdinateurService {
     private OrdinateurRepository ordinateurRepository;
 
 
-    public Page<Ordinateur> findAll(Pageable pageable) {
-        return ordinateurRepository.findAll(pageable);
+    public List<Ordinateur> findAll() {
+        return ordinateurRepository.findAll();
     }
 
     public <S extends Ordinateur> S save(S s) {

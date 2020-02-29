@@ -5,6 +5,7 @@ import com.derteuffel.gestioncommande.Services.UserService;
 import com.derteuffel.gestioncommande.entities.Contract;
 import com.derteuffel.gestioncommande.entities.User;
 import com.derteuffel.gestioncommande.helpers.PageModel;
+import com.derteuffel.gestioncommande.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
@@ -21,6 +22,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/user")
@@ -30,7 +32,7 @@ public class UserController {
     private UserService userService;
 
     @Autowired
-    private PageModel pageModel;
+    private UserRepository userRepository;
 
     @Autowired
     private ContractService contractService;
@@ -57,7 +59,7 @@ public class UserController {
     }
 
     @PostMapping("/save")
-    public String save(User user, @RequestParam("file") MultipartFile file , RedirectAttributes redirectAttributes) throws IOException {
+    public String save(User user, @RequestParam("file") MultipartFile file, @RequestParam("file1") MultipartFile file1 , RedirectAttributes redirectAttributes) throws IOException {
         /*if (!(file.isEmpty())){
             System.out.println("Here is"+System.getProperty(fileStorage)+file.getOriginalFilename());
             file.transferTo(new File(fileStorage + file.getOriginalFilename()));
@@ -72,9 +74,26 @@ public class UserController {
             }catch (IOException e){
                 e.printStackTrace();
             }
+            user.setAvatar("/downloadFile/"+file.getOriginalFilename());
+        }else {
+            user.setAvatar("/images/default.jpeg");
         }
 
-        user.setCv("/downloadFile/"+file.getOriginalFilename());
+        if (!(file1.isEmpty())){
+            try{
+                // Get the file and save it somewhere
+                byte[] bytes = file1.getBytes();
+                Path path = Paths.get(fileStorage + file1.getOriginalFilename());
+                Files.write(path, bytes);
+            }catch (IOException e){
+                e.printStackTrace();
+            }
+            user.setCv("/downloadFile/"+file1.getOriginalFilename());
+        }else {
+            user.setCv("Aucun Curriculum Vitae n'a ete charger");
+        }
+
+
         user.setContratActuel(user.getPosteActuel().toString().toLowerCase());
         System.out.println("This is storage place"+fileStorage + file.getOriginalFilename());
 
@@ -91,6 +110,71 @@ public class UserController {
 
         contractService.save(contract);
         return "redirect:/user/users";
+    }
+
+    @PostMapping("/update")
+    public String update(User user, @RequestParam("file") MultipartFile file, @RequestParam("file1") MultipartFile file1 , RedirectAttributes redirectAttributes) throws IOException {
+        /*if (!(file.isEmpty())){
+            System.out.println("Here is"+System.getProperty(fileStorage)+file.getOriginalFilename());
+            file.transferTo(new File(fileStorage + file.getOriginalFilename()));
+        }*/
+
+        if (!(file.isEmpty())){
+            try{
+                // Get the file and save it somewhere
+                byte[] bytes = file.getBytes();
+                Path path = Paths.get(fileStorage + file.getOriginalFilename());
+                Files.write(path, bytes);
+            }catch (IOException e){
+                e.printStackTrace();
+            }
+            user.setAvatar("/downloadFile/"+file.getOriginalFilename());
+        }else {
+            user.setAvatar(user.getAvatar());
+        }
+        if (!(file1.isEmpty())){
+            try{
+                // Get the file and save it somewhere
+                byte[] bytes = file1.getBytes();
+                Path path = Paths.get(fileStorage + file1.getOriginalFilename());
+                Files.write(path, bytes);
+            }catch (IOException e){
+                e.printStackTrace();
+            }
+            user.setCv("/downloadFile/"+file1.getOriginalFilename());
+        }else {
+            user.setCv(user.getCv());
+        }
+
+
+        user.setContratActuel(user.getPosteActuel().toString().toLowerCase());
+        System.out.println("This is storage place"+fileStorage + file.getOriginalFilename());
+
+        System.out.println("This is poste actuel :"+user.getPosteActuel());
+        System.out.println(user.getPostes());
+        user.getPostes().add(user.getPosteActuel());
+        userService.save(user);
+
+        Contract contract = new Contract();
+        contract.setDebutContrat(user.getDateEngagement());
+        contract.setType(user.getContratActuel());
+        contract.setUser(user);
+        redirectAttributes.addFlashAttribute("message","Vous avez initialiser un nouveau contrat pour ce nouvel agent- "+user.getName()+" Bien vouloir completer les informations liees a son contrat ");
+
+        contractService.save(contract);
+        return "redirect:/user/detail/"+user.getUserId();
+    }
+
+    @GetMapping("/update/{userId}")
+    public String updateForm(@PathVariable Long userId, Model model, RedirectAttributes redirectAttributes){
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isPresent()){
+            model.addAttribute("user",optionalUser.get());
+            return "user/update";
+        }else {
+            redirectAttributes.addFlashAttribute("message", "There are no user with id:"+userId);
+            return "redirect:/";
+        }
     }
 
     @GetMapping("/detail/{userId}")

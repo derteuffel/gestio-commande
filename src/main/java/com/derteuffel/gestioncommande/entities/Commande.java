@@ -33,6 +33,7 @@ public class Commande  implements Serializable {
     private Double amountCDF=0.0;
 
     private Boolean status;
+    private String states;
 
     private String code;
 
@@ -44,9 +45,12 @@ public class Commande  implements Serializable {
     @OneToMany(mappedBy = "commande")
     private List<Article> articles;
 
+   /* @OneToMany(mappedBy = "commande")
+    private List<Approbation> approbations;*/
+
 
     @ManyToOne
-    private User user;
+    private Compte compte;
     
     
 

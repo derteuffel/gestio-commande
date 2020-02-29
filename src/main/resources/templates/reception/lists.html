@@ -32,7 +32,7 @@
 
 
 
-    <title>Accueil</title>
+    <title>Reception</title>
     <style>
         .nav-item{
             color: #ffffff;
@@ -54,11 +54,12 @@
                 <div class="page-inner py-5">
                     <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
                         <div>
-                            <h2 class="text-white pb-2 fw-bold">Tableau de bord</h2>
-                            <h5 class="text-white op-7 mb-2">Liste de tous les articles</h5>
+                            <h2 class="text-white pb-2 fw-bold">Tableau de bord de la reception</h2>
+                            <h5 class="text-white op-7 mb-2">Liste des visiteurs | Chez SOLUTION AFRICA SARL</h5>
                         </div>
                         <div class="ml-md-auto py-2 py-md-0">
-                            <a th:href="@{/}" class="btn btn-white btn-border btn-round mr-2">Acceuil</a>
+                            <a th:href="@{/}" class="btn btn-white btn-border btn-round mr-2">Accueil</a>
+                            <a href="#" class="btn btn-secondary btn-round">Rapports</a>
                         </div>
                     </div>
                 </div>
@@ -68,76 +69,131 @@
                     <div class="card">
                         <div class="card-header">
                             <div class="d-flex align-items-center">
-                                <h4 class="card-title">Tableau</h4>
+                                <h4 class="card-title" th:if="${success}">
+                                    <span class="text-success" th:text="${success}"></span>
+                                </h4>
+                                <h4 class="card-title" th:if="${error}">
+                                    <span class="text-danger" th:text="${error}"></span>
+                                </h4>
+                                <button class="btn btn-primary btn-round ml-auto" data-toggle="modal" data-target="#addRowModal">
+                                    <i class="fa fa-plus"></i>
+                                    Visiteur
+                                </button>
                             </div>
                         </div>
                         <div class="card-body">
+                            <!-- Modal -->
+                            <div class="modal fade" id="addRowModal" tabindex="-1" role="dialog" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header no-bd">
+                                            <h5 class="modal-title">
+														<span class="fw-mediumbold">
+														Formulaire d'un nouveau</span>
+                                                <span class="fw-light">
+															Visiteur
+														</span>
+                                            </h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <form th:action="@{/receptions/save}" method="post" th:object="${visiteur}" >
+                                            <div class="modal-body">
+                                                <p class="small">Bien vouloir renseigner les champs ci-dessous pour ajouter un visiteur</p>
+                                                <div class="row">
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group form-group-default">
+                                                            <label for="name">Nom Complet :</label>
+                                                            <input type="text" class="form-control" th:field="*{name}" id="name" placeholder="Entrer le nom complet de la personne...">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group form-group-default">
+                                                            <label for="email">Adresse E-mail :</label>
+                                                            <input type="email" class="form-control" id="email" th:field="*{email}" placeholder="Entrer l adresse email">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group form-group-default">
+                                                            <label for="bornDate">Fonction :</label>
+                                                            <input type="text" class="form-control" id="bornDate" th:field="*{fonction}" >
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group form-group-default">
+                                                            <label for="adressePhysique">Adresse physique :</label>
+                                                            <input type="text" class="form-control" id="adressePhysique" th:field="*{adressePhysique}" >
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group form-group-default">
+                                                            <label for="posteActuel">Telephone :</label>
+                                                            <input type="text" class="form-control" th:field="*{telephone}" id="posteActuel" placeholder="Entrer un numero de telephone...">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group form-group-default">
+                                                            <label for="profession">Motif :</label>
+                                                            <input type="text" class="form-control" th:field="*{motif}" id="profession" placeholder="Entrer la raison de visite...">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer no-bd">
+                                                <button type="button" class="btn btn-danger" data-dismiss="modal">Fermer</button>
+                                                <button type="submit"  class="btn btn-primary">Enregistrer</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
 
                             <div class="table-responsive">
                                 <table id="add-row" class="display table table-striped table-hover" >
                                     <thead>
                                     <tr>
-                                    <th>NOM</th>
-                                    <th>TYPE</th>
-                                    <th>CATEGORIE</th>
-                                    <th>QTE</th>
-                                    <th>PRIX_U</th>
-                                    <th>PRIX_T</th>
-                                    <th style="width: 10%">ACTION</th>
+                                        <th>NOM</th>
+                                        <th>E-MAIL</th>
+                                        <th>FONCTION</th>
+                                        <th>ADRSSE_PSQUE</th>
+                                        <th>MOTIF</th>
+                                        <th>TELEPHONE</th>
+                                        <th style="width: 10%">ACTION</th>
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <tr th:each="order : ${lists}">
-                                        <td th:text="${order.name}"></td>
-                                        <td th:text="${order.type}"></td>
-                                        <td th:text="${order.category}"></td>
-                                        <td th:text="${order.quantity}"></td>
-                                        <td th:text="${order.price}"></td>
-                                        <td ><span th:text="${order.totalCDF}+' CDF'"></span><br>(<span th:text="${order.totalUSD}+' $'"></span>)</td>
+                                    <tr th:each="visitor : ${lists}">
+                                        <td th:text="${visitor.name}"></td>
+                                        <td th:text="${visitor.email}"></td>
+                                        <td th:text="${visitor.fonction}"></td>
+                                        <td th:text="${visitor.adressePhysique}"></td>
+                                        <td th:text="${visitor.motif}"></td>
+                                        <td th:text="${visitor.telephone}"></td>
+
+
                                         <td>
-                                            <div class="form-button-action">
-                                                <a data-toggle="modal" data-target="#detailModal" class="btn text-success" th:attr="data-target='#detailModal'+${order.articleId}"><i class="fa fa-angle-double-right"></i></a>
-                                            </div>
+                                            <a  class="btn" th:href="@{/receptions/get/}+${visitor.id}"><i class="fa fa-angle-double-right"></i></a>
+                                            <a th:each=" role : ${session.compte.roles}"  th:if="${role.name} !='ROLE_USER'" class="btn" data-toggle="modal" data-target="#deleteModal" th:attr="data-target='#deleteModal'+${visitor.id}"><i class="fa fa-trash"></i></a>
                                         </td>
-                                        <div class="modal fade " th:id="detailModal+${order.articleId}" tabindex="-1" role="dialog" aria-hidden="true">
-                                            <div class="modal-dialog" role="document">
+
+                                        <!-- Modal Delete User-->
+                                        <div class="modal fade" th:id="deleteModal+${visitor.id}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" >
+                                            <div class="modal-dialog" >
                                                 <div class="modal-content">
-                                                    <div class="modal-header no-bd">
-                                                        <h5 class="modal-title">
-														<span class="fw-mediumbold">
-														Plus de detail d'un</span>
-                                                            <span class="fw-light">
-															Article
-														</span>
-                                                        </h5>
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="deleteModalLabel">Page de suppression</h5>
                                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                             <span aria-hidden="true">&times;</span>
                                                         </button>
                                                     </div>
                                                     <div class="modal-body">
-                                                        <h4>
-                                                            <strong>
-                                                                Devise :
-                                                            </strong>
-                                                            <span th:text="${order.monnaie}"> </span>
-                                                        </h4>
-                                                        <hr>
-                                                        <h4>
-                                                            <strong>
-                                                                Description :
-                                                            </strong>
-                                                            <span th:text="${order.description}"> </span>
-                                                        </h4>
-                                                        <hr>
-                                                        <h4>
-                                                            <strong>
-                                                                Date enregistrement :
-                                                            </strong>
-                                                            <span th:text="${order.dateJour}"> </span>
-                                                        </h4>
+                                                        Etes vous sure de vouloir supprimer ce visiteur ?
                                                     </div>
-                                                    <div class="modal-footer no-bd">
-                                                        <button type="button" class="btn btn-warning" data-dismiss="modal">Fermer</button>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                                                        <a th:href="@{/receptions/delete/}+${visitor.id}" class="btn btn-primary">Supprimer...</a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -224,6 +280,7 @@
         </div>
     </div>
     <!-- End Custom template -->
+
 </div>
 
 

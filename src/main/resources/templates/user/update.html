@@ -32,7 +32,7 @@
 
 
 
-    <title>Utilisateur</title>
+    <title>Update user</title>
     <style>
         .nav-item{
             color: #ffffff;
@@ -44,7 +44,7 @@
     </style>
 </head>
 <body>
-<div class="wrapper" th:each="role : ${session.compte.roles}">
+<div class="wrapper">
     <div th:replace="~{../templates/fragments/navbar :: navbar}"></div>
     <div th:replace="~{../templates/fragments/sidebar :: sidebar}"></div>
 
@@ -55,7 +55,7 @@
                     <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
                         <div>
                             <h2 class="text-white pb-2 fw-bold"><span th:text="${user.name}"></span></h2>
-                            <h5 class="text-white op-7 mb-2">Contenu detaille</h5>
+                            <h5 class="text-white op-7 mb-2">Mise a jour </h5>
                         </div>
                         <div class="ml-md-auto py-2 py-md-0">
                             <img th:src="${user.avatar}" class="rounded-circle" height="60" width="60" alt="profile">&nbsp;&nbsp;
@@ -92,15 +92,20 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header">
-                            <h4 class="card-title">Description de l'utilisateur</h4>
+                            <h4 class="card-title">Modification de l'utilisateur</h4>
                         </div>
+                        <form th:action="@{/user/update}" method="post" th:object="${user}" enctype="multipart/form-data">
                         <div class="card-body">
                             <div class="row my--2">
                                 <div class="col-md-5">
                                     <strong>Image de profile :</strong>
                                 </div>
                                 <div class="col-md-7">
-                                    <a th:href="${user.avatar}" th:text="${user.avatar}"></a>
+                                    <div class="form-group">
+                                        <input type="file" name="file" id="file" class="form-control-file">
+                                        <input type="hidden" th:field="*{userId}" class="form-control-file">
+                                        <input type="text" th:field="*{avatar}" style="display: none" class="form-control-file">
+                                    </div>
                                 </div>
                             </div>
                             <hr>
@@ -108,8 +113,10 @@
                                 <div class="col-md-5">
                                     <strong>Nom :</strong>
                                 </div>
-                                <div class="col-md-7 ">
-                                    <span th:text="${user.name}"></span>
+                                <div class="col-md-7">
+                                    <div class="form-group" >
+                                        <input type="text" th:field="*{name}" class="form-control">
+                                    </div>
                                 </div>
                             </div>
                             <hr>
@@ -118,7 +125,9 @@
                                     <strong>E-mail :</strong>
                                 </div>
                                 <div class="col-md-7">
-                                    <span th:text="${user.email}"></span>
+                                    <div class="form-group" >
+                                        <input type="email" th:field="*{email}" class="form-control">
+                                    </div>
                                 </div>
                             </div>
                             <hr>
@@ -127,7 +136,9 @@
                                     <strong>Date de naissance :</strong>
                                 </div>
                                 <div class="col-md-7">
-                                    <span th:text="${user.bornDate}"></span>
+                                    <div class="form-group" >
+                                        <input type="date" th:field="*{bornDate}" class="form-control">
+                                    </div>
                                 </div>
                             </div>
                             <hr>
@@ -136,7 +147,12 @@
                                     <strong>Sexe :</strong>
                                 </div>
                                 <div class="col-md-7">
-                                    <span th:text="${user.sexe}"></span>
+                                    <div class="form-group">
+                                        <select type="text" th:field="*{sexe}" class="form-control">
+                                            <option value="MASCULIN">MASCULIN</option>
+                                            <option value="FEMININ">FEMININ</option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                             <hr>
@@ -145,7 +161,9 @@
                                     <strong>Date d'engagement :</strong>
                                 </div>
                                 <div class="col-md-7">
-                                    <span  th:text="${user.dateEngagement}"></span>
+                                    <div class="form-group">
+                                        <input type="date" th:field="*{dateEngagement}" class="form-control">
+                                    </div>
                                 </div>
                             </div>
                             <hr>
@@ -154,27 +172,10 @@
                                     <strong>Curriculum Vitae :</strong>
                                 </div>
                                 <div class="col-md-7">
-                                    <a th:href="${user.cv}" th:text="${user.cv}"></a>
-                                    <!--a data-toggle="modal" data-target="#showCv" th:attr="data-target='#showCv'"  th:text="${user.cv}"></a-->
-                                    <!-- Modal create Article -->
-                                    <!--div class="modal fade" th:id="showCv" tabindex="-1" role="dialog" aria-labelledby="cvModalLabel" >
-                                        <div class="modal-dialog" >
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="cvModalLabel">Detail du curriculum vitae</h5>
-                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                        <span aria-hidden="true">&times;</span>
-                                                    </button>
-                                                </div>
-                                                <div class="modal-body" >
-                                                    <img th:src="${user.cv}" alt="User cv">
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div-->
+                                    <div class="form-group" >
+                                        <input type="file" name="file1" id="file1" class="form-control-file">
+                                        <input type="text" th:field="*{cv}" style="display: none" class="form-control-file">
+                                    </div>
                                 </div>
                             </div>
                             <hr>
@@ -183,18 +184,19 @@
                                     <strong>Postes Actuel :</strong>
                                 </div>
                                 <div class="col-md-7">
-                                    <span th:text="${user.posteActuel}"></span>
-                                </div>
+                                    <input type="text" th:field="*{posteActuel}" class="form-control">                                </div>
                             </div>
                             <hr>
                             <div class="row my--2">
                                 <div class="col-md-5">
-                                    <strong>Postes occupes :</strong>
+                                    <strong>Contrat actuel :</strong>
                                 </div>
                                 <div class="col-md-7">
-                                    <p th:each="poste : ${user.postes}">
-                                        <span th:text="${poste}"></span>
-                                    </p>
+                                    <div class="form-group">
+                                        <select type="text" th:field="*{contratActuel}" class="form-control">
+                                            <option th:each="contrat : ${T(com.derteuffel.gestioncommande.entities.EContrat).values()}" th:value="${contrat}" th:text="${contrat}">MASCULIN</option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                             <hr>
@@ -203,21 +205,25 @@
                                     <strong>Profession :</strong>
                                 </div>
                                 <div class="col-md-7">
-                                    <span th:text="${user.profession}"></span>
+                                    <div class="form-group" >
+                                        <input type="text" th:field="*{profession}" class="form-control">
+                                    </div>
                                 </div>
 
                             </div>
                             <hr>
-                            <div class="row my--2" th:if="${role.name} == 'ROLE_ROOT' or ${role.name} == 'ROLE_DRH'">
+                            <div class="row my--2">
                                 <div class="col-md-5">
                                     <strong>Action :</strong>
                                 </div>
                                 <div class="col-md-7">
-                                    <a th:href="@{/user/update/}+${user.userId}" class="btn btn-outline-primary rounded" >Modifier <i class="fa fa-user-edit"></i></a>
+                                    <a class="btn btn-warning" th:href="@{/user/detail/}+${user.userId}">Retour</a>
+                                    <button type="submit" class="btn btn-success" >Enregistrer</button>
                                 </div>
 
                             </div>
                         </div>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -436,7 +442,7 @@
         fillColor: 'rgba(255, 165, 52, .14)'
     });
 </script>
-<script >
+<!--script >
     $(document).ready(function() {
         // Add Row
         $('#add-row').DataTable({
@@ -457,7 +463,7 @@
         });
     });
 </script>
-<!--script>
+<script>
     $(document).ready(function () {
 
         $("#submit").prop("disabled", true);

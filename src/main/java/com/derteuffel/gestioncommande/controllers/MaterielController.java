@@ -40,7 +40,7 @@ public class MaterielController {
         pageModel.initPageAndSize();
         model.addAttribute("ordinateur", new Ordinateur());
         model.addAttribute("title", "Ordinateurs");
-        model.addAttribute("lists",ordinateurService.findAll(PageRequest.of(pageModel.getPAGE(),pageModel.getSIZE())));
+        model.addAttribute("lists",ordinateurService.findAll());
         return "materiel/all";
     }
 
@@ -65,11 +65,9 @@ public class MaterielController {
 
     @GetMapping("/imprimantes")
     public String findAllImprimantes(Model model) {
-        pageModel.setSIZE(5);
-        pageModel.initPageAndSize();
         model.addAttribute("imprimante", new Imprimante());
         model.addAttribute("title", "Imprimantes");
-        model.addAttribute("lists",imprimanteService.findAll(PageRequest.of(pageModel.getPAGE(),pageModel.getSIZE())));
+        model.addAttribute("lists",imprimanteService.findAll());
         return "materiel/all";
     }
 
@@ -92,11 +90,9 @@ public class MaterielController {
 
     @GetMapping("/autres")
     public String findAllOther(Model model) {
-        pageModel.setSIZE(5);
-        pageModel.initPageAndSize();
         model.addAttribute("autre", new AutreMateriel());
         model.addAttribute("title", "Autres Materiels");
-        model.addAttribute("lists",autreMaterielService.findAll(PageRequest.of(pageModel.getPAGE(),pageModel.getSIZE())));
+        model.addAttribute("lists",autreMaterielService.findAll());
         return "materiel/all";
     }
 

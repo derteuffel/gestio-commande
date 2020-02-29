@@ -44,7 +44,7 @@
     </style>
 </head>
 <body>
-<div class="wrapper">
+<div class="wrapper" th:each="role : ${session.compte.roles}">
     <div th:replace="~{../templates/fragments/navbar :: navbar}"></div>
     <div th:replace="~{../templates/fragments/sidebar :: sidebar}"></div>
 
@@ -70,7 +70,7 @@
                         <div class="card-header">
                             <div class="d-flex align-items-center">
                                 <h4 class="card-title">Nouvel element</h4>
-                                <button class="btn btn-primary btn-round ml-auto" data-toggle="modal" data-target="#addRowModal">
+                                <button th:if="${role.name} == 'ROLE_ROOT' or ${role.name} == 'ROLE_DT' or ${role.name} == 'ROLE_INFO' or ${role.name} == 'ROLE_CAISSE'" class="btn btn-primary btn-round ml-auto" data-toggle="modal" data-target="#addRowModal">
                                     <i class="fa fa-plus"></i>
                                     Produit
                                 </button>
@@ -84,9 +84,9 @@
                                         <div class="modal-header no-bd">
                                             <h5 class="modal-title">
 														<span class="fw-mediumbold">
-														Formulaire d'une nouvelle</span>
+														Formulaire d'un nouveau</span>
                                                 <span class="fw-light">
-															Commande
+															Produit dans le stock
 														</span>
                                             </h5>
                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -149,8 +149,8 @@
                                         <td th:text="${#strings.substring(product.addedDate,0,10)}"></td>
                                         <td th:text="${product.category}"></td>
                                         <td>
-                                            <a data-toggle="modal" data-target="#updateModal"  class="btn" th:attr="data-target='#updateModal'+${product.productId}"><i class="fa fa-edit"></i></a>
-                                            <a class="btn" data-toggle="modal" data-target="#deleteModal" th:attr="data-target='#deleteModal'+${product.productId}"><i class="fa fa-trash"></i></a>
+                                            <a th:if="${role.name} == 'ROLE_ROOT' or ${role.name} == 'ROLE_INFO' or ${role.name} == 'ROLE_DT' or ${role.name} == 'ROLE_CAISSE'" data-toggle="modal" data-target="#updateModal"  class="btn text-primary" th:attr="data-target='#updateModal'+${product.productId}"><i class="fa fa-edit"></i></a>
+                                            <a th:if="${role.name} == 'ROLE_ROOT' or ${role.name} == 'ROLE_DT' or ${role.name} == 'ROLE_GERANT'" class="btn text-danger" data-toggle="modal" data-target="#deleteModal" th:attr="data-target='#deleteModal'+${product.productId}"><i class="fa fa-trash"></i></a>
                                         </td>
 
                                         <!-- Modal Delete Order-->

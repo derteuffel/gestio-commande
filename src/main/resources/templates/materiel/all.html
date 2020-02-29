@@ -44,7 +44,7 @@
     </style>
 </head>
 <body>
-<div class="wrapper">
+<div class="wrapper" th:each="role : ${session.compte.roles}">
     <div th:replace="~{../templates/fragments/navbar :: navbar}"></div>
     <div th:replace="~{../templates/fragments/sidebar :: sidebar}"></div>
 
@@ -73,7 +73,7 @@
                                     <span th:text="${message}" class="text-success"></span>
                                     <span th:text="${deleteMessage}" class="text-success"></span>
                                 </h4>
-                                <button class="btn btn-primary btn-round ml-auto" data-toggle="modal" data-target="#addRowModal">
+                                <button th:if="${role.name} == 'ROLE_ROOT' or ${role.name} == 'ROLE_DT' or ${role.name} == 'ROLE_INFO' or ${role.name} == 'ROLE_CAISSE'" class="btn btn-primary btn-round ml-auto" data-toggle="modal" data-target="#addRowModal">
                                     <i class="fa fa-plus"></i>
                                     Materiel
                                 </button>
@@ -246,18 +246,26 @@
                                         <td th:text="${materiel.nom}"></td>
                                         <td th:text="${materiel.marque}"></td>
                                         <td th:text="${materiel.description}"></td>
-                                         <td>
-                                            <div class="form-button-action">
-                                                <a class="btn" data-toggle="modal" data-target="#detailModal" th:attr="data-target='#detailModal'+${materiel.materielId}">Plus...</a>
-                                                <a class="btn" data-toggle="modal" data-target="#deleteModal" th:attr="data-target='#deleteModal'+${materiel.materielId}"><i class="fa fa-trash"></i></a>
+                                         <td th:switch="${title}">
+                                            <div th:case="'Ordinateurs'" class="form-button-action">
+                                                <a th:if="${role.name} == 'ROLE_ROOT' or ${role.name} == 'ROLE_INFO' or ${role.name} == 'ROLE_DT' or ${role.name} == 'ROLE_CAISSE'" class="btn text-success" data-toggle="modal" data-target="#detailOrdinateurModal" th:attr="data-target='#detailOrdinateurModal'+${materiel.materielId}"><i class="fa fa-angle-double-right"></i></a>
+                                                <a th:if="${role.name} == 'ROLE_ROOT' or ${role.name} == 'ROLE_DT' or ${role.name} == 'ROLE_GERANT'" class="btn text-danger" data-toggle="modal" data-target="#deleteModal" th:attr="data-target='#deleteOrdinateurModal'+${materiel.materielId}"><i class="fa fa-trash"></i></a>
                                             </div>
+                                             <div th:case="'Imprimantes'" class="form-button-action">
+                                                 <a th:if="${role.name} == 'ROLE_ROOT' or ${role.name} == 'ROLE_INFO' or ${role.name} == 'ROLE_DT' or ${role.name} == 'ROLE_CAISSE'" class="btn text-success" data-toggle="modal" data-target="#detailImprimanteModal" th:attr="data-target='#detailImprimanteModal'+${materiel.materielId}"><i class="fa fa-angle-double-right"></i></a>
+                                                 <a th:if="${role.name} == 'ROLE_ROOT' or ${role.name} == 'ROLE_DT' or ${role.name} == 'ROLE_GERANT'" class="btn text-danger" data-toggle="modal" data-target="#deleteModal" th:attr="data-target='#deleteImprimanteModal'+${materiel.materielId}"><i class="fa fa-trash"></i></a>
+                                             </div>
+                                             <div th:case="'Autres'" class="form-button-action">
+                                                 <a th:if="${role.name} == 'ROLE_ROOT' or ${role.name} == 'ROLE_INFO' or ${role.name} == 'ROLE_DT' or ${role.name} == 'ROLE_CAISSE'" class="btn text-success" data-toggle="modal" data-target="#detailAutreModal" th:attr="data-target='#detailAutreModal'+${materiel.materielId}"><i class="fa fa-angle-double-right"></i></a>
+                                                 <a th:if="${role.name} == 'ROLE_ROOT' or ${role.name} == 'ROLE_DT' or ${role.name} == 'ROLE_GERANT'" class="btn text-danger" data-toggle="modal" data-target="#deleteModal" th:attr="data-target='#deleteAutreModal'+${materiel.materielId}"><i class="fa fa-trash"></i></a>
+                                             </div>
 
                                         </td>
                                         <div th:switch="${title}">
                                             <!-- ordinateurs case -->
                                             <div th:case="'Ordinateurs'">
 
-                                                <div  class="modal fade" th:id="detailModal+${materiel.materielId}" tabindex="-1" role="dialog" aria-labelledby="ordimodallabel" >
+                                                <div  class="modal fade" th:id="detailOrdinateurModal+${materiel.materielId}" tabindex="-1" role="dialog" aria-labelledby="ordimodallabel" >
                                                     <div class="modal-dialog" >
                                                         <div class="modal-content">
                                                             <div class="modal-header">
@@ -283,7 +291,7 @@
                                                 </div>
 
                                                 <!-- Modal Delete Contract -->
-                                                <div class="modal fade" th:id="deleteModal+${materiel.materielId}" tabindex="-1" role="dialog" aria-labelledby="deleteOrdiModalLabel" >
+                                                <div class="modal fade" th:id="deleteOrdinateurModal+${materiel.materielId}" tabindex="-1" role="dialog" aria-labelledby="deleteOrdiModalLabel" >
                                                     <div class="modal-dialog" >
                                                         <div class="modal-content">
                                                             <div class="modal-header">
@@ -308,7 +316,7 @@
 
                                             <!-- imprimantes case -->
                                             <div th:case="'Imprimantes'">
-                                                <div  class="modal fade" th:id="detailModal+${materiel.materielId}" tabindex="-1" role="dialog" aria-labelledby="imprimodallabel" >
+                                                <div  class="modal fade" th:id="detailImprimanteModal+${materiel.materielId}" tabindex="-1" role="dialog" aria-labelledby="imprimodallabel" >
                                                     <div class="modal-dialog" >
                                                         <div class="modal-content">
                                                             <div class="modal-header">
@@ -332,7 +340,7 @@
                                                     </div>
                                                 </div>
                                                 <!-- Modal Delete Imprimante -->
-                                                <div class="modal fade" th:id="deleteModal+${materiel.materielId}" tabindex="-1" role="dialog" aria-labelledby="deleteImpriModalLabel" >
+                                                <div class="modal fade" th:id="deleteImprimanteModal+${materiel.materielId}" tabindex="-1" role="dialog" aria-labelledby="deleteImpriModalLabel" >
                                                     <div class="modal-dialog" >
                                                         <div class="modal-content">
                                                             <div class="modal-header">
@@ -355,7 +363,7 @@
 
                                             <div th:case="'Autres Materiels'">
                                                 <!-- autres materiels case -->
-                                                <div  class="modal fade" th:id="detailModal+${materiel.materielId}" tabindex="-1" role="dialog" aria-labelledby="autremodallabel" >
+                                                <div  class="modal fade" th:id="detailAutreModal+${materiel.materielId}" tabindex="-1" role="dialog" aria-labelledby="autremodallabel" >
                                                     <div class="modal-dialog" >
                                                         <div class="modal-content">
                                                             <div class="modal-header">
@@ -377,7 +385,7 @@
                                                     </div>
                                                 </div>
                                                 <!-- Modal Delete Contract -->
-                                                <div class="modal fade" th:id="deleteModal+${materiel.materielId}" tabindex="-1" role="dialog" aria-labelledby="deleteAutreModalLabel" >
+                                                <div class="modal fade" th:id="deleteAutreModal+${materiel.materielId}" tabindex="-1" role="dialog" aria-labelledby="deleteAutreModalLabel" >
                                                     <div class="modal-dialog" >
                                                         <div class="modal-content">
                                                             <div class="modal-header">
@@ -526,7 +534,7 @@
 <script th:src="@{/js/atlantis.min.js}"></script>
 
 <!-- Atlantis DEMO methods, don't include it in your project! -->
-<script th:src="@{js/setting-demo.js}"></script>
+<script th:src="@{/js/setting-demo.js}"></script>
 <script th:src="@{/js/demo.js}"></script>
 <script>
     Circles.create({

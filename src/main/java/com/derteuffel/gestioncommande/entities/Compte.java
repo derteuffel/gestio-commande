@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.List;
 
 @Data
 @Entity
@@ -29,5 +30,13 @@ public class Compte {
 
     @OneToOne
     private User user;
+
+    /*@OneToMany(mappedBy = "compte")
+    private List<Commande> commandes;*/
+
+    @OneToMany(mappedBy = "compte")
+    private List<Visiteur> visiteurs;
+
+
 
 }

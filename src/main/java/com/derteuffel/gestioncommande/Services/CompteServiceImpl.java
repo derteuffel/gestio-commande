@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.stream.Collectors;
@@ -45,10 +46,14 @@ public class CompteServiceImpl implements CompteService{
         user.setName(compteRegistrationDto.getLogin());
         user.setEmail(compteRegistrationDto.getEmail());
         user.setAvatar(s);
+        user.setContratActuel("GUEST");
+        user.setPosteActuel("GUEST");
+        user.setPostes(new ArrayList<>(Arrays.asList(user.getPosteActuel())));
         compte.setLogin(compteRegistrationDto.getLogin());
         compte.setPassword(passwordEncoder.encode(compteRegistrationDto.getPassword()));
         compte.setEmail(compteRegistrationDto.getEmail());
         compte.setAvatar(s);
+        userService.save(user);
         Role role = new Role();
         if (compteRepository.findAll().size()<=2){
             role.setName("ROLE_ROOT");
@@ -63,9 +68,8 @@ public class CompteServiceImpl implements CompteService{
             roleRepository.save(role);
             compte.setRoles(Arrays.asList(role));
         }
+        compte.setUser(user);
         compteRepository.save(compte);
-        user.setCompte(compte);
-        userService.save(user);
         return compte;
     }
 

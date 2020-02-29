@@ -8,6 +8,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class AutreMaterielService {
 
@@ -18,8 +20,8 @@ public class AutreMaterielService {
         return autreMaterielRepository.getOne(materielId);
     }
 
-    public Page<AutreMateriel> findAll(Pageable pageable) {
-        return autreMaterielRepository.findAll(pageable);
+    public List<AutreMateriel> findAll() {
+        return autreMaterielRepository.findAll();
     }
 
     public <S extends AutreMateriel> S save(S s) {

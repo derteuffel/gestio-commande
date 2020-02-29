@@ -41,16 +41,6 @@ public class User{
     @OneToMany(mappedBy = "user")
     private List<Contract> contracts;
 
-    @OneToOne(mappedBy = "user")
-    private Compte compte;
-
-
-    @ManyToMany
-    @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private List<Role> roles;
-
-    @OneToMany(mappedBy = "user")
-    private  List<Commande> commandes;
 
     public void addPost(String  poste){
         this.postes.add(poste);

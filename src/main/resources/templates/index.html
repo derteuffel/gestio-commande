@@ -166,8 +166,8 @@
                                         <td th:text="${order.code}"></td>
                                         <td>
                                             (<span th:text="${#lists.size(order.articles)}"></span> )
-                                            <a data-toggle="modal" data-target="#createArticleModal" class="btn" th:attr="data-target='#createArticleModal'+${order.commandeId}"><i class="fa fa-plus"></i></a>
-                                            <a data-toggle="modal" data-target="#listsArticleModal" class="btn" th:attr="data-target='#listsArticleModal'+${order.commandeId}"><i class="fa fa-eye"></i></a>
+                                            <a data-toggle="modal" data-target="#createArticleModal" class="btn text-success" th:attr="data-target='#createArticleModal'+${order.commandeId}"><i class="fa fa-plus"></i></a>
+                                            <a data-toggle="modal" data-target="#listsArticleModal" class="btn text-info" th:attr="data-target='#listsArticleModal'+${order.commandeId}"><i class="fa fa-eye"></i></a>
                                         </td>
                                         <td th:if="${order.status} == true">Livree</td>
                                         <td th:unless="${order.status} == true">Encours</td>
@@ -175,8 +175,8 @@
                                         <td th:unless="${order.amountUSD} != 0.0"><span th:text="${order.amountCDF}+' CDF'"></span><br>(<span th:text="${order.amountUSD}+' $'"></span>)</td>
                                         <td>
                                             <div class="form-button-action">
-                                                <a data-toggle="modal" data-target="#updateModal"  class="btn" th:attr="data-target='#updateModal'+${order.commandeId}"><i class="fa fa-edit"></i></a>
-                                                <a class="btn" data-toggle="modal" data-target="#deleteModal" th:attr="data-target='#deleteModal'+${order.commandeId}"><i class="fa fa-trash"></i></a>
+                                                <a data-toggle="modal" data-target="#updateModal"  class="btn text-primary" th:attr="data-target='#updateModal'+${order.commandeId}"><i class="fa fa-edit"></i></a>
+                                                <a class="btn text-danger" data-toggle="modal" data-target="#deleteModal" th:attr="data-target='#deleteModal'+${order.commandeId}"><i class="fa fa-trash"></i></a>
                                             </div>
 
                                         </td>

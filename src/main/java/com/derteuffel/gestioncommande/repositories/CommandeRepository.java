@@ -12,5 +12,7 @@ import java.util.List;
 @Repository
 public interface CommandeRepository extends JpaRepository<Commande,Long> {
 
+    List<Commande> findAllByCompte_Id(Long id);
+
 
 }

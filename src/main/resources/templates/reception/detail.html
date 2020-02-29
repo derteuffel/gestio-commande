@@ -32,7 +32,7 @@
 
 
 
-    <title>Accueil</title>
+    <title>Visiteur</title>
     <style>
         .nav-item{
             color: #ffffff;
@@ -54,11 +54,12 @@
                 <div class="page-inner py-5">
                     <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
                         <div>
-                            <h2 class="text-white pb-2 fw-bold">Tableau de bord</h2>
-                            <h5 class="text-white op-7 mb-2">Liste de tous les articles</h5>
+                            <h2 class="text-white pb-2 fw-bold"><span th:text="${visitor.name}"></span></h2>
+                            <h5 class="text-white op-7 mb-2">Contenu detaille</h5>
                         </div>
                         <div class="ml-md-auto py-2 py-md-0">
-                            <a th:href="@{/}" class="btn btn-white btn-border btn-round mr-2">Acceuil</a>
+                            <a th:href="@{/receptions/lists}" class="btn btn-white btn-border btn-round mr-2">Visiteurs</a>
+                            <a th:href="@{/receptions/form/}+${visitor.id}"  class="btn btn-secondary btn-round">Editer</a>
                         </div>
                     </div>
                 </div>
@@ -67,84 +68,82 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header">
-                            <div class="d-flex align-items-center">
-                                <h4 class="card-title">Tableau</h4>
-                            </div>
+                            <h4 class="card-title">Description du visiteur</h4>
                         </div>
                         <div class="card-body">
+                            <div class="row my--2">
+                                <div class="col-md-5">
+                                    <strong>Nom :</strong>
+                                </div>
+                                <div class="col-md-7">
+                                    <span th:text="${visitor.name}"></span>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row my--2">
+                                <div class="col-md-5">
+                                    <strong>Fonction :</strong>
+                                </div>
+                                <div class="col-md-7">
+                                    <span th:text="${visitor.fonction}"></span>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row my--2">
+                                <div class="col-md-5">
+                                    <strong>E-mail :</strong>
+                                </div>
+                                <div class="col-md-7">
+                                    <span th:text="${visitor.email}"></span>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row my--2">
+                                <div class="col-md-5">
+                                    <strong>Motif :</strong>
+                                </div>
+                                <div class="col-md-7">
+                                    <span th:text="${visitor.motif}"></span>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row my--2">
+                                <div class="col-md-5">
+                                    <strong>Adresse physique :</strong>
+                                </div>
+                                <div class="col-md-7">
+                                    <span th:text="${visitor.adressePhysique}"></span>
+                                </div>
+                            </div>
 
-                            <div class="table-responsive">
-                                <table id="add-row" class="display table table-striped table-hover" >
-                                    <thead>
-                                    <tr>
-                                    <th>NOM</th>
-                                    <th>TYPE</th>
-                                    <th>CATEGORIE</th>
-                                    <th>QTE</th>
-                                    <th>PRIX_U</th>
-                                    <th>PRIX_T</th>
-                                    <th style="width: 10%">ACTION</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr th:each="order : ${lists}">
-                                        <td th:text="${order.name}"></td>
-                                        <td th:text="${order.type}"></td>
-                                        <td th:text="${order.category}"></td>
-                                        <td th:text="${order.quantity}"></td>
-                                        <td th:text="${order.price}"></td>
-                                        <td ><span th:text="${order.totalCDF}+' CDF'"></span><br>(<span th:text="${order.totalUSD}+' $'"></span>)</td>
-                                        <td>
-                                            <div class="form-button-action">
-                                                <a data-toggle="modal" data-target="#detailModal" class="btn text-success" th:attr="data-target='#detailModal'+${order.articleId}"><i class="fa fa-angle-double-right"></i></a>
-                                            </div>
-                                        </td>
-                                        <div class="modal fade " th:id="detailModal+${order.articleId}" tabindex="-1" role="dialog" aria-hidden="true">
-                                            <div class="modal-dialog" role="document">
-                                                <div class="modal-content">
-                                                    <div class="modal-header no-bd">
-                                                        <h5 class="modal-title">
-														<span class="fw-mediumbold">
-														Plus de detail d'un</span>
-                                                            <span class="fw-light">
-															Article
-														</span>
-                                                        </h5>
-                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                            <span aria-hidden="true">&times;</span>
-                                                        </button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <h4>
-                                                            <strong>
-                                                                Devise :
-                                                            </strong>
-                                                            <span th:text="${order.monnaie}"> </span>
-                                                        </h4>
-                                                        <hr>
-                                                        <h4>
-                                                            <strong>
-                                                                Description :
-                                                            </strong>
-                                                            <span th:text="${order.description}"> </span>
-                                                        </h4>
-                                                        <hr>
-                                                        <h4>
-                                                            <strong>
-                                                                Date enregistrement :
-                                                            </strong>
-                                                            <span th:text="${order.dateJour}"> </span>
-                                                        </h4>
-                                                    </div>
-                                                    <div class="modal-footer no-bd">
-                                                        <button type="button" class="btn btn-warning" data-dismiss="modal">Fermer</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </tr>
-                                    </tbody>
-                                </table>
+                            <hr>
+                            <div class="row my--2">
+                                <div class="col-md-5">
+                                    <strong>Telephone :</strong>
+                                </div>
+                                <div class="col-md-7">
+                                    <span th:text="${visitor.telephone}"></span>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row my--2">
+                                <div class="col-md-5">
+                                    <strong>Nombres de visites :</strong>
+                                </div>
+                                <div class="col-md-7">
+                                    <span th:text="${#lists.size(visitor.dates)}"></span>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row my--2">
+                                <div class="col-md-5">
+                                    <strong>Dates de visite :</strong>
+                                </div>
+                                <div class="col-md-7">
+                                    <p th:each="date : ${visitor.dates}">
+                                        <span th:text="${date}"></span>
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </div>
