@@ -1,11 +1,13 @@
 package com.derteuffel.gestioncommande.controllers;
 
+import com.derteuffel.gestioncommande.Services.ArticleService;
 import com.derteuffel.gestioncommande.Services.ClientService;
 import com.derteuffel.gestioncommande.Services.CommandeService;
 import com.derteuffel.gestioncommande.Services.CompteService;
 import com.derteuffel.gestioncommande.entities.*;
 import com.derteuffel.gestioncommande.repositories.ApprobationRepository;
 import com.derteuffel.gestioncommande.repositories.CompteRepository;
+import com.derteuffel.gestioncommande.repositories.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,6 +22,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.Year;
 import java.util.Date;
+import java.util.List;
 
 @Controller
 @RequestMapping("/commande")
@@ -33,7 +36,13 @@ public class CommandeController {
     private ClientService clientService;
 
     @Autowired
+    private ArticleService articleService;
+
+    @Autowired
     private CompteRepository compteRepository;
+
+    @Autowired
+    private RoleRepository roleRepository;
 
     @Autowired
     private ApprobationRepository approbationRepository;
@@ -72,10 +81,14 @@ public class CommandeController {
         commande.setCode("N°"+commandeService.findAll().size()+1+"/"+format.format(date));
         commande.setStates(ECommande.EN_ATTENTE.toString());
         commande.setCompte(compte);
+        commande.setNbreArticle(0);
+        commande.setGerantState("INSTANCE");
+        commande.setCaisseState("INSTANCE");
+        commande.setTechniqueState("INSTANCE");
         commandeService.save(commande);
         approbation.setCommande(commande);
         approbationRepository.save(approbation);
-        return "redirect:/";
+        return "redirect:/commande/details/"+commande.getCommandeId();
 
     }
 
@@ -105,4 +118,51 @@ public class CommandeController {
         commandeService.deleteById(commandeId);
         return "redirect:/";
     }
+
+    //----------- Details Item for commande ------------------//
+
+    @GetMapping("/details/{commandeId}")
+    public String details(@PathVariable Long commandeId,HttpServletRequest request, Model model){
+        Principal principal = request.getUserPrincipal();
+        Compte compte = compteRepository.findByLogin(principal.getName());
+        Commande commande = commandeService.getOne(commandeId);
+        List<Article> articles = articleService.findAllByCommande_CommandeId(commande.getCommandeId());
+        List<Approbation> approbations = approbationRepository.findAllByCommande_CommandeId(commande.getCommandeId());
+        model.addAttribute("lists",articles);
+        model.addAttribute("compte",compte);
+        model.addAttribute("approbations", approbations);
+        model.addAttribute("approbation",new Approbation());
+        model.addAttribute("commande",commande);
+        return "commande/detail";
+    }
+
+
+    @PostMapping("/approbation/{id}")
+    public String setState(@PathVariable Long id, HttpServletRequest request, String valeur, Approbation approbation){
+        Principal principal = request.getUserPrincipal();
+        Compte compte = compteRepository.findByLogin(principal.getName());
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm");
+        Commande commande = commandeService.getOne(id);
+        Role gerant = roleRepository.findByName(ERole.ROLE_GERANT.toString());
+        Role caisse = roleRepository.findByName(ERole.ROLE_CAISSE.toString());
+        if (compte.getRoles().contains(gerant)){
+            commande.setGerantState(valeur);
+        }else if (compte.getRoles().contains(caisse)){
+            commande.setCaisseState(valeur);
+        }else {
+            commande.setTechniqueState(valeur);
+        }
+
+        commandeService.save(commande);
+        approbation.setCommande(commande);
+        approbation.setDate(sdf.format(new Date()));
+        approbation.setCompte(compte.getLogin()+", Email : "+ compte.getEmail());
+        approbationRepository.save(approbation);
+        return "redirect:/commande/details/"+commande.getCommandeId();
+
+
+
+    }
+
+
 }

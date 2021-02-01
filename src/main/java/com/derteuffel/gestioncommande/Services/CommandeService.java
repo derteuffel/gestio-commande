@@ -50,4 +50,5 @@ public class CommandeService {
     public Page<Commande> findAll(Pageable pageable) {
         return commandeRepository.findAll(pageable);
     }
+
 }

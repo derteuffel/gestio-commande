@@ -6,16 +6,19 @@ import javax.persistence.Entity;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
-@Data
 @Entity
 @Table(name = "autre_materiel")
+@Data
 @PrimaryKeyJoinColumn(name = "materielId")
 public class AutreMateriel extends Materiel {
 
     private String utilite;
-    
-    
 
-	
-    
+    public String getUtilite() {
+        return utilite;
+    }
+
+    public void setUtilite(String utilite) {
+        this.utilite = utilite;
+    }
 }

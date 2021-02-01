@@ -1,13 +1,13 @@
 package com.derteuffel.gestioncommande.repositories;
 
-import com.derteuffel.gestioncommande.entities.Approbation;
+import com.derteuffel.gestioncommande.entities.Mouvement;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
-public interface ApprobationRepository extends JpaRepository<Approbation, Long> {
+public interface MouvementRepository extends JpaRepository<Mouvement, Long> {
 
-    List<Approbation> findAllByCommande_CommandeId(Long id);
+    List<Mouvement> findAllByCaisse_Id(Long id);
 }

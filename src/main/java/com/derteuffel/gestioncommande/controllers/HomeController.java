@@ -63,7 +63,7 @@ public class HomeController {
         Role role2 = roleRepository.findByName("ROLE_USER");
         if (compte.getRoles().size() ==1 && (compte.getRoles().contains(role)
                 || compte.getRoles().contains(role1))){
-            commandes.addAll(commandeRepository.findAllByCompte_Id(compte.getId()));
+            return "redirect:/user/users";
         }
         if (compte.getRoles().size() == 1 && compte.getRoles().contains(role2)){
 

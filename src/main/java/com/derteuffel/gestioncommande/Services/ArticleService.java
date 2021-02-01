@@ -55,7 +55,7 @@ public class ArticleService {
 
         Commande commande = commandeRepository.getOne(commandId);
         s.setCommande(commande);
-        commande.setQuantity(commande.getArticles().size()+1);
+        commande.setQuantity(articleRepository.findAllByCommande_CommandeId(commandId).size()+1);
         if (s.getMonnaie().equals(EAMonaie.CDF.toString())){
             s.setTotalCDF(s.getPrice() * s.getQuantity());
             s.setTotalUSD(s.getTotalCDF() / commande.getTauxJour());
@@ -66,6 +66,7 @@ public class ArticleService {
 
         commande.setAmountCDF(commande.getAmountCDF() + s.getTotalCDF());
         commande.setAmountUSD(commande.getAmountUSD() + s.getTotalUSD());
+        commande.setNbreArticle(commande.getNbreArticle()+1);
         commandeRepository.save(commande);
 
         return articleRepository.save(s);

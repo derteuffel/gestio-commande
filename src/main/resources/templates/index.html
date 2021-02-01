@@ -57,10 +57,10 @@
                             <h2 class="text-white pb-2 fw-bold">Tableau de bord</h2>
                             <h5 class="text-white op-7 mb-2">Liste des commandes</h5>
                         </div>
-                        <div class="ml-md-auto py-2 py-md-0">
+                        <!--div class="ml-md-auto py-2 py-md-0">
                             <a href="#" class="btn btn-white btn-border btn-round mr-2">Tous les articles</a>
                             <a href="#" class="btn btn-secondary btn-round">Rapports</a>
-                        </div>
+                        </div-->
                     </div>
                 </div>
             </div>
@@ -160,21 +160,22 @@
                                     <tr th:each="order : ${lists}">
                                         <td th:text="${order.title}"></td>
                                         <td th:text="${order.client.name}"></td>
-                                        <td th:text="${#strings.substring(order.createdDate,0,10)}">
-
+                                        <td >
+                                            <span th:if="${#strings.length(order.createdDate)}>10" th:text="${#strings.substring(order.createdDate,0,10)}"></span>
+                                            <span th:unless="${#strings.length(order.createdDate)}>10" th:text="${order.createdDate}"></span>
                                         </td>
                                         <td th:text="${order.code}"></td>
                                         <td>
-                                            (<span th:text="${#lists.size(order.articles)}"></span> )
+                                            (<span th:text="${order.nbreArticle}"></span> )
                                             <a data-toggle="modal" data-target="#createArticleModal" class="btn text-success" th:attr="data-target='#createArticleModal'+${order.commandeId}"><i class="fa fa-plus"></i></a>
-                                            <a data-toggle="modal" data-target="#listsArticleModal" class="btn text-info" th:attr="data-target='#listsArticleModal'+${order.commandeId}"><i class="fa fa-eye"></i></a>
                                         </td>
                                         <td th:if="${order.status} == true">Livree</td>
                                         <td th:unless="${order.status} == true">Encours</td>
-                                        <td th:if="${order.amountUSD} != 0.0"><span th:text="${order.amountCDF}+' CDF'"></span><br>(<span th:text="${#strings.substring(order.amountUSD,0,5)}+' $'"></span>)</td>
+                                        <td th:if="${order.amountUSD} != 0.0"><span th:text="${order.amountCDF}+' CDF'"></span><br>(<span th:if="${#strings.length(order.amountUSD)}>5" th:text="${#strings.substring(order.amountUSD,0,5)}+' $'"></span><span th:unless="${#strings.length(order.amountUSD)}>5" th:text="${order.amountUSD}+' $'"></span>)</td>
                                         <td th:unless="${order.amountUSD} != 0.0"><span th:text="${order.amountCDF}+' CDF'"></span><br>(<span th:text="${order.amountUSD}+' $'"></span>)</td>
                                         <td>
                                             <div class="form-button-action">
+                                                <a th:href="@{/commande/details/}+${order.commandeId}"  class="btn text-success" ><i class="fa fa-eye"></i></a>
                                                 <a data-toggle="modal" data-target="#updateModal"  class="btn text-primary" th:attr="data-target='#updateModal'+${order.commandeId}"><i class="fa fa-edit"></i></a>
                                                 <a class="btn text-danger" data-toggle="modal" data-target="#deleteModal" th:attr="data-target='#deleteModal'+${order.commandeId}"><i class="fa fa-trash"></i></a>
                                             </div>
@@ -206,6 +207,7 @@
                                             </div>
                                         </div>
                                         <!-- Modal Show Lists of Articles -->
+<!--
                                         <div class="modal fade" th:id="listsArticleModal+${order.commandeId}" tabindex="-1" role="dialog" aria-labelledby="listsArticleModalLabel" >
                                             <div class="modal-dialog" >
                                                 <div class="modal-content">
@@ -224,6 +226,7 @@
                                                 </div>
                                             </div>
                                         </div>
+-->
 
                                         <!-- Modal create Article -->
                                         <div class="modal fade" th:id="createArticleModal+${order.commandeId}" tabindex="-1" role="dialog" aria-labelledby="createArticleModalLabel" >

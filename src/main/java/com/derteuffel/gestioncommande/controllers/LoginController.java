@@ -41,7 +41,7 @@ public class LoginController {
     }
 
     @PostMapping("/registration")
-    public String registerUserAccount(@ModelAttribute("user") @Valid CompteRegistrationDto compteDto,
+    public String registerUserAccount(@ModelAttribute("compte") @Valid CompteRegistrationDto compteDto,
                                       BindingResult result, RedirectAttributes redirectAttributes, Model model, @RequestParam("file") MultipartFile file) {
 
         Compte existing = compteService.findByLogin(compteDto.getLogin());
