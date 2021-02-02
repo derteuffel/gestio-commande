@@ -1,12 +1,7 @@
 package com.derteuffel.gestioncommande.Services;
 
-import com.derteuffel.gestioncommande.entities.Article;
-import com.derteuffel.gestioncommande.entities.Category;
-import com.derteuffel.gestioncommande.entities.Commande;
-import com.derteuffel.gestioncommande.entities.EAMonaie;
-import com.derteuffel.gestioncommande.repositories.ArticleRepository;
-import com.derteuffel.gestioncommande.repositories.CategoryRepository;
-import com.derteuffel.gestioncommande.repositories.CommandeRepository;
+import com.derteuffel.gestioncommande.entities.*;
+import com.derteuffel.gestioncommande.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +17,11 @@ public class ArticleService {
 
     @Autowired
     private CommandeRepository commandeRepository;
+    @Autowired
+    private MouvementRepository mouvementRepository;
+
+    @Autowired
+    private CaisseRepository caisseRepository;
 
     @Autowired
     private CategoryRepository categoryRepository;
@@ -53,21 +53,40 @@ public class ArticleService {
 
     public  Article  save(Article s, Long commandId) {
 
+        Caisse caisse = caisseRepository.findByStatus(true);
+        Mouvement mouvement = new Mouvement();
+        mouvement.setType("ENTRER");
+        mouvement.setCaisse(caisse);
+        mouvement.setLibelle(s.getName());
+        mouvement.setNumMouvement(mouvementRepository.findAllByCaisse_Id(caisse.getId()).size()+"/"+caisse.getMois()+"/"+caisse.getAnnee());
         Commande commande = commandeRepository.getOne(commandId);
         s.setCommande(commande);
         commande.setQuantity(articleRepository.findAllByCommande_CommandeId(commandId).size()+1);
         if (s.getMonnaie().equals(EAMonaie.CDF.toString())){
             s.setTotalCDF(s.getPrice() * s.getQuantity());
             s.setTotalUSD(s.getTotalCDF() / commande.getTauxJour());
+            mouvement.setMontantFranc(s.getTotalCDF());
+            mouvement.setMontantDollard(s.getTotalUSD());
         }else {
             s.setTotalUSD(s.getQuantity() * s.getPrice());
             s.setTotalCDF(s.getTotalUSD() * commande.getTauxJour());
+            mouvement.setMontantDollard(s.getTotalUSD());
+            mouvement.setMontantFranc(s.getTotalCDF());
         }
+
+        caisse.setSoldeFinMoisDollard(caisse.getSoldeFinMoisDollard()+mouvement.getMontantDollard());
+        caisse.setSoldeFinMoisFranc(caisse.getSoldeFinMoisFranc()+mouvement.getMontantFranc());
+        caisse.setMouvementMensuelDollard(caisse.getMouvementMensuelDollard()+mouvement.getMontantDollard());
+        caisse.setMouvementMensuelFranc(caisse.getMouvementMensuelFranc()+mouvement.getMontantFranc());
+        mouvement.setSoldeFinFranc(caisse.getSoldeFinMoisFranc());
+        mouvement.setSoldeFinDollard(caisse.getSoldeFinMoisDollard());
 
         commande.setAmountCDF(commande.getAmountCDF() + s.getTotalCDF());
         commande.setAmountUSD(commande.getAmountUSD() + s.getTotalUSD());
         commande.setNbreArticle(commande.getNbreArticle()+1);
         commandeRepository.save(commande);
+        caisseRepository.save(caisse);
+        mouvementRepository.save(mouvement);
 
         return articleRepository.save(s);
     }

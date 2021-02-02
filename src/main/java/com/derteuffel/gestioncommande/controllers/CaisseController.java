@@ -24,6 +24,7 @@ public class CaisseController {
     @Autowired
     private MouvementRepository mouvementRepository;
 
+
     @GetMapping("/lists")
     public String findAll(Model model){
         List<Caisse> caisses = caisseService.findAll();
@@ -91,4 +92,27 @@ public class CaisseController {
         return "redirect:/caisse/details/"+caisse.getId();
 
     }
+
+    @GetMapping("/endMonth/{id}")
+     public String endMonth(@PathVariable Long id){
+        Caisse caisse = caisseService.getOne(id);
+        caisse.setStatus(false);
+        caisseService.update(caisse);
+        Caisse caisse1 = new Caisse();
+        caisse1.setStatus(true);
+        caisse1.setMouvementMensuelFranc(0.0);
+        caisse1.setMouvementMensuelDollard(0.0);
+        caisse1.setSoldeDebutMoisFranc(caisse.getSoldeFinMoisFranc());
+        caisse1.setSoldeDebutMoisDollard(caisse.getSoldeFinMoisDollard());
+        caisse1.setSoldeFinMoisFranc(caisse.getSoldeFinMoisFranc());
+        caisse1.setSoldeFinMoisDollard(caisse.getSoldeFinMoisDollard());
+        caisseService.save(caisse1);
+
+        return "redirect:/caisse/details/"+caisse1.getId();
+     }
+
+
+     public String updateFormMouvement(Long id, Model model){
+        return "";
+     }
 }

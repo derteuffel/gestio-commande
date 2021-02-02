@@ -7,6 +7,7 @@ import com.derteuffel.gestioncommande.Services.CompteService;
 import com.derteuffel.gestioncommande.entities.*;
 import com.derteuffel.gestioncommande.repositories.ApprobationRepository;
 import com.derteuffel.gestioncommande.repositories.CompteRepository;
+import com.derteuffel.gestioncommande.repositories.MouvementRepository;
 import com.derteuffel.gestioncommande.repositories.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -43,6 +44,9 @@ public class CommandeController {
 
     @Autowired
     private RoleRepository roleRepository;
+
+    @Autowired
+    private MouvementRepository mouvementRepository;
 
     @Autowired
     private ApprobationRepository approbationRepository;

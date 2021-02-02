@@ -3,7 +3,11 @@ package com.derteuffel.gestioncommande.controllers;
 import com.derteuffel.gestioncommande.Services.ArticleService;
 import com.derteuffel.gestioncommande.Services.CategoryService;
 import com.derteuffel.gestioncommande.entities.Article;
+import com.derteuffel.gestioncommande.entities.Caisse;
+import com.derteuffel.gestioncommande.entities.Mouvement;
 import com.derteuffel.gestioncommande.helpers.PageModel;
+import com.derteuffel.gestioncommande.repositories.CaisseRepository;
+import com.derteuffel.gestioncommande.repositories.MouvementRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
@@ -79,7 +83,6 @@ public class ArticleController {
         s.setCategory(s.getCategory().toString());
         //s.setPrice(Double.parseDouble(montant));
         articleService.save(s, commandId);
-
          return "redirect:/";
     }
 
