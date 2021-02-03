@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -112,7 +113,76 @@ public class CaisseController {
      }
 
 
-     public String updateFormMouvement(Long id, Model model){
-        return "";
+     @GetMapping("/mouvement/update/{id}")
+     public String updateFormMouvement(@PathVariable Long id, Model model){
+
+        Mouvement mouvement = mouvementRepository.getOne(id);
+        model.addAttribute("mouvement", mouvement);
+
+        return "caisse/mouvementU";
+     }
+
+     @PostMapping("/mouvement/update/{id}")
+     public String updateMouvement(Mouvement mouvement, @PathVariable Long id, String taux, String devise,
+                                   String montant, RedirectAttributes redirectAttributes){
+        Mouvement existedMouvement = mouvementRepository.getOne(id);
+
+        Caisse caisse = mouvement.getCaisse();
+
+         existedMouvement.setType(mouvement.getType());
+         existedMouvement.setLibelle(mouvement.getLibelle());
+        if (!devise.isEmpty() && devise.equals("CDF")){
+            if (!taux.isEmpty() && !montant.isEmpty()) {
+
+            if (mouvement.getType().equals("ENTRER")){
+
+                    caisse.setMouvementMensuelDollard(caisse.getMouvementMensuelDollard() - existedMouvement.getMontantDollard() + (Double.parseDouble(montant) / Integer.parseInt(taux)));
+                    caisse.setMouvementMensuelFranc(caisse.getMouvementMensuelFranc() - existedMouvement.getMontantFranc() + Double.parseDouble(montant));
+                    caisse.setSoldeFinMoisFranc(caisse.getSoldeFinMoisFranc() - existedMouvement.getMontantFranc() + Double.parseDouble(montant));
+                    caisse.setSoldeFinMoisDollard(caisse.getSoldeFinMoisDollard() - existedMouvement.getMontantDollard() + (Double.parseDouble(montant) / Integer.parseInt(taux)));
+
+            }else {
+                    caisse.setMouvementMensuelDollard(caisse.getMouvementMensuelDollard() + existedMouvement.getMontantDollard() - (Double.parseDouble(montant) / Integer.parseInt(taux)));
+                    caisse.setMouvementMensuelFranc(caisse.getMouvementMensuelFranc() + existedMouvement.getMontantFranc() - Double.parseDouble(montant));
+                    caisse.setSoldeFinMoisFranc(caisse.getSoldeFinMoisFranc() + existedMouvement.getMontantFranc() - Double.parseDouble(montant));
+                    caisse.setSoldeFinMoisDollard(caisse.getSoldeFinMoisDollard() + existedMouvement.getMontantDollard() - (Double.parseDouble(montant) / Integer.parseInt(taux)));
+
+            }
+
+            existedMouvement.setMontantFranc(Double.parseDouble(montant));
+            existedMouvement.setMontantDollard(Double.parseDouble(montant)/Integer.parseInt(taux));
+            existedMouvement.setSoldeFinDollard(caisse.getSoldeFinMoisDollard());
+            existedMouvement.setSoldeFinFranc(caisse.getSoldeFinMoisFranc());
+            }else {
+                System.out.println("same value");
+            }
+        }else if (!devise.isEmpty() && devise.equals("USD")){
+            if (!taux.isEmpty() && !montant.isEmpty()) {
+                if (mouvement.getType().equals("ENTRER")) {
+                    caisse.setMouvementMensuelDollard(caisse.getMouvementMensuelDollard() - existedMouvement.getMontantDollard() + (Double.parseDouble(montant)));
+                    caisse.setMouvementMensuelFranc(caisse.getMouvementMensuelFranc() - existedMouvement.getMontantFranc() + (Double.parseDouble(montant) * Integer.parseInt(taux)));
+                    caisse.setSoldeFinMoisFranc(caisse.getSoldeFinMoisFranc() - existedMouvement.getMontantFranc() + (Double.parseDouble(montant)) * Integer.parseInt(taux));
+                    caisse.setSoldeFinMoisDollard(caisse.getSoldeFinMoisDollard() - existedMouvement.getMontantDollard() + (Double.parseDouble(montant)));
+                } else {
+                    caisse.setMouvementMensuelDollard(caisse.getMouvementMensuelDollard() + existedMouvement.getMontantDollard() - Double.parseDouble(montant));
+                    caisse.setMouvementMensuelFranc(caisse.getMouvementMensuelFranc() + existedMouvement.getMontantFranc() - (Double.parseDouble(montant) * Integer.parseInt(taux)));
+                    caisse.setSoldeFinMoisFranc(caisse.getSoldeFinMoisFranc() + existedMouvement.getMontantFranc() - (Double.parseDouble(montant) * Integer.parseInt(taux)));
+                    caisse.setSoldeFinMoisDollard(caisse.getSoldeFinMoisDollard() + existedMouvement.getMontantDollard() - Double.parseDouble(montant));
+                }
+
+                existedMouvement.setMontantFranc(Double.parseDouble(montant) * Integer.parseInt(taux));
+                existedMouvement.setMontantDollard(Double.parseDouble(montant));
+                existedMouvement.setSoldeFinDollard(caisse.getSoldeFinMoisDollard());
+                existedMouvement.setSoldeFinFranc(caisse.getSoldeFinMoisFranc());
+            }else {
+                System.out.println("same value");
+            }
+        }else {
+           redirectAttributes.addFlashAttribute("message", "Les elements ne sont pas reuniepour faire cette mise a jours");
+           return "redirect:/caisse/mouvement/update/"+existedMouvement.getId();
+        }
+
+        return "redirect:/caisse/details/"+caisse.getId();
+
      }
 }
