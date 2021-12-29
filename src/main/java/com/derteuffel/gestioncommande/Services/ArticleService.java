@@ -84,6 +84,7 @@ public class ArticleService {
         commande.setAmountCDF(commande.getAmountCDF() + s.getTotalCDF());
         commande.setAmountUSD(commande.getAmountUSD() + s.getTotalUSD());
         commande.setNbreArticle(commande.getNbreArticle()+1);
+        commande.setQuantity(commande.getQuantity()+ s.getQuantity());
         commandeRepository.save(commande);
         caisseRepository.save(caisse);
         mouvementRepository.save(mouvement);

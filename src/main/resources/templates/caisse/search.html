@@ -32,7 +32,7 @@
 
 
 
-    <title>Visiteur</title>
+    <title>Caisse</title>
     <style>
         .nav-item{
             color: #ffffff;
@@ -44,7 +44,7 @@
     </style>
 </head>
 <body>
-<div class="wrapper"  th:each=" role : ${compte.roles}">
+<div class="wrapper" th:each=" role : ${session.compte.roles}">
     <div th:replace="~{../templates/fragments/navbar :: navbar}"></div>
     <div th:replace="~{../templates/fragments/sidebar :: sidebar}"></div>
 
@@ -54,33 +54,12 @@
                 <div class="page-inner py-5">
                     <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
                         <div>
-                            <h2 class="text-white pb-2 fw-bold"><span th:text="${commande.client.name}"></span></h2>
+                            <h2 class="text-white pb-2 fw-bold"><span th:text="${'Resultats de la date du :'+ date}"></span></h2>
                             <h5 class="text-white op-7 mb-2">Contenu detaille</h5>
                         </div>
                         <div class="ml-md-auto py-2 py-md-0">
-                            <a th:href="@{/}" class="btn btn-white btn-border btn-round mr-2"><i class="fa fa-long-arrow-alt-left"></i>&nbsp;Liste des commandes</a>
-                            <button type="button" data-toggle="modal" data-target="#listsModal"  class="btn btn-secondary btn-round"><i class="fa fa-list"></i>&nbsp;Liste des articles</button>
-                            <!-- Modal create Article -->
-                            <div class="modal fade" id="listsModal" tabindex="-1" role="dialog" aria-labelledby="listsArticleModalLabel" >
-                                <div class="modal-dialog" >
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="listsArticleModalLabel">Listes des articles</h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <ul th:each="item : ${lists}">
-                                                <li>
-                                                    <span th:text="${item.quantity+'  '+item.name}"></span></br>
-                                                    <span th:text="${item.description}"></span>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            <a th:href="@{/caisse/details/}+${caisse.id}" class="btn btn-white btn-border btn-round mr-2"><i class="fa fa-long-arrow-alt-left"></i>&nbsp;Retour</a>
+                            <!-- Modal create detail -->
                         </div>
                     </div>
                 </div>
@@ -89,204 +68,58 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header">
-                            <h4 class="card-title">Description d'une commande</h4>
-                            <span th:if="${message}" th:text="${message}" class="alert alert-danger"></span>
+                            <h4 class="card-title">Etat de caisse</h4>
                         </div>
                         <div class="card-body">
                             <div class="row my--2">
                                 <div class="col-md-5">
-                                    <strong>Titre  :</strong>
+                                    <strong>Etat solde mouvement du jour  : <span th:text="${date}"></span></strong>
                                 </div>
                                 <div class="col-md-7">
-                                    <span th:text="${commande.title}"></span>
-                                </div>
-                            </div>
-                            <hr>
-                            <div class="row my--2">
-                                <div class="col-md-5">
-                                    <strong>Date d'initialisation de la commande :</strong>
-                                </div>
-                                <div class="col-md-7">
-                                    <span th:text="${commande.createdDate}"></span>
-                                </div>
-                            </div>
-                            <hr>
-                            <div class="row my--2">
-                                <div class="col-md-5">
-                                    <strong>Delais de realisation :</strong>
-                                </div>
-                                <div class="col-md-7">
-                                    <span th:text="${commande.realeseDate}"></span>
-                                </div>
-                            </div>
-                            <hr>
-                            <div class="row my--2">
-                                <div class="col-md-5">
-                                    <strong>Taux  :</strong>
-                                </div>
-                                <div class="col-md-7">
-                                    <span th:text="${commande.tauxJour}"></span>
-                                </div>
-                            </div>
-                            <hr>
-                            <div class="row my--2">
-                                <div class="col-md-5">
-                                    <strong>Montant en CDF :</strong>
-                                </div>
-                                <div class="col-md-7">
-                                    <span th:text="${commande.amountCDF}"></span>
+                                    <span th:text="${soldeFranc+' CDF/ '+soldeDollars+' USD'}"></span>
                                 </div>
                             </div>
 
                             <hr>
                             <div class="row my--2">
-                                <div class="col-md-5">
-                                    <strong>Montant en $ USD :</strong>
-                                </div>
-                                <div class="col-md-7">
-                                    <span th:text="${commande.amountUSD}"></span>
-                                </div>
-                            </div>
-                            <hr>
-                            <div class="row my--2">
-                                <div class="col-md-5">
-                                    <strong>Nombres d'articles :</strong>
-                                </div>
-                                <div class="col-md-7">
-                                    <span th:text="${commande.nbreArticle}"></span>
-                                </div>
-                            </div>
-                            <hr>
-                            <div class="row my--2">
-                                <div class="col-md-5">
-                                    <strong>Code de la commande :</strong>
-                                </div>
-                                <div class="col-md-7">
-                                    <p >
-                                        <span th:text="${commande.code}"></span>
-                                    </p>
+                                <div class="table-responsive">
+                                    <table id="add-row" class="display table table-striped table-hover" >
+                                        <thead>
+                                        <tr>
+                                            <th>NUMERO</th>
+                                            <th>DATE</th>
+                                            <th>MOTIF</th>
+                                            <th>TYPE</th>
+                                            <th>MONTANT</th>
+                                            <th>SOLDE CAISSE</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="item : ${lists}">
+                                            <td th:text="${item.numMouvement}"></td>
+                                            <td th:text="${item.createdDate}"></td>
+                                            <td th:text="${item.libelle}"></td>
+                                            <td th:text="${item.type}"></td>
+                                            <td th:text="${item.montantFranc+' CFD/ '+item.montantDollard+' USD'}"></td>
+                                            <td th:text="${item.soldeFinFranc+' CFD/ '+item.soldeFinDollard+' USD'}"></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
-                            <hr>
-                            <div class="row my--2">
-                                <div class="col-md-5">
-                                    <strong>Quantite d'element de la commande :</strong>
-                                </div>
-                                <div class="col-md-7">
-                                    <span th:text="${commande.quantity}"></span>
-                                </div>
-                            </div>
-                            <hr>
-                            <div class="row my--2">
-                                <div class="col-md-2">
-                                    <strong>Approbations :</strong>
-                                </div>
-                                <div class="col-md-10 row">
-                                    <div class="col-md-4">
-                                        <span>Gerant :</span>
-                                        <span th:if="${commande.gerantState}" class="alert alert-success"  th:text="${'Approuver'}"></span>
-                                        <span th:unless="${commande.gerantState}" class="alert alert-danger"  th:text="${'Non Approuver'}"></span>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <span>Caisse : </span>
-                                        <span th:if="${commande.caisseState}" class="alert alert-success"  th:text="${'Approuver'}"></span>
-                                        <span th:unless="${commande.caisseState}" class="alert alert-danger"  th:text="${'Non Approuver'}"></span>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <span>Technique :</span>
-                                        <span th:if="${commande.techniqueState}" class="alert alert-success"  th:text="${'Approuver'}"></span>
-                                        <span th:unless="${commande.techniqueState}" class="alert alert-danger"  th:text="${'Non Approuver'}"></span>
-                                    </div>
-                                </div>
-                            </div>
-                            <hr>
-                            <div class="row my--2">
-                                <div class="col-md-5">
-                                    <strong>Commentaires :</strong>
-                                </div>
-                                <div class="col-md-7">
-                                    <button type="button" class="btn btn-secondary ml-auto btn-round" data-target="#commentsModal" data-toggle="modal">Voir des commentaires</button>
-                                    <button type="button" th:if="${isApproved} == true" disabled class="btn btn-secondary ml-auto btn-round" data-target="#approbationModal" data-toggle="modal">Approuver</button>
-                                    <button type="button" th:if="${isApproved} == false"  class="btn btn-secondary ml-auto btn-round" data-target="#approbationModal" data-toggle="modal">Approuver</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
-            <div class="modal fade" id="approbationModal" tabindex="-1" role="dialog" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header no-bd">
-                            <h5 class="modal-title">
-														<span class="fw-mediumbold">
-														Formulaire d'approbation d'une</span>
-                                <span class="fw-light">
-															Commande
-														</span>
-                            </h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <form th:action="@{/commande/approbation/}+${commande.commandeId}" method="post" th:object="${approbation}">
-                            <div class="modal-body">
-                                <p class="small">Bien vouloir renseigner les champs ci-dessous pour ajouter une nouvelle commande</p>
-                                <div class="row">
-                                    <div class="col-sm-12">
-                                        <div class="form-group form-group-default">
-                                            <label>Decision :</label>
-                                            <select name="valeur" class="form-control">
-                                                <option value="">-- Choisir une decision --</option>
-                                                <option th:each="item : ${T(com.derteuffel.gestioncommande.entities.EApprobation).values()}" th:value="${item}" th:text="${item}">-- Choisir une decision --</option>
-                                            </select>
-                                        </div>
-                                        <div class="form-group form-group-default">
-                                            <label>Commentaire :</label>
-                                            <textarea th:field="*{comment}"  rows="3" type="text" class="form-control"></textarea>
-                                        </div>
-                                    </div>
 
+                            <hr>
+                            <div class="row my--2">
+                                <div class="col-md-5">
+                                    <strong>Actions :</strong>
                                 </div>
+                                <div class="col-md-7" >
+                                    <a th:href="@{/caisse/endMonth/}+${caisse.id}"  class="btn btn-secondary ml-auto btn-round" ><i class="fa fa-power-off"></i>&nbsp;Produire Fichier Excel</a>
+                                </div>
+
                             </div>
-                            <div class="modal-footer no-bd">
-                                <button type="button" class="btn btn-danger" data-dismiss="modal">Fermer</button>
-                                <button type="submit"  class="btn btn-primary">Soumettre</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-            <div class="modal fade" id="commentsModal" tabindex="-1" role="dialog" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header no-bd">
-                            <h5 class="modal-title">
-														<span class="fw-mediumbold">
-														Commentaire d'une</span>
-                                <span class="fw-light">
-															Commande
-														</span>
-                            </h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
                         </div>
-                        <form >
-                            <div class="modal-body">
-                                <p class="small">Bien vouloir renseigner les champs ci-dessous pour ajouter une nouvelle commande</p>
-                                <div th:each="item : ${approbations}">
-                                    <span th:text="${item.date}"></span><br>
-                                    <span th:text="${item.comment}"></span><br>
-                                    <span th:text="${item.compte}"></span>
-                                    <hr>
-                                </div>
-                            </div>
-                            <div class="modal-footer no-bd">
-                                <button type="button" class="btn btn-danger" data-dismiss="modal">Fermer</button>
-                            </div>
-                        </form>
                     </div>
                 </div>
             </div>

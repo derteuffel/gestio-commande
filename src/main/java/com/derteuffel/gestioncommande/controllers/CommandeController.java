@@ -10,18 +10,21 @@ import com.derteuffel.gestioncommande.repositories.CompteRepository;
 import com.derteuffel.gestioncommande.repositories.MouvementRepository;
 import com.derteuffel.gestioncommande.repositories.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.Year;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -86,9 +89,9 @@ public class CommandeController {
         commande.setStates(ECommande.EN_ATTENTE.toString());
         commande.setCompte(compte);
         commande.setNbreArticle(0);
-        commande.setGerantState("INSTANCE");
-        commande.setCaisseState("INSTANCE");
-        commande.setTechniqueState("INSTANCE");
+        commande.setGerantState(false);
+        commande.setCaisseState(false);
+        commande.setTechniqueState(false);
         commandeService.save(commande);
         approbation.setCommande(commande);
         approbationRepository.save(approbation);
@@ -105,13 +108,16 @@ public class CommandeController {
     //------------ Update form for a Command ------------------//
 
     @PostMapping("/update/{commandeId}")
-    public String update( @PathVariable Long commandeId, String title, int tauxJour){
+    public String update( @PathVariable Long commandeId, String title, int tauxJour,
+                          @DateTimeFormat(pattern = "yyyy-MM-dd") Date realeseDate, RedirectAttributes redirectAttributes){
 
         Commande commande= commandeService.getOne(commandeId);
         commande.setTauxJour(tauxJour);
         commande.setTitle(title);
+        commande.setRealeseDate(realeseDate);
 
         commandeService.update(commande);
+        redirectAttributes.addFlashAttribute("success","Commande modifier avec succes");
         return "redirect:/";
     }
 
@@ -130,8 +136,21 @@ public class CommandeController {
         Principal principal = request.getUserPrincipal();
         Compte compte = compteRepository.findByLogin(principal.getName());
         Commande commande = commandeService.getOne(commandeId);
+        List<Compte> comptes = new ArrayList<>();
         List<Article> articles = articleService.findAllByCommande_CommandeId(commande.getCommandeId());
         List<Approbation> approbations = approbationRepository.findAllByCommande_CommandeId(commande.getCommandeId());
+        for (Approbation approbation: approbations){
+            comptes.add(approbation.getCompte());
+            System.out.println(approbation.getCompte().getEmail());
+        }
+        System.out.println(comptes.size());
+        if (comptes.contains(compte)){
+            System.out.println(true);
+            model.addAttribute("isApproved", true);
+        }else {
+            System.out.println(false);
+            model.addAttribute("isApproved",false);
+        }
         model.addAttribute("lists",articles);
         model.addAttribute("compte",compte);
         model.addAttribute("approbations", approbations);
@@ -142,7 +161,8 @@ public class CommandeController {
 
 
     @PostMapping("/approbation/{id}")
-    public String setState(@PathVariable Long id, HttpServletRequest request, String valeur, Approbation approbation){
+    public String setState(@PathVariable Long id, HttpServletRequest request, Approbation approbation,
+                           RedirectAttributes redirectAttributes, String valeur){
         Principal principal = request.getUserPrincipal();
         Compte compte = compteRepository.findByLogin(principal.getName());
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm");
@@ -150,17 +170,31 @@ public class CommandeController {
         Role gerant = roleRepository.findByName(ERole.ROLE_GERANT.toString());
         Role caisse = roleRepository.findByName(ERole.ROLE_CAISSE.toString());
         if (compte.getRoles().contains(gerant)){
-            commande.setGerantState(valeur);
+            if (valeur.toLowerCase().equals("ACCORDER".toLowerCase())) {
+                commande.setGerantState(true);
+            }else {
+               commande.setGerantState(false);
+            }
         }else if (compte.getRoles().contains(caisse)){
-            commande.setCaisseState(valeur);
+            if (commande.getGerantState() == false){
+                redirectAttributes.addFlashAttribute("message", "Le gerant doit avoir approuve, vueillez confirmer avec votre gerant");
+            }else {
+                if (valeur.toLowerCase().equals("ACCORDER".toLowerCase()))
+                commande.setCaisseState(true);
+            }
         }else {
-            commande.setTechniqueState(valeur);
+            if (commande.getGerantState() == false){
+                redirectAttributes.addFlashAttribute("message", "Le gerant doit avoir approuve, vueillez confirmer avec votre gerant");
+            }else {
+                commande.setTechniqueState(true);
+            }
         }
 
         commandeService.save(commande);
         approbation.setCommande(commande);
+        approbation.setCompte(compte);
         approbation.setDate(sdf.format(new Date()));
-        approbation.setCompte(compte.getLogin()+", Email : "+ compte.getEmail());
+        approbation.setCompte1(compte.getLogin()+", Email : "+ compte.getEmail());
         approbationRepository.save(approbation);
         return "redirect:/commande/details/"+commande.getCommandeId();
 

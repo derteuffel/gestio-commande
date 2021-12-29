@@ -17,10 +17,14 @@ public class Approbation implements Serializable {
     private Long id;
     private String comment;
     private String date;
-    private String compte;
+    private String compte1;
     @ManyToOne
     @JsonIgnoreProperties("approbations")
     private Commande commande;
+
+    @ManyToOne
+    @JsonIgnoreProperties("approbations")
+    private Compte compte;
 
     public Long getId() {
         return id;
@@ -54,11 +58,19 @@ public class Approbation implements Serializable {
         this.commande = commande;
     }
 
-    public String getCompte() {
+    public String getCompte1() {
+        return compte1;
+    }
+
+    public void setCompte1(String compte1) {
+        this.compte1 = compte1;
+    }
+
+    public Compte getCompte() {
         return compte;
     }
 
-    public void setCompte(String compte) {
+    public void setCompte(Compte compte) {
         this.compte = compte;
     }
 }

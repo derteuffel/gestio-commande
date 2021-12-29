@@ -18,8 +18,8 @@ Circles.create({
 //Notify
 $.notify({
 	icon: 'flaticon-alarm-1',
-	title: 'Atlantis Lite',
-	message: 'Free Bootstrap 4 Admin Dashboard',
+	title: 'Solution Africa Sarl',
+	message: 'Faites-Vous Connaitre',
 },{
 	type: 'info',
 	placement: {

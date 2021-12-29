@@ -58,7 +58,7 @@
                             <h5 class="text-white op-7 mb-2">Contenu detaille</h5>
                         </div>
                         <div class="ml-md-auto py-2 py-md-0">
-                            <a th:href="@{/caisse/lists}" class="btn btn-white btn-border btn-round mr-2">Retour a la liste</a>
+                            <a th:href="@{/caisse/lists}" class="btn btn-white btn-border btn-round mr-2"><i class="fa fa-long-arrow-alt-left"></i>&nbsp;Retour</a>
                             <!-- Modal create Article -->
                         </div>
                     </div>
@@ -135,9 +135,13 @@
                                 <div class="col-md-5">
                                     <strong>Actions :</strong>
                                 </div>
-                                <div class="col-md-7">
-                                    <a th:href="@{/caisse/endMonth/}+${caisse.id}" class="btn btn-secondary ml-auto btn-round" >Terminer le mois</a>
-                                    <button type="button" class="btn btn-secondary ml-auto btn-round" data-target="#mouvementModal" data-toggle="modal">Nouveau Mouvement</button>
+                                <div class="col-md-7" th:if="${caisse.status} == true">
+                                    <a th:href="@{/caisse/endMonth/}+${caisse.id}"  class="btn btn-secondary ml-auto btn-round" ><i class="fa fa-power-off"></i>&nbsp;Terminer le mois</a>
+                                    <button type="button" class="btn btn-secondary ml-auto btn-round" data-target="#mouvementModal" data-toggle="modal"> <i class="fa fa-plus"></i>&nbsp;Nouveau Mouvement</button>
+                                    <button type="button" class="btn btn-secondary ml-auto btn-round" data-target="#searchModal" data-toggle="modal"> <i class="fa fa-search"></i>&nbsp;Filtrer par date</button>
+                                </div>
+                                <div class="col-md-7" th:if="${caisse.status} == false">
+                                    <span class="alert alert-info">Aucune action n'est disponible</span>
                                 </div>
                             </div>
                         </div>
@@ -200,6 +204,43 @@
                             <div class="modal-footer no-bd">
                                 <button type="button" class="btn btn-danger" data-dismiss="modal">Fermer</button>
                                 <button type="submit"  class="btn btn-primary">Enregistrer</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="searchModal" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header no-bd">
+                            <h5 class="modal-title">
+														<span class="fw-mediumbold">
+														Filtrer les mouvements en fonction  </span>
+                                <span class="fw-light">
+															d'un date precise
+														</span>
+                            </h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <form th:action="@{/caisse/mouvement/search/}+${caisse.id}" method="post" >
+                            <div class="modal-body">
+                                <p class="small">Choisissez la date du jour ou vous voulez observer les mouvements de caisse</p>
+                                <div class="row">
+                                    <div class="col-sm-12">
+
+                                        <div class="form-group form-group-default">
+                                            <label>Date :</label>
+                                            <input type="date" name="searchDate" class="form-control"/>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="modal-footer no-bd">
+                                <button type="button" class="btn btn-danger" data-dismiss="modal">Fermer</button>
+                                <button type="submit"  class="btn btn-primary">Chercher</button>
                             </div>
                         </form>
                     </div>

@@ -3,8 +3,10 @@ package com.derteuffel.gestioncommande.controllers;
 import com.derteuffel.gestioncommande.Services.CaisseService;
 import com.derteuffel.gestioncommande.entities.Caisse;
 import com.derteuffel.gestioncommande.entities.Mouvement;
+import com.derteuffel.gestioncommande.repositories.CaisseRepository;
 import com.derteuffel.gestioncommande.repositories.MouvementRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +15,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -21,6 +25,9 @@ public class CaisseController {
 
     @Autowired
     private CaisseService caisseService;
+
+    @Autowired
+    private CaisseRepository caisseRepository;
 
     @Autowired
     private MouvementRepository mouvementRepository;
@@ -85,6 +92,8 @@ public class CaisseController {
         }
 
         mouvement.setCaisse(caisse);
+        SimpleDateFormat sdf =new  SimpleDateFormat("yyyy-MM-dd");
+        mouvement.setCreatedDate(sdf.format(new Date()));
         mouvement.setSoldeFinDollard(caisse.getSoldeFinMoisDollard());
         mouvement.setSoldeFinFranc(caisse.getSoldeFinMoisFranc());
         mouvement.setNumMouvement(mouvementRepository.findAllByCaisse_Id(caisse.getId()).size()+"/"+caisse.getMois()+"/"+caisse.getAnnee());
@@ -127,8 +136,7 @@ public class CaisseController {
                                    String montant, RedirectAttributes redirectAttributes){
         Mouvement existedMouvement = mouvementRepository.getOne(id);
 
-        Caisse caisse = mouvement.getCaisse();
-
+        Caisse caisse = existedMouvement.getCaisse();
          existedMouvement.setType(mouvement.getType());
          existedMouvement.setLibelle(mouvement.getLibelle());
         if (!devise.isEmpty() && devise.equals("CDF")){
@@ -159,6 +167,11 @@ public class CaisseController {
         }else if (!devise.isEmpty() && devise.equals("USD")){
             if (!taux.isEmpty() && !montant.isEmpty()) {
                 if (mouvement.getType().equals("ENTRER")) {
+                    System.out.println("Je suis dedans ");
+                    System.out.println(caisse.getMois());
+                    System.out.println(caisse.getMouvementMensuelDollard());
+                    System.out.println(existedMouvement.getMontantDollard());
+                    System.out.println(montant);
                     caisse.setMouvementMensuelDollard(caisse.getMouvementMensuelDollard() - existedMouvement.getMontantDollard() + (Double.parseDouble(montant)));
                     caisse.setMouvementMensuelFranc(caisse.getMouvementMensuelFranc() - existedMouvement.getMontantFranc() + (Double.parseDouble(montant) * Integer.parseInt(taux)));
                     caisse.setSoldeFinMoisFranc(caisse.getSoldeFinMoisFranc() - existedMouvement.getMontantFranc() + (Double.parseDouble(montant)) * Integer.parseInt(taux));
@@ -182,7 +195,41 @@ public class CaisseController {
            return "redirect:/caisse/mouvement/update/"+existedMouvement.getId();
         }
 
+        caisseRepository.save(caisse);
+        mouvementRepository.save(existedMouvement);
         return "redirect:/caisse/details/"+caisse.getId();
 
+     }
+
+     @PostMapping("/mouvement/search/{id}")
+         public String searchByDate(@DateTimeFormat(pattern = "yyyy-MM-dd") Date searchDate, @PathVariable Long id,
+                                Model model){
+
+         System.out.println(searchDate);
+        Caisse caisse = caisseRepository.getOne(id);
+        Double montantTotalDollars = 0.0;
+        String goodDate = "";
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        goodDate = sdf.format(searchDate);
+        Double montantTotalFranc = 0.0;
+        List<Mouvement> mouvements = mouvementRepository.findAllByCreatedDateAndCaisse_Id(goodDate, caisse.getId());
+        for (Mouvement mouvement : mouvements){
+            if (mouvement.getType().equals("ENTRER")){
+                montantTotalDollars =+ mouvement.getMontantDollard();
+                montantTotalFranc =+ mouvement.getMontantFranc();
+            }else {
+                montantTotalDollars =- mouvement.getMontantDollard();
+                montantTotalFranc =- mouvement.getMontantFranc();
+            }
+        }
+
+         System.out.println(montantTotalDollars);
+         System.out.println(montantTotalFranc);
+        model.addAttribute("lists", mouvements);
+        model.addAttribute("caisse", caisse);
+        model.addAttribute("date", searchDate);
+        model.addAttribute("soldeDollars", montantTotalDollars);
+        model.addAttribute("soldeFranc", montantTotalFranc);
+        return "caisse/search";
      }
 }

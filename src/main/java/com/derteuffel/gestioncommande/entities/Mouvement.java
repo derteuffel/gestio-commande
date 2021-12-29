@@ -1,6 +1,7 @@
 package com.derteuffel.gestioncommande.entities;
 
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -16,7 +17,8 @@ public class Mouvement implements Serializable {
     @GeneratedValue
     private Long id;
 
-    private Date createdDate = new Date();
+
+    private String createdDate;
     private String libelle;
     private String type;
     private Double montantDollard;
@@ -31,7 +33,7 @@ public class Mouvement implements Serializable {
     public Mouvement() {
     }
 
-    public Mouvement(Date createdDate, String libelle, String type, Double montantDollard,
+    public Mouvement(String createdDate, String libelle, String type, Double montantDollard,
                      Double montantFranc, Double soldeFinDollard, Double soldeFinFranc, String numMouvement) {
         this.createdDate = createdDate;
         this.libelle = libelle;
@@ -51,11 +53,11 @@ public class Mouvement implements Serializable {
         this.id = id;
     }
 
-    public Date getCreatedDate() {
+    public String getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(Date createdDate) {
+    public void setCreatedDate(String createdDate) {
         this.createdDate = createdDate;
     }
 

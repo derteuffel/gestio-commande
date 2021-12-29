@@ -39,9 +39,9 @@ public class Commande  implements Serializable {
     private Double amountCDF=0.0;
 
     private Boolean status;
-    private String caisseState;
-    private String techniqueState;
-    private String gerantState;
+    private Boolean caisseState;
+    private Boolean techniqueState;
+    private Boolean gerantState;
     private String states;
     private int nbreArticle;
 
@@ -185,27 +185,27 @@ public class Commande  implements Serializable {
         this.compte = compte;
     }
 
-    public String getCaisseState() {
+    public Boolean getCaisseState() {
         return caisseState;
     }
 
-    public void setCaisseState(String caisseState) {
+    public void setCaisseState(Boolean caisseState) {
         this.caisseState = caisseState;
     }
 
-    public String getTechniqueState() {
+    public Boolean getTechniqueState() {
         return techniqueState;
     }
 
-    public void setTechniqueState(String techniqueState) {
+    public void setTechniqueState(Boolean techniqueState) {
         this.techniqueState = techniqueState;
     }
 
-    public String getGerantState() {
+    public Boolean getGerantState() {
         return gerantState;
     }
 
-    public void setGerantState(String gerantState) {
+    public void setGerantState(Boolean gerantState) {
         this.gerantState = gerantState;
     }
 }
