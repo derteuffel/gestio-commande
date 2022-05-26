@@ -1,7 +1,9 @@
 package com.derteuffel.gestioncommande.controllers;
 
+import com.derteuffel.gestioncommande.Services.CompteService;
 import com.derteuffel.gestioncommande.Services.ContractService;
 import com.derteuffel.gestioncommande.Services.UserService;
+import com.derteuffel.gestioncommande.entities.Compte;
 import com.derteuffel.gestioncommande.entities.Contract;
 import com.derteuffel.gestioncommande.entities.User;
 import com.derteuffel.gestioncommande.helpers.PageModel;
@@ -14,11 +16,13 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.Principal;
 import java.util.ArrayList;
 
 @Controller
@@ -34,14 +38,20 @@ public class ContractController {
     private UserService userService;
 
     @Autowired
+    private CompteService compteService;
+
+    @Autowired
     private PageModel pageModel;
 
 
     @GetMapping("/contracts/{userId}")
-    public String findByUser(Model model, @PathVariable Long userId){
+    public String findByUser(Model model, @PathVariable Long userId, HttpServletRequest request){
         pageModel.setSIZE(5);
         pageModel.initPageAndSize();
+        Principal principal = request.getUserPrincipal();
+        Compte compte = compteService.findByLogin(principal.getName());
         User user = userService.getOne(userId);
+        model.addAttribute("compte", compte);
         model.addAttribute("user",user);
         model.addAttribute("addContract", new Contract());
         model.addAttribute("lists", contractService.findAllByUser_UserId(userId,PageRequest.of(pageModel.getPAGE(),pageModel.getSIZE())));

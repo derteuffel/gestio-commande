@@ -18,7 +18,6 @@ import java.util.List;
 
 @Entity
 @Table(name = "commande")
-@Data
 public class Commande  implements Serializable {
 
     @Id

@@ -44,7 +44,7 @@
     </style>
 </head>
 <body>
-<div class="wrapper" th:each="role : ${session.compte.roles}">
+<div class="wrapper" th:each="role : ${compte.roles}">
     <div th:replace="~{../templates/fragments/navbar :: navbar}"></div>
     <div th:replace="~{../templates/fragments/sidebar :: sidebar}"></div>
 
@@ -58,8 +58,8 @@
                             <h5 class="text-white op-7 mb-2">Liste des produits en stock</h5>
                         </div>
                         <div class="ml-md-auto py-2 py-md-0">
-                            <a th:href="@{/}" class="btn btn-white btn-border btn-round mr-2">Accueil</a>
-                            <a href="#" class="btn btn-secondary btn-round">Rapports</a>
+                            <a th:href="@{/}" class="btn btn-white btn-border btn-round mr-2"><i class="fa fa-home"></i>&nbsp;Accueil</a>
+                            <a href="#" class="btn btn-secondary btn-round"><i class="fa fa-book"></i>&nbsp;Rapports</a>
                         </div>
                     </div>
                 </div>
@@ -70,7 +70,7 @@
                         <div class="card-header">
                             <div class="d-flex align-items-center">
                                 <h4 class="card-title">Nouvel element</h4>
-                                <button th:if="${role.name} == 'ROLE_ROOT' or ${role.name} == 'ROLE_DT' or ${role.name} == 'ROLE_INFO' or ${role.name} == 'ROLE_CAISSE'" class="btn btn-primary btn-round ml-auto" data-toggle="modal" data-target="#addRowModal">
+                                <button  class="btn btn-primary btn-round ml-auto" data-toggle="modal" data-target="#addRowModal">
                                     <i class="fa fa-plus"></i>
                                     Produit
                                 </button>
@@ -144,12 +144,11 @@
                                         <td >
                                             <span th:text="${product.quantity}"></span>&nbsp;
                                             <a class="btn" data-toggle="modal" data-target="#detailModal" th:attr="data-target='#detailModal'+${product.productId}"><i class="fa fa-eye"></i></a>
-
                                         </td>
                                         <td th:text="${#strings.substring(product.addedDate,0,10)}"></td>
                                         <td th:text="${product.category}"></td>
                                         <td>
-                                            <a th:if="${role.name} == 'ROLE_ROOT' or ${role.name} == 'ROLE_INFO' or ${role.name} == 'ROLE_DT' or ${role.name} == 'ROLE_CAISSE'" data-toggle="modal" data-target="#updateModal"  class="btn text-primary" th:attr="data-target='#updateModal'+${product.productId}"><i class="fa fa-edit"></i></a>
+                                            <a  data-toggle="modal" data-target="#updateModal"  class="btn text-primary" th:attr="data-target='#updateModal'+${product.productId}"><i class="fa fa-plus"></i></a>
                                             <a th:if="${role.name} == 'ROLE_ROOT' or ${role.name} == 'ROLE_DT' or ${role.name} == 'ROLE_GERANT'" class="btn text-danger" data-toggle="modal" data-target="#deleteModal" th:attr="data-target='#deleteModal'+${product.productId}"><i class="fa fa-trash"></i></a>
                                         </td>
 
@@ -186,20 +185,20 @@
                                                     </div>
                                                     <div class="modal-body" th:each="added : ${product.addedProducts}">
                                                         <div class="alert-warning text-left">
-                                                            <h4>
-                                                                <span>Ajouter le : </span>&nbsp;<span th:text="${#strings.substring(added.addedDate,0,10)}"></span>
-                                                            </h4>
-                                                            <hr>
-                                                            <h4>
-                                                                <span>Nombre d'element ajouter : </span>&nbsp;<span th:text="${added.quantity}"></span>
-                                                            </h4>
-                                                            <hr>
-                                                            <h4>
-                                                                <span>Commentaire : </span>&nbsp;<span th:text="${added.description}"></span>
-                                                            </h4>
+                                                            <div class="p-4">
+                                                                <h4>
+                                                                    <span>Ajouter le : </span>&nbsp;<span th:text="${#strings.substring(added.addedDate,0,10)}"></span>
+                                                                </h4>
+                                                                <hr>
+                                                                <h4>
+                                                                    <span>Nombre d'element ajouter : </span>&nbsp;<span th:text="${added.quantity}"></span>
+                                                                </h4>
+                                                                <hr>
+                                                                <h4>
+                                                                    <span>Commentaire : </span>&nbsp;<span th:text="${added.description}"></span>
+                                                                </h4>
+                                                            </div>
                                                         </div>
-                                                        <hr>
-
                                                     </div>
                                                     <div class="modal-footer">
                                                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>

@@ -2,11 +2,16 @@ package com.derteuffel.gestioncommande.controllers;
 
 import com.derteuffel.gestioncommande.Services.CaisseService;
 import com.derteuffel.gestioncommande.entities.Caisse;
+import com.derteuffel.gestioncommande.entities.Compte;
+import com.derteuffel.gestioncommande.entities.EMois;
 import com.derteuffel.gestioncommande.entities.Mouvement;
+import com.derteuffel.gestioncommande.helpers.ExcelMonthExporter;
 import com.derteuffel.gestioncommande.repositories.CaisseRepository;
+import com.derteuffel.gestioncommande.repositories.CompteRepository;
 import com.derteuffel.gestioncommande.repositories.MouvementRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +20,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.security.Principal;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -32,9 +42,16 @@ public class CaisseController {
     @Autowired
     private MouvementRepository mouvementRepository;
 
+    @Autowired
+    private CompteRepository compteRepository;
+
 
     @GetMapping("/lists")
-    public String findAll(Model model){
+    public String findAll(Model model, HttpServletRequest request){
+        Principal principal = request.getUserPrincipal();
+        Compte compte = compteRepository.findByLogin(principal.getName());
+
+
         List<Caisse> caisses = caisseService.findAll();
         if (caisses.isEmpty()){
             Caisse newCaisse = new Caisse();
@@ -49,19 +66,80 @@ public class CaisseController {
         }
 
         model.addAttribute("lists", caisses);
+        model.addAttribute("compte", compte);
         return "caisse/lists";
     }
 
 
     @GetMapping("/details/{id}")
-    public String getCaisse(@PathVariable Long id, Model model){
+    public String getCaisse(@PathVariable Long id, Model model, HttpServletRequest request){
+
+
+        Principal principal = request.getUserPrincipal();
+        Compte compte = compteRepository.findByLogin(principal.getName());
+        Caisse caisse = caisseService.getOne(id);
+        List<Mouvement> mouvements = mouvementRepository.findAllByCaisse_Id(id);
+        List<Mouvement> entrer = mouvementRepository.findAllByTypeAndCaisse_Id("ENTRER",id);
+        List<Mouvement> sorties = mouvementRepository.findAllByTypeAndCaisse_Id("SORTIE",id);
+        Double montantEntrerDollars = 0.0;
+        Double montantEntrerFranc = 0.0;
+        Double montantSortieDollars = 0.0;
+        Double montantSortieFranc = 0.0;
+
+        for (Mouvement mouvement: entrer){
+            montantEntrerDollars =+ mouvement.getMontantDollard();
+            montantEntrerFranc =+ mouvement.getMontantFranc();
+        }
+        for (Mouvement mouvement: sorties){
+            montantSortieDollars =+ mouvement.getMontantDollard();
+            montantSortieFranc =+ mouvement.getMontantFranc();
+        }
+        model.addAttribute("caisse",caisse);
+        model.addAttribute("lists",mouvements);
+        model.addAttribute("sortieDollar", montantSortieDollars);
+        model.addAttribute("sortieFranc", montantSortieFranc);
+        model.addAttribute("entrerFranc", montantEntrerFranc);
+        model.addAttribute("entrerDollar", montantEntrerDollars);
+        model.addAttribute("compte",compte);
+        model.addAttribute("mouvement",new Mouvement());
+        return "caisse/detail";
+
+    }
+
+    @GetMapping("/endMonth/print/{id}")
+    public String printCaisseMonth(@PathVariable Long id, HttpServletResponse response) throws IOException {
 
         Caisse caisse = caisseService.getOne(id);
         List<Mouvement> mouvements = mouvementRepository.findAllByCaisse_Id(id);
-        model.addAttribute("caisse",caisse);
-        model.addAttribute("lists",mouvements);
-        model.addAttribute("mouvement",new Mouvement());
-        return "caisse/detail";
+
+        response.setContentType("application/octet-stream");
+        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+        String currentDateTime = dateFormatter.format(new Date());
+
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename="+caisse.getMois()+"_"+caisse.getAnnee()+"_" + currentDateTime + ".xlsx";
+        response.setHeader(headerKey, headerValue);
+        List<Mouvement> entrer = mouvementRepository.findAllByTypeAndCaisse_Id("ENTRER",id);
+        List<Mouvement> sorties = mouvementRepository.findAllByTypeAndCaisse_Id("SORTIE",id);
+        Double montantEntrerDollars = 0.0;
+        Double montantEntrerFranc = 0.0;
+        Double montantSortieDollars = 0.0;
+        Double montantSortieFranc = 0.0;
+
+        for (Mouvement mouvement: entrer){
+            montantEntrerDollars =+ mouvement.getMontantDollard();
+            montantEntrerFranc =+ mouvement.getMontantFranc();
+        }
+        for (Mouvement mouvement: sorties){
+            montantSortieDollars =+ mouvement.getMontantDollard();
+            montantSortieFranc =+ mouvement.getMontantFranc();
+        }
+
+        ExcelMonthExporter exporter = new ExcelMonthExporter(caisse,mouvements,montantSortieDollars,montantEntrerDollars,montantEntrerFranc,montantSortieFranc);
+
+        exporter.export(response);
+
+        return "redirect:/caisse/details/"+caisse.getId();
 
     }
 
@@ -123,10 +201,13 @@ public class CaisseController {
 
 
      @GetMapping("/mouvement/update/{id}")
-     public String updateFormMouvement(@PathVariable Long id, Model model){
+     public String updateFormMouvement(@PathVariable Long id, Model model, HttpServletRequest request){
 
+        Principal principal = request.getUserPrincipal();
+        Compte compte = compteRepository.findByLogin(principal.getName());
         Mouvement mouvement = mouvementRepository.getOne(id);
         model.addAttribute("mouvement", mouvement);
+        model.addAttribute("compte",compte);
 
         return "caisse/mouvementU";
      }
@@ -203,7 +284,10 @@ public class CaisseController {
 
      @PostMapping("/mouvement/search/{id}")
          public String searchByDate(@DateTimeFormat(pattern = "yyyy-MM-dd") Date searchDate, @PathVariable Long id,
-                                Model model){
+                                Model model, HttpServletRequest request){
+
+        Principal principal = request.getUserPrincipal();
+        Compte compte = compteRepository.findByLogin(principal.getName());
 
          System.out.println(searchDate);
         Caisse caisse = caisseRepository.getOne(id);
@@ -228,8 +312,60 @@ public class CaisseController {
         model.addAttribute("lists", mouvements);
         model.addAttribute("caisse", caisse);
         model.addAttribute("date", searchDate);
+        model.addAttribute("compte", compte);
         model.addAttribute("soldeDollars", montantTotalDollars);
         model.addAttribute("soldeFranc", montantTotalFranc);
         return "caisse/search";
      }
+
+    @Scheduled(cron = "0 1 0 1 * ?")
+     public void autoCreateMonth(){
+        List<Caisse> list = caisseRepository.findAllByStatus(true);
+        for (Caisse caisse : list){
+            caisse.setStatus(false);
+            caisseService.save(caisse);
+            Caisse caisse1 = new Caisse();
+            caisse1.setStatus(true);
+            caisse1.setMouvementMensuelFranc(0.0);
+            caisse1.setMouvementMensuelDollard(0.0);
+            caisse1.setSoldeDebutMoisFranc(caisse.getSoldeFinMoisFranc());
+            caisse1.setSoldeDebutMoisDollard(caisse.getSoldeFinMoisDollard());
+            caisse1.setSoldeFinMoisFranc(caisse.getSoldeFinMoisFranc());
+            caisse1.setSoldeFinMoisDollard(caisse.getSoldeFinMoisDollard());
+            SimpleDateFormat sdf = new SimpleDateFormat("MM");
+            SimpleDateFormat sdfAnnee = new SimpleDateFormat("yyyy");
+            String date = sdf.format(new Date());
+            caisse.setAnnee(sdfAnnee.format(new Date()));
+            System.out.println(date);
+            if (date.equals("01")) {
+                caisse1.setMois(EMois.JANVIER.toString());
+            } else if (date.equals("02")) {
+                caisse1.setMois(EMois.FEVRIER.toString());
+            } else if (date.equals("03")) {
+                caisse.setMois(EMois.MARS.toString());
+            } else if (date.equals("04")) {
+                caisse1.setMois(EMois.AVRIL.toString());
+            } else if (date.equals("05")) {
+                caisse1.setMois(EMois.MAI.toString());
+            }else if (date.equals("06")) {
+                caisse1.setMois(EMois.JUIN.toString());
+            }else if (date.equals("07")) {
+                caisse1.setMois(EMois.JUILLET.toString());
+            }else if (date.equals("08")) {
+                caisse1.setMois(EMois.AOUT.toString());
+            }else if (date.equals("09")) {
+                caisse1.setMois(EMois.SEPTEMBRE.toString());
+            }else if (date.equals("10")) {
+                caisse1.setMois(EMois.OCTOBRE.toString());
+            }else if (date.equals("11")) {
+                caisse1.setMois(EMois.NOVEMBRE.toString());
+            }else {
+                caisse1.setMois(EMois.DECEMBRE.toString());
+            }
+
+            caisseRepository.save(caisse1);
+        }
+     }
+
+
 }

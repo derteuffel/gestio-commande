@@ -2,8 +2,10 @@ package com.derteuffel.gestioncommande.controllers;
 
 import com.derteuffel.gestioncommande.Services.ArticleService;
 import com.derteuffel.gestioncommande.Services.CategoryService;
+import com.derteuffel.gestioncommande.Services.CompteService;
 import com.derteuffel.gestioncommande.entities.Article;
 import com.derteuffel.gestioncommande.entities.Caisse;
+import com.derteuffel.gestioncommande.entities.Compte;
 import com.derteuffel.gestioncommande.entities.Mouvement;
 import com.derteuffel.gestioncommande.helpers.PageModel;
 import com.derteuffel.gestioncommande.repositories.CaisseRepository;
@@ -17,6 +19,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.servlet.http.HttpServletRequest;
+import java.security.Principal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -33,13 +37,20 @@ public class ArticleController {
     private CategoryService categoryService;
 
     @Autowired
+    private CompteService compteService;
+
+    @Autowired
     private PageModel pageModel;
 
     @GetMapping("/articles")
-    public String findAll(Model model) {
+    public String findAll(Model model, HttpServletRequest request) {
         pageModel.setSIZE(5);
         pageModel.initPageAndSize();
+        Principal principal = request.getUserPrincipal();
+        Compte compte = compteService.findByLogin(principal.getName());
 
+
+        model.addAttribute("compte",compte);
         //model.addAttribute("lists",articleService.findAll(PageRequest.of(pageModel.getPAGE(), pageModel.getSIZE())));
         model.addAttribute("lists",articleService.findAll());
         return "article/articles";
@@ -60,9 +71,12 @@ public class ArticleController {
     }*/
 
     @GetMapping("/get/{articleId}")
-    public String getOne(@PathVariable Long articleId, Model model) {
+    public String getOne(@PathVariable Long articleId, Model model, HttpServletRequest request) {
+        Principal principal = request.getUserPrincipal();
+        Compte compte = compteService.findByLogin(principal.getName());
         Article article = articleService.getOne(articleId);
 
+        model.addAttribute("compte",compte);
         model.addAttribute("article",article);
         return "article/detail";
     }

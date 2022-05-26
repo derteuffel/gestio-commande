@@ -12,7 +12,7 @@ import java.util.List;
 
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = "login"))
-@Data
+
 public class Compte implements Serializable {
 
     @Id

@@ -100,8 +100,8 @@
                 <li class="nav-item dropdown hidden-caret">
                     <a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="#" aria-expanded="false">
                         <div class="avatar-sm">
-                            <img th:if="${session.compte.avatar}" th:src="${session.compte.avatar}" alt="..." class="avatar-img rounded-circle">
-                            <img th:unless="${session.compte.avatar}" th:src="@{/images/default.jpeg}" alt="..." class="avatar-img rounded-circle">
+                            <img th:if="${compte.avatar}" th:src="${compte.avatar}" alt="..." class="avatar-img rounded-circle">
+                            <img th:unless="${compte.avatar}" th:src="@{/images/default.jpeg}" alt="..." class="avatar-img rounded-circle">
                         </div>
                     </a>
                     <ul class="dropdown-menu dropdown-user animated fadeIn">
@@ -109,19 +109,19 @@
                             <li>
                                 <div class="user-box">
                                     <div class="avatar-lg">
-                                        <img th:if="${session.compte.avatar}" th:src="${session.compte.avatar}" alt="image profile" class="avatar-img rounded">
-                                        <img th:unless="${session.compte.avatar}" th:src="@{/images/default.jpeg}" alt="image profile" class="avatar-img rounded">
+                                        <img th:if="${compte.avatar}" th:src="${compte.avatar}" alt="image profile" class="avatar-img rounded">
+                                        <img th:unless="${compte.avatar}" th:src="@{/images/default.jpeg}" alt="image profile" class="avatar-img rounded">
                                     </div>
                                     <div class="u-text">
-                                        <h4><span th:text="${session.compte.login}"></span></h4>
-                                        <p class="text-muted"><span th:text="${session.compte.email}"></span></p>
-                                        <a th:href="@{/user/detail/}+${session.compte.user.userId}" class="btn btn-xs btn-secondary btn-sm">Voir mon profile</a>
+                                        <h4><span th:text="${compte.login}"></span></h4>
+                                        <p class="text-muted"><span th:text="${compte.email}"></span></p>
+                                        <a th:href="@{/user/detail/}+${compte.user.userId}" class="btn btn-xs btn-secondary btn-sm">Voir mon profile</a>
                                     </div>
                                 </div>
                             </li>
                             <li>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" th:href="@{/user/update/}+${session.compte.user.userId}">Editer Profile</a>
+                                <a class="dropdown-item" th:href="@{/user/update/}+${compte.user.userId}">Editer Profile</a>
                                 <!--a class="dropdown-item" href="#">My Balance</a>
                                 <a class="dropdown-item" href="#">Inbox</a-->
                                 <div class="dropdown-divider"></div>

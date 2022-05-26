@@ -9,7 +9,6 @@ import java.io.Serializable;
 
 @Entity
 @Table(name = "approbation")
-@Data
 public class Approbation implements Serializable {
 
     @Id

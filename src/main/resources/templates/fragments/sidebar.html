@@ -1,17 +1,17 @@
 <!-- Sidebar -->
-<div th:fragment="sidebar" th:each=" role : ${session.compte.roles}"  xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4" class="sidebar sidebar-style-2">
+<div th:fragment="sidebar" th:each=" role : ${compte.roles}"  xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4" class="sidebar sidebar-style-2">
     <div class="sidebar-wrapper scrollbar scrollbar-inner">
         <div class="sidebar-content">
             <div class="user" >
                 <div class="avatar-sm float-left mr-2">
-                    <img th:if="${session.compte.avatar}" th:src="${session.compte.avatar}" alt="..." class="avatar-img rounded-circle">
-                    <img th:unless="${session.compte.avatar}" th:src="@{/images/default.jpeg}" alt="..." class="avatar-img rounded-circle">
+                    <img th:if="${compte.avatar}" th:src="${compte.avatar}" alt="..." class="avatar-img rounded-circle">
+                    <img th:unless="${compte.avatar}" th:src="@{/images/default.jpeg}" alt="..." class="avatar-img rounded-circle">
                 </div>
                 <div class="info">
                     <a data-toggle="collapse" href="#collapseExample" aria-expanded="true">
 								<span>
-									<span th:text="${session.compte.login}"></span>
-									<span class="user-level" th:text="${session.compte.user.posteActuel}">Administrator</span>
+									<span th:text="${compte.login}"></span>
+									<span class="user-level" th:text="${compte.user.posteActuel}">Administrator</span>
 									<span class="caret"></span>
 								</span>
                     </a>
@@ -20,12 +20,12 @@
                     <div class="collapse in" id="collapseExample">
                         <ul class="nav">
                             <li>
-                                <a th:href="@{/user/detail/}+${session.compte.user.userId}">
+                                <a th:href="@{/user/detail/}+${compte.user.userId}">
                                     <span class="link-collapse">Mon Profile</span>
                                 </a>
                             </li>
                             <li>
-                                <a th:href="@{/user/update/}+${session.compte.user.userId}">
+                                <a th:href="@{/user/update/}+${compte.user.userId}">
                                     <span class="link-collapse">Editer Profile</span>
                                 </a>
                             </li>
@@ -102,8 +102,8 @@
                                             </a>
                                         </li>
                                         <li>
-                                            <a th:href="@{/materiel/autres}">
-                                                <span class="sub-item">Autres</span>
+                                            <a th:href="@{/materiel/studios}">
+                                                <span class="sub-item">Studio</span>
                                             </a>
                                         </li>
                                     </ul>

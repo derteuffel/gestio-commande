@@ -7,7 +7,6 @@ import javax.persistence.*;
 import java.io.Serializable;
 @Entity
 @Table(name = "materiel")
-@Data
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Materiel implements Serializable {
 

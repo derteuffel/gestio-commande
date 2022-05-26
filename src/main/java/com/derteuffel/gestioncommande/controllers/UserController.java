@@ -1,7 +1,9 @@
 package com.derteuffel.gestioncommande.controllers;
 
+import com.derteuffel.gestioncommande.Services.CompteService;
 import com.derteuffel.gestioncommande.Services.ContractService;
 import com.derteuffel.gestioncommande.Services.UserService;
+import com.derteuffel.gestioncommande.entities.Compte;
 import com.derteuffel.gestioncommande.entities.Contract;
 import com.derteuffel.gestioncommande.entities.User;
 import com.derteuffel.gestioncommande.helpers.PageModel;
@@ -15,11 +17,13 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Optional;
@@ -37,12 +41,18 @@ public class UserController {
     @Autowired
     private ContractService contractService;
 
+    @Autowired
+    private CompteService compteService;
+
     @Value("${file.upload-dir}")
     private  String fileStorage;
 
 
     @GetMapping("/users")
-    public String all(Model model){
+    public String all(Model model, HttpServletRequest request){
+        Principal principal = request.getUserPrincipal();
+        Compte compte = compteService.findByLogin(principal.getName());
+        model.addAttribute("compte", compte);
         model.addAttribute("addUser", new User());
         model.addAttribute("lists",userService.findAll());
 
@@ -51,7 +61,10 @@ public class UserController {
     }
 
     @GetMapping("/users/{contratActuel}")
-    public String contracts(Model model, @PathVariable String contratActuel){
+    public String contracts(Model model, @PathVariable String contratActuel, HttpServletRequest request){
+        Principal principal = request.getUserPrincipal();
+        Compte compte = compteService.findByLogin(principal.getName());
+        model.addAttribute("compte", compte);
         model.addAttribute("contrat",contratActuel);
         model.addAttribute("addUser", new User());
         model.addAttribute("lists",userService.findAllByContratActuel(contratActuel));
@@ -178,7 +191,10 @@ public class UserController {
     }
 
     @GetMapping("/detail/{userId}")
-    public String get(Model model, @PathVariable Long userId){
+    public String get(Model model, @PathVariable Long userId, HttpServletRequest request){
+        Principal principal = request.getUserPrincipal();
+        Compte compte = compteService.findByLogin(principal.getName());
+        model.addAttribute("compte", compte);
         User user = userService.getOne(userId);
         model.addAttribute("user",user);
         System.out.println(user.getPostes());

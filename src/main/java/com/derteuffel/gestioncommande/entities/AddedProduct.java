@@ -9,7 +9,6 @@ import java.util.Date;
 
 @Entity
 @Table(name = "added_product")
-@Data
 public class AddedProduct {
 
     @Id

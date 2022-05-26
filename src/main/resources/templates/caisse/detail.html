@@ -15,7 +15,7 @@
     <script>
         WebFont.load({
             google: {"families":["Lato:300,400,700,900"]},
-            custom: {"families":["Flaticon", "Font Awesome 5 Solid", "Font Awesome 5 Regular", "Font Awesome 5 Brands", "simple-line-icons"], urls: ['../../css/fonts.min.css']},
+            custom: {"families":["Flaticon", "Font Awesome 5 Solid", "Font Awesome 5 Regular", "Font Awesome 5 Brands", "simple-line-icons"], urls: ['../../../css/fonts.min.css']},
             active: function() {
                 sessionStorage.fonts = true;
             }
@@ -44,7 +44,7 @@
     </style>
 </head>
 <body>
-<div class="wrapper" th:each=" role : ${session.compte.roles}">
+<div class="wrapper" th:each=" role : ${compte.roles}">
     <div th:replace="~{../templates/fragments/navbar :: navbar}"></div>
     <div th:replace="~{../templates/fragments/sidebar :: sidebar}"></div>
 
@@ -76,7 +76,7 @@
                                     <strong>Solde Debut mois  :</strong>
                                 </div>
                                 <div class="col-md-7">
-                                    <span th:text="${caisse.soldeDebutMoisFranc+' CDF/ '+caisse.soldeDebutMoisDollard+' USD'}"></span>
+                                    <span th:text="${#numbers.formatDecimal(caisse.soldeDebutMoisFranc,0,2)+' CDF'}"></span><br> <span th:text="${#numbers.formatDecimal(caisse.soldeDebutMoisDollard,0,2)+' USD'}"></span>
                                 </div>
                             </div>
                             <hr>
@@ -85,7 +85,7 @@
                                     <strong>Mouvements finnanciers mensuel  :</strong>
                                 </div>
                                 <div class="col-md-7">
-                                    <span th:text="${caisse.mouvementMensuelFranc+' CDF/ '+caisse.mouvementMensuelDollard+' USD'}"></span>
+                                    <span th:text="${#numbers.formatDecimal(caisse.mouvementMensuelFranc,0,2)+' CDF'}"></span><br><span th:text="${#numbers.formatDecimal(caisse.mouvementMensuelDollard,0,2)+' USD'}"></span>
                                 </div>
                             </div>
                             <hr>
@@ -109,8 +109,14 @@
                                             <td th:text="${item.createdDate}"></td>
                                             <td th:text="${item.libelle}"></td>
                                             <td th:text="${item.type}"></td>
-                                            <td th:text="${item.montantFranc+' CFD/ '+item.montantDollard+' USD'}"></td>
-                                            <td th:text="${item.soldeFinFranc+' CFD/ '+item.soldeFinDollard+' USD'}"></td>
+                                            <td >
+                                                <span th:text="${#numbers.formatDecimal(item.montantFranc,0,2)+' CFD'}"></span><br>
+                                                <span th:text="${#numbers.formatDecimal(item.montantDollard,0,2)+' USD'}"></span>
+                                            </td>
+                                            <td >
+                                                <span th:text="${#numbers.formatDecimal(item.soldeFinFranc,0,2)+' CFD'}"></span><br>
+                                                <span th:text="${#numbers.formatDecimal(item.soldeFinDollard,0,2)+' USD'}"></span>
+                                            </td>
 
                                             <td>
                                                 <a  class="btn text-success" th:href="@{/caisse/mouvement/update/}+${item.id}"><i class="fa fa-edit"></i></a>
@@ -126,22 +132,45 @@
                                     <strong>Solde caisse du mois  :</strong>
                                 </div>
                                 <div class="col-md-7">
-                                    <span th:text="${caisse.soldeFinMoisFranc+' CDF/ '+caisse.soldeFinMoisDollard+' USD'}"></span>
+                                    <span th:text="${#numbers.formatDecimal(caisse.soldeFinMoisFranc,0,2)+' CDF'}"></span><br>
+                                    <span th:text="${#numbers.formatDecimal(caisse.soldeFinMoisDollard,0,2)+' USD'}"></span>
                                 </div>
                             </div>
 
                             <hr>
                             <div class="row my--2">
                                 <div class="col-md-5">
+                                    <strong>Entrer Caisse  :</strong>
+                                </div>
+                                <div class="col-md-7">
+                                    <span th:text="${#numbers.formatDecimal(entrerFranc,0,2)+' CDF'}"></span><br>
+                                    <span th:text="${#numbers.formatDecimal(entrerDollar,0,2)+' USD'}"></span>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row my--2">
+                                <div class="col-md-5">
+                                    <strong>Sortie Caisse  :</strong>
+                                </div>
+                                <div class="col-md-7">
+                                    <span th:text="${#numbers.formatDecimal(sortieFranc,0,2)+' CDF'}"></span><br>
+                                    <span th:text="${#numbers.formatDecimal(sortieDollar,0,2)+' USD'}"></span>
+                                </div>
+                            </div>
+
+                            <hr>
+                            <div class="row my--2">
+                                <div class="col-md-3">
                                     <strong>Actions :</strong>
                                 </div>
-                                <div class="col-md-7" th:if="${caisse.status} == true">
-                                    <a th:href="@{/caisse/endMonth/}+${caisse.id}"  class="btn btn-secondary ml-auto btn-round" ><i class="fa fa-power-off"></i>&nbsp;Terminer le mois</a>
-                                    <button type="button" class="btn btn-secondary ml-auto btn-round" data-target="#mouvementModal" data-toggle="modal"> <i class="fa fa-plus"></i>&nbsp;Nouveau Mouvement</button>
+                                <div class="col-md-9" th:if="${caisse.status} == true">
+                                    <a th:href="@{/caisse/endMonth/}+${caisse.id}"  class="btn btn-danger ml-auto btn-round" ><i class="fa fa-power-off"></i>&nbsp;Terminer le mois</a>
+                                    <a th:href="@{/caisse/endMonth/print/}+${caisse.id}"  class="btn btn-default ml-auto btn-round" ><i class="fa fa-print"></i>&nbsp;Produire Rapport</a>
+                                    <button type="button" class="btn btn-primary ml-auto btn-round" data-target="#mouvementModal" data-toggle="modal"> <i class="fa fa-plus"></i>&nbsp;Nouveau Mouvement</button>
                                     <button type="button" class="btn btn-secondary ml-auto btn-round" data-target="#searchModal" data-toggle="modal"> <i class="fa fa-search"></i>&nbsp;Filtrer par date</button>
                                 </div>
                                 <div class="col-md-7" th:if="${caisse.status} == false">
-                                    <span class="alert alert-info">Aucune action n'est disponible</span>
+                                    <a th:href="@{/caisse/endMonth/print/}+${caisse.id}"  class="btn btn-default ml-auto btn-round" ><i class="fa fa-print"></i>&nbsp;Produire Rapport</a>
                                 </div>
                             </div>
                         </div>

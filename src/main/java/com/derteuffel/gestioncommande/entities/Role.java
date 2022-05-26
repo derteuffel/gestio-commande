@@ -8,7 +8,6 @@ import java.util.List;
 
 @Entity
 @Table(name = "role")
-@Data
 public class Role implements Serializable {
 
     @Id

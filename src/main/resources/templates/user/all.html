@@ -44,7 +44,7 @@
     </style>
 </head>
 <body>
-<div class="wrapper" th:each="role : ${session.compte.roles}">
+<div class="wrapper" th:each="role : ${compte.roles}">
     <div th:replace="~{../templates/fragments/navbar :: navbar}"></div>
     <div th:replace="~{../templates/fragments/sidebar :: sidebar}"></div>
 
@@ -58,8 +58,8 @@
                             <h5 class="text-white op-7 mb-2">Liste du personnel | <span  th:text="${contrat}"></span></h5>
                         </div>
                         <div class="ml-md-auto py-2 py-md-0">
-                            <a th:href="@{/}" class="btn btn-white btn-border btn-round mr-2">Accueil</a>
-                            <a href="#" class="btn btn-secondary btn-round">Rapports</a>
+                            <a th:href="@{/}" class="btn btn-white btn-border btn-round mr-2"><i class="fa fa-home"></i>&nbsp;Accueil</a>
+                            <a href="#" class="btn btn-secondary btn-round"><i class="fa fa-book"></i>&nbsp;Rapports</a>
                         </div>
                     </div>
                 </div>

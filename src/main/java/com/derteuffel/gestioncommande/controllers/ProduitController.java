@@ -1,9 +1,11 @@
 package com.derteuffel.gestioncommande.controllers;
 
 import com.derteuffel.gestioncommande.Services.CategoryService;
+import com.derteuffel.gestioncommande.Services.CompteService;
 import com.derteuffel.gestioncommande.Services.ProductService;
 import com.derteuffel.gestioncommande.entities.AddedProduct;
 import com.derteuffel.gestioncommande.entities.Category;
+import com.derteuffel.gestioncommande.entities.Compte;
 import com.derteuffel.gestioncommande.entities.Product;
 import com.derteuffel.gestioncommande.helpers.PageModel;
 import com.derteuffel.gestioncommande.repositories.AddedProductRepository;
@@ -18,6 +20,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.jws.WebParam;
+import javax.servlet.http.HttpServletRequest;
+import java.security.Principal;
 
 @Controller
 @RequestMapping("/produit")
@@ -28,6 +32,9 @@ public class ProduitController {
 
     @Autowired
     private CategoryService categoryService;
+
+    @Autowired
+    private CompteService compteService;
     @Autowired
     private PageModel pageModel;
 
@@ -38,9 +45,12 @@ public class ProduitController {
     //---------- Get All Products ------------//
 
     @GetMapping("/produits")
-    public String all(Model model){
+    public String all(Model model, HttpServletRequest request){
+        Principal principal = request.getUserPrincipal();
+        Compte compte = compteService.findByLogin(principal.getName());
         pageModel.setSIZE(5);
         pageModel.initPageAndSize();
+        model.addAttribute("compte",compte);
         model.addAttribute("added_product",new AddedProduct());
         model.addAttribute("lists",productService.findAll());
         model.addAttribute("produit", new Product());

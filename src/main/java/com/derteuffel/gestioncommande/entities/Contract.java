@@ -12,7 +12,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "contract")
-@Data
+
 public class Contract implements Serializable {
 
     @Id

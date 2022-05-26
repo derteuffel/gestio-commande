@@ -11,7 +11,6 @@ import java.util.List;
 
 @Entity
 @Table(name = "category")
-@Data
 public class Category implements Serializable {
 
     @Id

@@ -8,7 +8,6 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "autre_materiel")
-@Data
 @PrimaryKeyJoinColumn(name = "materielId")
 public class AutreMateriel extends Materiel {
 

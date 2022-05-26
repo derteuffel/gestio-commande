@@ -12,7 +12,6 @@ import java.util.List;
 
 @Entity
 @Table(name = "product")
-@Data
 public class Product implements Serializable {
 
     @Id

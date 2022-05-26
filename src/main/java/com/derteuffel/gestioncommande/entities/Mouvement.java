@@ -8,7 +8,6 @@ import java.io.Serializable;
 import java.util.Date;
 
 
-@Data
 @Entity
 @Table(name = "mouvement")
 public class Mouvement implements Serializable {

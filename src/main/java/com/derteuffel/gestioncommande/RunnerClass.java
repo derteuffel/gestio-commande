@@ -5,9 +5,11 @@ import com.derteuffel.gestioncommande.entities.Article;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +18,13 @@ public class RunnerClass implements CommandLineRunner {
 
     private static final Logger logger = LoggerFactory.getLogger(RunnerClass.class);
 
+    @Value("${file.upload-dir}")
+    String uploadPath;
+    @Value("${file.produce-dir}")
+    String producePath;
+
+
+
 
 
     @Autowired
@@ -23,7 +32,20 @@ public class RunnerClass implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        File uploadPathAsFile = new File(uploadPath);
+        File producePathAsFile = new File(producePath);
 
+        if (uploadPathAsFile.mkdirs()){
+            System.out.println("------ Upload Path created -------");
+        }else {
+            System.out.println("------ Failed to create Path ------");
+        }
+
+        if (producePathAsFile.mkdirs()){
+            System.out.println("------ Produce Path created ------- ");
+        }else {
+            System.out.println("------ Failed to create Path ------");
+        }
         /*
         Article article1= new Article();
         article1.setPrice(25.9);

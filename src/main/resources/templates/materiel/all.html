@@ -44,7 +44,7 @@
     </style>
 </head>
 <body>
-<div class="wrapper" th:each="role : ${session.compte.roles}">
+<div class="wrapper" th:each="role : ${compte.roles}">
     <div th:replace="~{../templates/fragments/navbar :: navbar}"></div>
     <div th:replace="~{../templates/fragments/sidebar :: sidebar}"></div>
 
@@ -154,17 +154,17 @@
                                                     <div class="col-sm-12">
                                                         <div class="form-group form-group-default">
                                                             <label for="name">Nom Appereil :</label>
-                                                            <input type="text" class="form-control" th:field="*{nom}" id="name" placeholder="Entrer le nom complet de l'imprimante...">
+                                                            <input type="text" class="form-control" th:field="*{nom}"  placeholder="Entrer le nom complet de l'imprimante...">
                                                         </div>
                                                         <div class="form-group form-group-default">
                                                             <label for="marque">Marque Appereil :</label>
-                                                            <input type="text" class="form-control" id="marque" th:field="*{marque}" placeholder="Entrer la marque">
+                                                            <input type="text" class="form-control"  th:field="*{marque}" placeholder="Entrer la marque">
                                                         </div>
                                                     </div>
                                                     <div class="col-sm-12">
                                                         <div class="form-group form-group-default">
                                                             <label for="description">Description  :</label>
-                                                            <textarea th:field="*{description}" id="description" class="form-control"  rows="5"></textarea>
+                                                            <textarea th:field="*{description}"  class="form-control"  rows="5"></textarea>
                                                         </div>
                                                     </div>
                                                     <div class="col-sm-12">
@@ -200,17 +200,17 @@
                                                     <div class="col-sm-12">
                                                         <div class="form-group form-group-default">
                                                             <label for="name">Nom Appereil :</label>
-                                                            <input type="text" class="form-control" th:field="*{nom}" id="name" placeholder="Entrer le nom complet de l'ordinateur...">
+                                                            <input type="text" class="form-control" th:field="*{nom}"  placeholder="Entrer le nom complet de l'ordinateur...">
                                                         </div>
                                                         <div class="form-group form-group-default">
                                                             <label for="marque">Marque Appereil :</label>
-                                                            <input type="text" class="form-control" id="marque" th:field="*{marque}" placeholder="Entrer la marque">
+                                                            <input type="text" class="form-control"  th:field="*{marque}" placeholder="Entrer la marque">
                                                         </div>
                                                     </div>
                                                     <div class="col-sm-12">
                                                         <div class="form-group form-group-default">
                                                             <label for="description">Description  :</label>
-                                                            <textarea th:field="*{description}" id="description" class="form-control"  rows="5"></textarea>
+                                                            <textarea th:field="*{description}"  class="form-control"  rows="5"></textarea>
                                                         </div>
                                                     </div>
                                                     <div class="col-sm-12">
@@ -255,7 +255,7 @@
                                                  <a th:if="${role.name} == 'ROLE_ROOT' or ${role.name} == 'ROLE_INFO' or ${role.name} == 'ROLE_DT' or ${role.name} == 'ROLE_CAISSE'" class="btn text-success" data-toggle="modal" data-target="#detailImprimanteModal" th:attr="data-target='#detailImprimanteModal'+${materiel.materielId}"><i class="fa fa-angle-double-right"></i></a>
                                                  <a th:if="${role.name} == 'ROLE_ROOT' or ${role.name} == 'ROLE_DT' or ${role.name} == 'ROLE_GERANT'" class="btn text-danger" data-toggle="modal" data-target="#deleteModal" th:attr="data-target='#deleteImprimanteModal'+${materiel.materielId}"><i class="fa fa-trash"></i></a>
                                              </div>
-                                             <div th:case="'Autres'" class="form-button-action">
+                                             <div th:case="'Autres Materiels'" class="form-button-action">
                                                  <a th:if="${role.name} == 'ROLE_ROOT' or ${role.name} == 'ROLE_INFO' or ${role.name} == 'ROLE_DT' or ${role.name} == 'ROLE_CAISSE'" class="btn text-success" data-toggle="modal" data-target="#detailAutreModal" th:attr="data-target='#detailAutreModal'+${materiel.materielId}"><i class="fa fa-angle-double-right"></i></a>
                                                  <a th:if="${role.name} == 'ROLE_ROOT' or ${role.name} == 'ROLE_DT' or ${role.name} == 'ROLE_GERANT'" class="btn text-danger" data-toggle="modal" data-target="#deleteModal" th:attr="data-target='#deleteAutreModal'+${materiel.materielId}"><i class="fa fa-trash"></i></a>
                                              </div>
@@ -395,11 +395,11 @@
                                                                 </button>
                                                             </div>
                                                             <div class="modal-body">
-                                                                Etes vous sure de vouloir supprimer cet Autre Materiel?
+                                                                Etes vous sure de vouloir supprimer ce Materiel de studio?
                                                             </div>
                                                             <div class="modal-footer">
                                                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
-                                                                <a th:href="@{/materiel/autres/delete/}+${materiel.materielId}" class="btn btn-primary">Supprimer...</a>
+                                                                <a th:href="@{/materiel/studios/delete/}+${materiel.materielId}" class="btn btn-primary">Supprimer...</a>
                                                             </div>
                                                         </div>
                                                     </div>

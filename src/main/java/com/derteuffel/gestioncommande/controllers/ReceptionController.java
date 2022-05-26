@@ -1,5 +1,6 @@
 package com.derteuffel.gestioncommande.controllers;
 
+import com.derteuffel.gestioncommande.Services.CompteService;
 import com.derteuffel.gestioncommande.entities.Compte;
 import com.derteuffel.gestioncommande.entities.Visiteur;
 import com.derteuffel.gestioncommande.repositories.CompteRepository;
@@ -29,10 +30,13 @@ public class ReceptionController {
     private VisiteurRepository visiteurRepository;
 
     @Autowired
-    private CompteRepository compteRepository;
+    private CompteService compteService;
 
     @GetMapping("/lists")
-    public String findAll(Model model){
+    public String findAll(Model model, HttpServletRequest request){
+        Principal principal = request.getUserPrincipal();
+        Compte compte = compteService.findByLogin(principal.getName());
+        model.addAttribute("compte",compte);
         model.addAttribute("visiteur", new Visiteur());
         model.addAttribute("lists", visiteurRepository.findAll(Sort.by(Sort.Direction.DESC,"id")));
         return "reception/lists";
@@ -41,7 +45,7 @@ public class ReceptionController {
     @PostMapping("/save")
     public String save(@Valid Visiteur visiteur, HttpServletRequest request, RedirectAttributes redirectAttributes){
         Principal principal = request.getUserPrincipal();
-        Compte compte = compteRepository.findByLogin(principal.getName());
+        Compte compte = compteService.findByLogin(principal.getName());
         Optional<Visiteur> optionalVisiteur = visiteurRepository.findByNameOrTelephone(visiteur.getName(),visiteur.getTelephone());
         Date date = new Date();
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm");
@@ -54,13 +58,16 @@ public class ReceptionController {
             visiteurRepository.save(visiteur);
         }
         redirectAttributes.addFlashAttribute("success", "You added new visitor successfully");
-        return "redirect:/";
+        return "redirect:/receptions/lists";
 
     }
 
     @GetMapping("/get/{id}")
-    public String findOne(Model model, @PathVariable Long id){
+    public String findOne(Model model, @PathVariable Long id, HttpServletRequest request){
+        Principal principal = request.getUserPrincipal();
+        Compte compte = compteService.findByLogin(principal.getName());
         Optional<Visiteur> optionalVisiteur = visiteurRepository.findById(id);
+        model.addAttribute("compte",compte);
 
         if (optionalVisiteur.isPresent()){
             model.addAttribute("visitor",optionalVisiteur.get());
@@ -75,6 +82,8 @@ public class ReceptionController {
     public String updateForm(Model model, @PathVariable Long id, HttpServletRequest request){
 
         Optional<Visiteur> optionalVisiteur = visiteurRepository.findById(id);
+        Principal principal = request.getUserPrincipal();
+        Compte compte = compteService.findByLogin(principal.getName());
 
         request.getSession().setAttribute("dates",optionalVisiteur.get().getDates());
         if (optionalVisiteur.isPresent()){
@@ -83,6 +92,7 @@ public class ReceptionController {
             model.addAttribute("error","There are no visitor with Id : "+id);
             return "redirect:/receptions";
         }
+        model.addAttribute("compte",compte);
         return "reception/update";
     }
 

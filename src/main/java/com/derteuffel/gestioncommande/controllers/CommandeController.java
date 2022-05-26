@@ -140,8 +140,12 @@ public class CommandeController {
         List<Article> articles = articleService.findAllByCommande_CommandeId(commande.getCommandeId());
         List<Approbation> approbations = approbationRepository.findAllByCommande_CommandeId(commande.getCommandeId());
         for (Approbation approbation: approbations){
-            comptes.add(approbation.getCompte());
-            System.out.println(approbation.getCompte().getEmail());
+            if(approbation != null) {
+                if (approbation.getCompte() != null) {
+                    comptes.add(approbation.getCompte());
+                    System.out.println(approbation.getCompte().getEmail());
+                }
+            }
         }
         System.out.println(comptes.size());
         if (comptes.contains(compte)){
@@ -155,6 +159,7 @@ public class CommandeController {
         model.addAttribute("compte",compte);
         model.addAttribute("approbations", approbations);
         model.addAttribute("approbation",new Approbation());
+        model.addAttribute("article",new Article());
         model.addAttribute("commande",commande);
         return "commande/detail";
     }

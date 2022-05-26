@@ -11,7 +11,6 @@ import java.util.List;
 
 @Entity
 @Table(name = "client")
-@Data
 public class Client implements Serializable {
     @Id
     @GeneratedValue
