@@ -13,4 +13,5 @@ public interface MouvementRepository extends JpaRepository<Mouvement, Long> {
     List<Mouvement> findAllByCaisse_Id(Long id);
     List<Mouvement> findAllByCreatedDateAndCaisse_Id(String createdDate, Long id);
     List<Mouvement> findAllByTypeAndCaisse_Id(String type, Long id);
+    Mouvement findByArticleCode(String articleCode);
 }

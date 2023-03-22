@@ -11,31 +11,12 @@
                     <a data-toggle="collapse" href="#collapseExample" aria-expanded="true">
 								<span>
 									<span th:text="${compte.login}"></span>
-									<span class="user-level" th:text="${compte.user.posteActuel}">Administrator</span>
+									<span class="user-level" th:text="${role.name}">Administrator</span>
 									<span class="caret"></span>
 								</span>
                     </a>
                     <div class="clearfix"></div>
 
-                    <div class="collapse in" id="collapseExample">
-                        <ul class="nav">
-                            <li>
-                                <a th:href="@{/user/detail/}+${compte.user.userId}">
-                                    <span class="link-collapse">Mon Profile</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a th:href="@{/user/update/}+${compte.user.userId}">
-                                    <span class="link-collapse">Editer Profile</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#settings">
-                                    <span class="link-collapse">Parametres</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
                 </div>
             </div>
             <ul class="nav nav-primary">
@@ -52,11 +33,22 @@
                                     <span class="sub-item">Commandes</span>
                                 </a>
                             </li>
-                            <li th:if="${role.name}=='ROLE_ROOT' or ${role.name}=='ROLE_GERANT' or ${role.name}=='ROLE_DG'">
-                                <a th:href="@{/article/articles}">
-                                    <span class="sub-item">Tous les articles</span>
+                            <li th:if="${role.name}=='ROLE_USER' or ${role.name}=='ROLE_ROOT' or ${role.name}=='ROLE_GERANT' or ${role.name}=='ROLE_DG'">
+                                <a th:href="@{/controle/impressions/lists}">
+                                    <span class="sub-item">Contrôle des impressions</span>
                                 </a>
                             </li>
+                            <li th:if="${role.name}=='ROLE_USER' or ${role.name}=='ROLE_ROOT' or ${role.name}=='ROLE_GERANT' or ${role.name}=='ROLE_DG'">
+                                <a th:href="@{/controle/sousTraitance/lists}">
+                                    <span class="sub-item">Contrôle des sous traitances</span>
+                                </a>
+                            </li>
+                            <li th:if="${role.name}=='ROLE_USER' or ${role.name}=='ROLE_ROOT' or ${role.name}=='ROLE_GERANT' or ${role.name}=='ROLE_DG'">
+                                <a th:href="@{/controle/pertes/lists}">
+                                    <span class="sub-item">Contrôle des pertes</span>
+                                </a>
+                            </li>
+
                             <li th:if="${role.name}=='ROLE_ROOT' or ${role.name}=='ROLE_GERANT' or ${role.name}=='ROLE_DG'">
                                 <a th:href="@{/caisse/lists}">
                                     <span class="sub-item">Gestion de la caisse</span>
@@ -79,11 +71,7 @@
                     </a>
                     <div class="collapse" id="base">
                         <ul class="nav nav-collapse">
-                            <li th:if="${role.name}=='ROLE_ROOT' or ${role.name}=='ROLE_GERANT' or ${role.name}=='ROLE_DG' or ${role.name}=='ROLE_DT' or ${role.name}=='ROLE_CAISSE'">
-                                <a th:href="@{/produit/produits}">
-                                    <span class="sub-item">Produits en stock</span>
-                                </a>
-                            </li>
+
                             <li th:if="${role.name}=='ROLE_ROOT' or ${role.name}=='ROLE_GERANT' or ${role.name}=='ROLE_DG' or ${role.name}=='ROLE_DT' or ${role.name}=='ROLE_INFO'">
                                 <a href="#log" data-toggle="collapse" >
                                     <p>Materiels & Logistique</p>
@@ -92,18 +80,8 @@
                                 <div class="collapse" id="log">
                                     <ul class="nav nav-collapse">
                                         <li>
-                                            <a th:href="@{/materiel/ordinateurs}">
-                                                <span class="sub-item">Ordinateurs</span>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a th:href="@{/materiel/imprimantes}">
-                                                <span class="sub-item">Imprimantes</span>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a th:href="@{/materiel/studios}">
-                                                <span class="sub-item">Studio</span>
+                                            <a th:href="@{/materiel/materiels}">
+                                                <span class="sub-item">Materiels</span>
                                             </a>
                                         </li>
                                     </ul>
@@ -115,44 +93,14 @@
                 <li class="nav-item" th:if="${role.name}=='ROLE_ROOT' or ${role.name}=='ROLE_GERANT' or ${role.name}=='ROLE_DG'or ${role.name}=='ROLE_DRH'" >
                     <a data-toggle="collapse" href="#sidebarLayouts">
                         <i class="fas fa-th-list"></i>
-                        <p>Ressources humaines</p>
+                        <p>Boutique</p>
                         <span class="caret"></span>
                     </a>
                     <div class="collapse" id="sidebarLayouts" >
                         <ul class="nav nav-collapse" >
-                            <li >
-                                <a th:href="@{/user/users}">
-                                    <span class="sub-item">Tous le personnel</span>
-                                </a>
-                            </li>
-                            <li >
-                                <a th:href="@{/user/users/}+'consultant'">
-                                    <span class="sub-item">Consultants</span>
-                                </a>
-                            </li>
-                            <li >
-                                <a th:href="@{/user/users/}+'staff'">
-                                    <span class="sub-item">Staffs</span>
-                                </a>
-                            </li>
-                            <li >
-                                <a th:href="@{/user/users/}+'stagiaire'">
-                                    <span class="sub-item">Stagiaires</span>
-                                </a>
-                            </li>
-                            <li >
-                                <a th:href="@{/user/users/}+'volontaire'">
-                                    <span class="sub-item">Volontaires</span>
-                                </a>
-                            </li>
-                            <li >
-                                <a th:href="@{/client/clients}">
-                                    <span class="sub-item">Clients</span>
-                                </a>
-                            </li>
-                            <li >
-                                <a th:href="@{/receptions/lists}">
-                                    <span class="sub-item">Visiteurs</span>
+                            <li th:if="${role.name}=='ROLE_ROOT' or ${role.name}=='ROLE_GERANT' or ${role.name}=='ROLE_DG' or ${role.name}=='ROLE_CAISSE'">
+                                <a th:href="@{/produit/produits}">
+                                    <span class="sub-item">Boutique</span>
                                 </a>
                             </li>
 

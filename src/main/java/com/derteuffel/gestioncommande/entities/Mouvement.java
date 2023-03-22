@@ -25,6 +25,7 @@ public class Mouvement implements Serializable {
     private Double soldeFinDollard;
     private Double soldeFinFranc;
     private String numMouvement;
+    private String articleCode;
 
     @ManyToOne
     private Caisse caisse;
@@ -122,5 +123,13 @@ public class Mouvement implements Serializable {
 
     public void setCaisse(Caisse caisse) {
         this.caisse = caisse;
+    }
+
+    public String getArticleCode() {
+        return articleCode;
+    }
+
+    public void setArticleCode(String articleCode) {
+        this.articleCode = articleCode;
     }
 }

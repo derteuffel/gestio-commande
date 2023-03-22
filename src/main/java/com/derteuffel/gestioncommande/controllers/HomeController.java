@@ -1,6 +1,5 @@
 package com.derteuffel.gestioncommande.controllers;
 
-import com.derteuffel.gestioncommande.Services.CategoryService;
 import com.derteuffel.gestioncommande.Services.CommandeService;
 import com.derteuffel.gestioncommande.entities.*;
 import com.derteuffel.gestioncommande.helpers.PageModel;
@@ -8,8 +7,6 @@ import com.derteuffel.gestioncommande.repositories.CommandeRepository;
 import com.derteuffel.gestioncommande.repositories.CompteRepository;
 import com.derteuffel.gestioncommande.repositories.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -58,12 +55,12 @@ public class HomeController {
         model.addAttribute("commande",new Commande());
         model.addAttribute("article", new Article());
         System.out.println(commandes);
-        Role role = roleRepository.findByName("ROLE_DRH");
-        Role role1 = roleRepository.findByName("ROLE_INFO");
-        Role role2 = roleRepository.findByName("ROLE_USER");
+        Role role = roleRepository.findByName(ERole.ROLE_BOUTIQUE.name());
+        Role role1 = roleRepository.findByName(ERole.ROLE_INFO.name());
+        Role role2 = roleRepository.findByName(ERole.ROLE_RECEPTION.name());
         if (compte.getRoles().size() ==1 && (compte.getRoles().contains(role)
                 || compte.getRoles().contains(role1))){
-            return "redirect:/user/users";
+            return "redirect:/boutique/boutiques";
         }
         if (compte.getRoles().size() == 1 && compte.getRoles().contains(role2)){
 

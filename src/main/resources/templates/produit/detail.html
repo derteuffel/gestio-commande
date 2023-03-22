@@ -44,7 +44,7 @@
     </style>
 </head>
 <body>
-<div class="wrapper" th:each="role : ${compte.roles}">
+<div class="wrapper">
     <div th:replace="~{../templates/fragments/navbar :: navbar}"></div>
     <div th:replace="~{../templates/fragments/sidebar :: sidebar}"></div>
 
@@ -54,12 +54,72 @@
                 <div class="page-inner py-5">
                     <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
                         <div>
-                            <h2 class="text-white pb-2 fw-bold">Tableau de bord</h2>
-                            <h5 class="text-white op-7 mb-2">Tableau de gestion de materiel | <span th:text="${title}"></span></h5>
+                            <h2 class="text-white pb-2 fw-bold">Produit</h2>
+                            <h5 class="text-white op-7 mb-2">Contenu detaille d'un produit</h5>
                         </div>
                         <div class="ml-md-auto py-2 py-md-0">
-                            <a th:href="@{/}" class="btn btn-white btn-border btn-round mr-2">Accueil</a>
-                            <a href="#" class="btn btn-secondary btn-round">Rapports</a>
+                            <a th:href="@{/materiel/materiels}" class="btn btn-white btn-border btn-round mr-2">Retour</a>
+                            <a data-toggle="modal" data-target="#createArticleModal" th:attr="data-target='#createArticleModal'"  class="btn btn-secondary btn-round">Editer</a>
+                        </div>
+                        <!-- Modal create Article -->
+                        <div class="modal fade" th:id="createArticleModal" tabindex="-1" role="dialog" aria-labelledby="createArticleModalLabel" >
+                            <div class="modal-dialog" >
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="createArticleModalLabel">Formulaire de mise a jour d'un materiel</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form th:action="@{/produit/save}" method="post" th:object="${produit}">
+                                            <div class="modal-body text-left">
+                                                <div class="row">
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group form-group-default">
+                                                            <label for="name">Nom du Produit :</label>
+                                                            <input type="text" class="form-control" th:field="*{name}" id="name" placeholder="Entrer le nom du produit...">
+                                                            <input type="hidden" class="form-control" th:field="*{productId}" >
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group form-group-default">
+                                                            <label for="quantite">Quantite :</label>
+                                                            <input type="text" class="form-control"  th:field="*{quantity}" id="quantite" placeholder="Entrer la quantite du produit">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group form-group-default">
+                                                            <label for="color">Couleur :</label>
+                                                            <input type="text" class="form-control" th:field="*{color}" id="color" placeholder="Couleur">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group form-group-default">
+                                                            <label for="amount">Montant :</label>
+                                                            <input type="number" class="form-control" th:field="*{amount}" id="amount" placeholder="Montant">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group form-group-default">
+                                                            <label >Categorie du produit:
+                                                            </label>
+                                                            <select th:field="*{category}"    class="form-control">
+                                                                <option value="">--Choisir une categorie--</option>
+                                                                <option th:each="category : ${categories}" th:value="${category}" th:text="${category}">Conception</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                                                <button type="submit" class="btn btn-primary">Enregistrer...</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -68,150 +128,59 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header">
-                            <div class="d-flex align-items-center">
-                                <h4 class="card-title">
-                                    <span th:text="${message}" class="text-success"></span>
-                                    <span th:text="${deleteMessage}" class="text-success"></span>
-                                </h4>
-                                <button th:if="${role.name} == 'ROLE_ROOT' or ${role.name} == 'ROLE_DT' or ${role.name} == 'ROLE_INFO' or ${role.name} == 'ROLE_CAISSE'" class="btn btn-primary btn-round ml-auto" data-toggle="modal" data-target="#addRowModal">
-                                    <i class="fa fa-plus"></i>
-                                    Materiel
-                                </button>
-                            </div>
+                            <h4 class="card-title">Description du produit</h4>
                         </div>
                         <div class="card-body">
-                            <!-- Modal -->
-                            <div class="modal fade" id="addRowModal" tabindex="-1" role="dialog" aria-hidden="true">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content" >
-                                        <div  class="modal-header no-bd">
-                                            <h5 class="modal-title">
-														<span class="fw-mediumbold">
-														Formulaire d'un nouveau</span>
-                                                <span class="fw-light">
-															Materiel
-														</span>
-                                            </h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <form  th:action="@{/materiel/save}" method="post" th:object="${materiel}" >
-                                            <div class="modal-body">
-                                                    <p class="small">Bien vouloir renseigner les champs ci-dessous pour ajouter un nouvel element</p>
-                                                    <div class="row">
-                                                        <div class="col-sm-12">
-                                                            <div class="form-group form-group-default">
-                                                                <label for="name">Nom  :</label>
-                                                                <input type="text" class="form-control" th:field="*{nom}" id="name" placeholder="Entrer le nom complet de l'ordinateur...">
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-sm-12">
-                                                            <div class="form-group form-group-default">
-                                                                <label for="marque">Marque :</label>
-                                                                <input type="text" class="form-control" id="marque" th:field="*{marque}" placeholder="Entrer la marque">
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-sm-12">
-                                                            <div class="form-group form-group-default">
-                                                                <label for="marque">Date d'achat :</label>
-                                                                <input type="date" class="form-control" id="buyDate" th:field="*{buyDate}" placeholder="Date d'achat">
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-sm-12">
-                                                            <div class="form-group form-group-default">
-                                                                <label for="marque">Departement :</label>
-                                                                <select class="form-control" th:field="*{departement}">
-                                                                    <option value="">--Choisir un departement--</option>
-                                                                    <option th:each="item : ${departements}" th:value="${item}"></option>
-                                                                </select>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-sm-12">
-                                                            <div class="form-group form-group-default">
-                                                                <label for="marque">Categorie :</label>
-                                                                <select class="form-control" th:field="*{category}" >
-                                                                    <option value="">--Choisir un categorie--</option>
-                                                                    <option th:each="item : ${categories}" th:value="${item}"></option>
-                                                                </select>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-sm-12">
-                                                            <div class="form-group form-group-default">
-                                                                <label for="description">Description  :</label>
-                                                                <textarea th:field="*{description}" id="description" class="form-control"  rows="4"></textarea>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-sm-12">
-                                                            <div class="form-group form-group-default">
-                                                                <label for="status">Etat :</label>
-                                                                <input type="text" class="form-control" id="status" th:field="*{status}" placeholder="Etat de l'appareil">
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-sm-12">
-                                                            <div class="form-group form-group-default">
-                                                                <label for="marketValue">Valuer marchande :</label>
-                                                                <input type="number" class="form-control" id="marketValue" th:field="*{marketValue}" placeholder="Valeur marchande">
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            <div class="modal-footer no-bd">
-                                                    <button type="button" class="btn btn-danger" data-dismiss="modal">Fermer</button>
-                                                    <button type="submit"  class="btn btn-primary">Enregistrer</button>
-                                                </div>
-                                        </form>
-
-                                    </div>
+                            <div class="row my--2">
+                                <div class="col-md-5">
+                                    <strong>Nom :</strong>
+                                </div>
+                                <div class="col-md-7">
+                                    <span th:text="${produit.name}"></span>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <div class="form-group-default">
-                                    <select class="form-control">
-                                        <option value="" th:each="item : ${departements}">
-                                            <a th:href="@{/materiel/materiels/departement+'?departement='}+${item}" th:text="${item}"></a>
-                                        </option>
-                                    </select>
+                            <hr>
+                            <div class="row my--2">
+                                <div class="col-md-5">
+                                    <strong>Montant :</strong>
+                                </div>
+                                <div class="col-md-7">
+                                    <span th:text="${produit.amount}"></span>
                                 </div>
                             </div>
-                            <div class="table-responsive">
-                                <table id="add-row" class="display table table-striped table-hover" >
-                                    <thead>
-                                    <tr>
-                                    <thead>
-                                    <th>NOM</th>
-                                    <th>MARQUE</th>
-                                    <th>DESCRIPTION</th>
-                                    <th>QUANTITE</th>
-                                    <th>DEPARTEMENT</th>
-                                    <th>VALEUR (USD)</th>
-                                    <th style="width: 10%">ACTION</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr th:each="materiel : ${lists}">
-                                        <td th:text="${materiel.nom}"></td>
-                                        <td th:text="${materiel.marque}"></td>
-                                        <td th:text="${materiel.description}"></td>
-                                        <td th:text="${materiel.quantity}"></td>
-                                        <td th:text="${materiel.departement}"></td>
-                                        <td th:text="${materiel.marketValue}"></td>
-                                         <td>
-                                            <div  class="form-button-action">
-                                                <a th:if="${role.name} == 'ROLE_ROOT' or ${role.name} == 'ROLE_INFO' or ${role.name} == 'ROLE_DT'" class="btn text-success" th:href="@{/materiel/detail/}+${materiel.materielId}"><i class="fa fa-angle-double-right"></i></a>
-                                                <a th:if="${role.name} == 'ROLE_ROOT' or ${role.name} == 'ROLE_DT' or ${role.name} == 'ROLE_GERANT'" class="btn text-danger" data-toggle="modal" data-target="#deleteModal" th:attr="data-target='#deleteOrdinateurModal'+${materiel.materielId}"><i class="fa fa-trash"></i></a>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-
+                            <hr>
+                            <div class="row my--2">
+                                <div class="col-md-5">
+                                    <strong>Quantite :</strong>
+                                </div>
+                                <div class="col-md-7">
+                                    <span th:text="${produit.quantity}"></span>
+                                </div>
                             </div>
+                            <hr>
+                            <div class="row my--2">
+                                <div class="col-md-5">
+                                    <strong>Categorie :</strong>
+                                </div>
+                                <div class="col-md-7">
+                                    <span th:text="${produit.category}"></span>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row my--2">
+                                <div class="col-md-5">
+                                    <strong>Couleur :</strong>
+                                </div>
+                                <div class="col-md-7">
+                                    <span th:text="${produit.color}"></span>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </div>
             </div>
-            <footer th:replace="~{../templates/fragments/footer :: footer}"></footer>
+            <footer th:replace="~{../templates/demo1/fragments/footer :: footer}"></footer>
         </div>
     </div>
     <!-- Custom template | don't include it in your project!-->
@@ -330,7 +299,7 @@
 <script th:src="@{/js/atlantis.min.js}"></script>
 
 <!-- Atlantis DEMO methods, don't include it in your project! -->
-<script th:src="@{/js/setting-demo.js}"></script>
+<script th:src="@{js/setting-demo.js}"></script>
 <script th:src="@{/js/demo.js}"></script>
 <script>
     Circles.create({

@@ -43,21 +43,15 @@ public class Commande  implements Serializable {
     private Boolean gerantState;
     private String states;
     private int nbreArticle;
+    private String nomClient;
+    private String emailClient;
+    private String phoneClient;
+    private String adresseClient;
 
     private String code;
 
     private int quantity=0;
 
-    @ManyToOne
-    private Client client;
-
-    /*@OneToMany(mappedBy = "commande")
-    @OnDelete(action= OnDeleteAction.NO_ACTION)
-    @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private Collection<Article> articles;*/
-
-   /* @OneToMany(mappedBy = "commande")
-    private List<Approbation> approbations;*/
 
 
     @ManyToOne
@@ -160,21 +154,37 @@ public class Commande  implements Serializable {
         this.quantity = quantity;
     }
 
-    public Client getClient() {
-        return client;
+    public String getNomClient() {
+        return nomClient;
     }
 
-    public void setClient(Client client) {
-        this.client = client;
+    public void setNomClient(String nomClient) {
+        this.nomClient = nomClient;
     }
 
-    /*public Collection<Article> getArticles() {
-        return articles;
+    public String getEmailClient() {
+        return emailClient;
     }
 
-    public void setArticles(Collection<Article> articles) {
-        this.articles = articles;
-    }*/
+    public void setEmailClient(String emailClient) {
+        this.emailClient = emailClient;
+    }
+
+    public String getPhoneClient() {
+        return phoneClient;
+    }
+
+    public void setPhoneClient(String phoneClient) {
+        this.phoneClient = phoneClient;
+    }
+
+    public String getAdresseClient() {
+        return adresseClient;
+    }
+
+    public void setAdresseClient(String adresseClient) {
+        this.adresseClient = adresseClient;
+    }
 
     public Compte getCompte() {
         return compte;

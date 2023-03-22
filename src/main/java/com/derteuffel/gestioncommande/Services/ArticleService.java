@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class ArticleService {
@@ -21,75 +22,181 @@ public class ArticleService {
     private MouvementRepository mouvementRepository;
 
     @Autowired
-    private CaisseRepository caisseRepository;
+    private ProductRepository productRepository;
 
     @Autowired
-    private CategoryRepository categoryRepository;
+    private CaisseRepository caisseRepository;
 
-    public Page<Article> findAll(Pageable pageable) {
-        return articleRepository.findAll(pageable);
-    }
 
     public List<Article> findAll(){
-        return articleRepository.findAll();
+        try {
+            return articleRepository.findAll();
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
+        }
+
     }
 
     public <S extends Article> List<S> saveAll(List<S> iterable, Long commandeId) {
 
-        Commande commande = commandeRepository.getOne(commandeId);
-        for(int i=0; i<=iterable.size();i++){
-            iterable.get(i).setCommande(commande);
+        try {
+            Commande commande = commandeRepository.getOne(commandeId);
+            for (int i = 0; i <= iterable.size(); i++) {
+                iterable.get(i).setCommande(commande);
+            }
+            return articleRepository.saveAll(iterable);
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         }
-        return articleRepository.saveAll(iterable);
     }
 
     public Article getOne(Long articleId) {
-        return articleRepository.getOne(articleId);
+        try {
+            return articleRepository.getOne(articleId);
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     public List<Article> findAllByCommande_CommandeId(Long commandeId) {
-        return articleRepository.findAllByCommande_CommandeId(commandeId);
+        try {
+            return articleRepository.findAllByCommande_CommandeId(commandeId);
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    public List<Article> findAllByProductCode(String productCode) {
+        try {
+            return articleRepository.findAllByProductCode(productCode);
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     public  Article  save(Article s, Long commandId) {
 
-        Caisse caisse = caisseRepository.findByStatus(true);
-        Mouvement mouvement = new Mouvement();
-        mouvement.setType("ENTRER");
-        mouvement.setCaisse(caisse);
-        mouvement.setLibelle(s.getName());
-        mouvement.setNumMouvement(mouvementRepository.findAllByCaisse_Id(caisse.getId()).size()+"/"+caisse.getMois()+"/"+caisse.getAnnee());
-        Commande commande = commandeRepository.getOne(commandId);
-        s.setCommande(commande);
-        commande.setQuantity(articleRepository.findAllByCommande_CommandeId(commandId).size()+1);
-        if (s.getMonnaie().equals(EAMonaie.CDF.toString())){
-            s.setTotalCDF(s.getPrice() * s.getQuantity());
-            s.setTotalUSD(s.getTotalCDF() / commande.getTauxJour());
-            mouvement.setMontantFranc(s.getTotalCDF());
-            mouvement.setMontantDollard(s.getTotalUSD());
-        }else {
-            s.setTotalUSD(s.getQuantity() * s.getPrice());
-            s.setTotalCDF(s.getTotalUSD() * commande.getTauxJour());
-            mouvement.setMontantDollard(s.getTotalUSD());
-            mouvement.setMontantFranc(s.getTotalCDF());
+        try {
+            s.setCodeArticle("#"+ UUID.randomUUID());
+            Caisse caisse = caisseRepository.findByStatus(true);
+            Product product = productRepository.findByProductCode(s.getName().split("_")[1]);
+            System.out.println(s.getName().split("_")[1]);
+            System.out.println(product.getName());
+            if (product != null){
+                System.out.println("Je suis ici : "+product.getName());
+                s.setProductCode(product.getProductCode());
+                    product.setQuantity(product.getQuantity() - s.getQuantity());
+                    productRepository.save(product);
+
+            }
+            Mouvement mouvement = new Mouvement();
+            mouvement.setType("ENTRER");
+            mouvement.setCaisse(caisse);
+            mouvement.setLibelle(s.getName());
+            mouvement.setNumMouvement(mouvementRepository.findAllByCaisse_Id(caisse.getId()).size() + "/" + caisse.getMois() + "/" + caisse.getAnnee());
+            Commande commande = commandeRepository.getOne(commandId);
+            s.setCommande(commande);
+
+            commande.setQuantity(articleRepository.findAllByCommande_CommandeId(commandId).size() + 1);
+            if (s.getMonnaie().equals(EAMonaie.CDF.toString())) {
+                s.setTotalCDF(s.getPrice() * s.getQuantity());
+                s.setTotalUSD(s.getTotalCDF() / commande.getTauxJour());
+                mouvement.setMontantFranc(s.getTotalCDF());
+                mouvement.setMontantDollard(s.getTotalUSD());
+            } else {
+                s.setTotalUSD(s.getQuantity() * s.getPrice());
+                s.setTotalCDF(s.getTotalUSD() * commande.getTauxJour());
+                mouvement.setMontantDollard(s.getTotalUSD());
+                mouvement.setMontantFranc(s.getTotalCDF());
+            }
+
+            caisse.setSoldeFinMoisDollard(caisse.getSoldeFinMoisDollard() + mouvement.getMontantDollard());
+            caisse.setSoldeFinMoisFranc(caisse.getSoldeFinMoisFranc() + mouvement.getMontantFranc());
+            caisse.setMouvementMensuelDollard(caisse.getMouvementMensuelDollard() + mouvement.getMontantDollard());
+            caisse.setMouvementMensuelFranc(caisse.getMouvementMensuelFranc() + mouvement.getMontantFranc());
+            mouvement.setSoldeFinFranc(caisse.getSoldeFinMoisFranc());
+            mouvement.setSoldeFinDollard(caisse.getSoldeFinMoisDollard());
+
+            commande.setAmountCDF(commande.getAmountCDF() + s.getTotalCDF());
+            commande.setAmountUSD(commande.getAmountUSD() + s.getTotalUSD());
+            commande.setNbreArticle(commande.getNbreArticle() + 1);
+            commande.setQuantity(commande.getQuantity() + s.getQuantity());
+
+            System.out.println("Test to print"+s.getCodeArticle());
+            Article savedArticle = articleRepository.save(s);
+            commandeRepository.save(commande);
+            caisseRepository.save(caisse);
+            mouvement.setArticleCode(savedArticle.getCodeArticle());
+            mouvementRepository.save(mouvement);
+
+            return savedArticle;
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         }
+    }
 
-        caisse.setSoldeFinMoisDollard(caisse.getSoldeFinMoisDollard()+mouvement.getMontantDollard());
-        caisse.setSoldeFinMoisFranc(caisse.getSoldeFinMoisFranc()+mouvement.getMontantFranc());
-        caisse.setMouvementMensuelDollard(caisse.getMouvementMensuelDollard()+mouvement.getMontantDollard());
-        caisse.setMouvementMensuelFranc(caisse.getMouvementMensuelFranc()+mouvement.getMontantFranc());
-        mouvement.setSoldeFinFranc(caisse.getSoldeFinMoisFranc());
-        mouvement.setSoldeFinDollard(caisse.getSoldeFinMoisDollard());
+    public Article update(Article article, Long id){
+        try {
+            Article existedArticle = articleRepository.getOne(id);
+            Mouvement mouvement = mouvementRepository.findByArticleCode(article.getCodeArticle());
+            Commande commande = article.getCommande();
+            Caisse caisse = mouvement.getCaisse();
+            // Remove  first old mouvement value in caisse
+            caisse.setSoldeFinMoisDollard(caisse.getSoldeFinMoisDollard() - mouvement.getMontantDollard());
+            caisse.setSoldeFinMoisFranc(caisse.getSoldeFinMoisFranc() - mouvement.getMontantFranc());
+            caisse.setMouvementMensuelDollard(caisse.getMouvementMensuelDollard() - mouvement.getMontantDollard());
+            caisse.setMouvementMensuelFranc(caisse.getMouvementMensuelFranc() - mouvement.getMontantFranc());
 
-        commande.setAmountCDF(commande.getAmountCDF() + s.getTotalCDF());
-        commande.setAmountUSD(commande.getAmountUSD() + s.getTotalUSD());
-        commande.setNbreArticle(commande.getNbreArticle()+1);
-        commande.setQuantity(commande.getQuantity()+ s.getQuantity());
-        commandeRepository.save(commande);
-        caisseRepository.save(caisse);
-        mouvementRepository.save(mouvement);
+            commande.setQuantity(commande.getQuantity() - existedArticle.getQuantity() + article.getQuantity());
+            if (article.getPrice() != 0.0) {
+                // Remove first old article value in commande
+                commande.setAmountCDF(commande.getAmountCDF() + existedArticle.getTotalCDF());
+                commande.setAmountUSD(commande.getAmountUSD() + existedArticle.getTotalUSD());
+                commande.setNbreArticle(commande.getNbreArticle() - 1);
+                commande.setQuantity(commande.getQuantity() + existedArticle.getQuantity());
 
-        return articleRepository.save(s);
+                if (article.getMonnaie().equals(EAMonaie.CDF.toString())) {
+                    existedArticle.setTotalCDF(article.getPrice() * article.getQuantity());
+                    existedArticle.setTotalUSD(article.getTotalCDF() / commande.getTauxJour());
+                    mouvement.setMontantFranc(existedArticle.getTotalCDF());
+                    mouvement.setMontantDollard(existedArticle.getTotalUSD());
+                } else {
+                    existedArticle.setTotalUSD(article.getQuantity() * article.getPrice());
+                    existedArticle.setTotalCDF(article.getTotalUSD() * commande.getTauxJour());
+                    mouvement.setMontantDollard(existedArticle.getTotalUSD());
+                    mouvement.setMontantFranc(existedArticle.getTotalCDF());
+                }
+
+                // Set new update value of article
+                commande.setAmountCDF(commande.getAmountCDF() + existedArticle.getTotalCDF());
+                commande.setAmountUSD(commande.getAmountUSD() + existedArticle.getTotalUSD());
+                commande.setNbreArticle(commande.getNbreArticle() + 1);
+                commande.setQuantity(commande.getQuantity() + existedArticle.getQuantity());
+            }
+
+            //Set new mouvement value in caisse
+            caisse.setSoldeFinMoisDollard(caisse.getSoldeFinMoisDollard() + mouvement.getMontantDollard());
+            caisse.setSoldeFinMoisFranc(caisse.getSoldeFinMoisFranc() + mouvement.getMontantFranc());
+            caisse.setMouvementMensuelDollard(caisse.getMouvementMensuelDollard() + mouvement.getMontantDollard());
+            caisse.setMouvementMensuelFranc(caisse.getMouvementMensuelFranc() + mouvement.getMontantFranc());
+
+            mouvement.setSoldeFinFranc(caisse.getSoldeFinMoisFranc());
+            mouvement.setSoldeFinDollard(caisse.getSoldeFinMoisDollard());
+            Article savedArticle = articleRepository.save(existedArticle);
+            commandeRepository.save(commande);
+            caisseRepository.save(caisse);
+            mouvementRepository.save(mouvement);
+            return savedArticle;
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new RuntimeException("Ooops, Une erreur est survenue");
+        }
     }
 
     public long count() {
@@ -97,14 +204,12 @@ public class ArticleService {
     }
 
     public void deleteById(Long articleId) {
-        articleRepository.deleteById(articleId);
+        try {
+            articleRepository.deleteById(articleId);
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
-    public List<Article> findAllByType(String type) {
-        return articleRepository.findAllByType(type);
-    }
-
-    public List<Article> findAllByCategory(String category) {
-        return articleRepository.findAllByCategory(category);
-    }
 }

@@ -18,19 +18,43 @@ public class ProductService {
     private ProductRepository productRepository;
 
     public List<Product> findAll() {
-        return productRepository.findAll(Sort.by(Sort.Direction.DESC,"productId"));
+        try {
+            return productRepository.findAll(Sort.by(Sort.Direction.DESC,"productId"));
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
+        }
+
     }
 
-    public Page<Product> findAll(Pageable pageable) {
-        return productRepository.findAll(pageable);
+    public List<Product> findAllByCategory(String category) {
+        try {
+            return productRepository.findAllByCategory(category);
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
+        }
+
     }
+
 
     public Product getOne(Long productId) {
-        return productRepository.getOne(productId);
+        try {
+            return productRepository.getOne(productId);
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     public <S extends Product> S save(S s) {
-        return productRepository.save(s);
+        try {
+            s.setProductCode("#"+Math.random()*10000000);
+            return productRepository.save(s);
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     public long count() {
@@ -38,6 +62,11 @@ public class ProductService {
     }
 
     public void deleteById(Long productId) {
-        productRepository.deleteById(productId);
+        try {
+            productRepository.deleteById(productId);
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
+        }
     }
 }

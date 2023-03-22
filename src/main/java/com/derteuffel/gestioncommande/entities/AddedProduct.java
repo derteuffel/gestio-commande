@@ -16,8 +16,20 @@ public class AddedProduct {
     private Long addedProductId;
 
     private int quantity;
+
     private String description;
-    private Date addedDate = new Date();
+
+    private String addedDate;
+
+    private String actionType;
+
+    private Double unitCost = 0.0;
+
+    private Double totalCost = 0.0;
+
+    private String devise;
+
+    private int tauxDuJour;
 
     @ManyToOne
     @JsonIgnoreProperties("addedProducts")
@@ -47,11 +59,11 @@ public class AddedProduct {
         this.description = description;
     }
 
-    public Date getAddedDate() {
+    public String getAddedDate() {
         return addedDate;
     }
 
-    public void setAddedDate(Date addedDate) {
+    public void setAddedDate(String addedDate) {
         this.addedDate = addedDate;
     }
 
@@ -61,5 +73,45 @@ public class AddedProduct {
 
     public void setProduct(Product product) {
         this.product = product;
+    }
+
+    public String getActionType() {
+        return actionType;
+    }
+
+    public void setActionType(String actionType) {
+        this.actionType = actionType;
+    }
+
+    public Double getUnitCost() {
+        return unitCost;
+    }
+
+    public void setUnitCost(Double unitCost) {
+        this.unitCost = unitCost;
+    }
+
+    public Double getTotalCost() {
+        return totalCost;
+    }
+
+    public void setTotalCost(Double totalCost) {
+        this.totalCost = totalCost;
+    }
+
+    public String getDevise() {
+        return devise;
+    }
+
+    public void setDevise(String devise) {
+        this.devise = devise;
+    }
+
+    public int getTauxDuJour() {
+        return tauxDuJour;
+    }
+
+    public void setTauxDuJour(int tauxDuJour) {
+        this.tauxDuJour = tauxDuJour;
     }
 }

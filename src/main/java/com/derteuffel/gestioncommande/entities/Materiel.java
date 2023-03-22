@@ -2,9 +2,12 @@ package com.derteuffel.gestioncommande.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
+
 @Entity
 @Table(name = "materiel")
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -17,10 +20,14 @@ public class Materiel implements Serializable {
     private String nom;
     private String marque;
     private String description;
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
+    private Date buyDate;
+    private int quantity;
+    private Double marketValue = 0.0;
+    private String departement;
+    private String category;
+    private String status;
 
-    @ManyToOne
-    @JsonIgnoreProperties("materiels")
-    private User user;
 
     public Long getMaterielId() {
         return materielId;
@@ -54,11 +61,51 @@ public class Materiel implements Serializable {
         this.description = description;
     }
 
-    public User getUser() {
-        return user;
+    public Date getBuyDate() {
+        return buyDate;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setBuyDate(Date buyDate) {
+        this.buyDate = buyDate;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public Double getMarketValue() {
+        return marketValue;
+    }
+
+    public void setMarketValue(Double marketValue) {
+        this.marketValue = marketValue;
+    }
+
+    public String getDepartement() {
+        return departement;
+    }
+
+    public void setDepartement(String departement) {
+        this.departement = departement;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

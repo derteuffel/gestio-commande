@@ -1,9 +1,9 @@
 package com.derteuffel.gestioncommande.repositories;
 
-import com.derteuffel.gestioncommande.entities.Category;
+import com.derteuffel.gestioncommande.entities.ControleImpression;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface CategoryRepository extends JpaRepository<Category,Long> {
+public interface ControleImpressionRepository extends JpaRepository<ControleImpression, Long> {
 }

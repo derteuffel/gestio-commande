@@ -111,25 +111,25 @@
                                                     <div class="col-sm-12">
                                                         <div class="form-group form-group-default">
                                                             <label for="clientName">Nom du Client :</label>
-                                                            <input type="text" class="form-control" id="clientName" name="name" placeholder="Entrer le Nom du Client">
+                                                            <input type="text" class="form-control" id="clientName" th:field="*{nomClient}" placeholder="Entrer le Nom du Client">
                                                         </div>
                                                     </div>
                                                     <div class="col-sm-12">
                                                         <div class="form-group form-group-default">
                                                             <label for="clientEmail">E-Mail du Client :</label>
-                                                            <input type="email" class="form-control" id="clientEmail" name="email" placeholder="Entrer l'adresse e-mail du client">
+                                                            <input type="email" class="form-control" id="clientEmail" th:field="*{emailClient}" placeholder="Entrer l'adresse e-mail du client">
                                                         </div>
                                                     </div>
                                                     <div class="col-sm-12">
                                                         <div class="form-group form-group-default">
                                                             <label for="clientPhone">Numero du Client :</label>
-                                                            <input type="text" class="form-control" id="clientPhone" name="phone" placeholder="Entrer le numero de telephone du Client">
+                                                            <input type="text" class="form-control" id="clientPhone" th:field="*{phoneClient}" placeholder="Entrer le numero de telephone du Client">
                                                         </div>
                                                     </div>
                                                     <div class="col-sm-12">
                                                         <div class="form-group form-group-default">
                                                             <label for="clientAdresse">Adresse du Client :</label>
-                                                            <input type="text" class="form-control" id="clientAdresse" name="adresse" placeholder="Entrer l'adresse p   hysique du Client">
+                                                            <input type="text" class="form-control" id="clientAdresse" th:field="*{adresseClient}" placeholder="Entrer l'adresse p   hysique du Client">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -160,7 +160,7 @@
                                     <tbody>
                                     <tr th:each="order : ${lists}">
                                         <td th:text="${order.title}"></td>
-                                        <td th:text="${order.client.name}"></td>
+                                        <td th:text="${order.nomClient}"></td>
                                         <td >
                                             <span th:if="${#strings.length(order.createdDate)}>10" th:text="${#strings.substring(order.createdDate,0,10)}"></span>
                                             <span th:unless="${#strings.length(order.createdDate)}>10" th:text="${order.createdDate}"></span>
@@ -168,7 +168,7 @@
                                         <td th:text="${order.code}"></td>
                                         <td>
                                             (<span th:text="${order.nbreArticle}"></span> )
-                                            <a data-toggle="modal" data-target="#createArticleModal" class="btn text-success" th:attr="data-target='#createArticleModal'+${order.commandeId}"><i class="fa fa-plus"></i></a>
+
                                         </td>
                                         <td th:if="${order.status} == true">Livree</td>
                                         <td th:unless="${order.status} == true">Encours</td>
@@ -207,93 +207,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <!-- Modal Show Lists of Articles -->
-<!--
-                                        <div class="modal fade" th:id="listsArticleModal+${order.commandeId}" tabindex="-1" role="dialog" aria-labelledby="listsArticleModalLabel" >
-                                            <div class="modal-dialog" >
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title" id="listsArticleModalLabel">Listes des Articles</h5>
-                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                            <span aria-hidden="true">&times;</span>
-                                                        </button>
-                                                    </div>
-                                                    <div class="modal-body text-left" th:each="list : ${order.articles}">
-                                                        <a th:href="@{/article/get/}+${list.articleId}" th:text="${list.name}"></a>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
--->
 
-                                        <!-- Modal create Article -->
-                                        <div class="modal fade" th:id="createArticleModal+${order.commandeId}" tabindex="-1" role="dialog" aria-labelledby="createArticleModalLabel" >
-                                            <div class="modal-dialog" >
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title" id="createArticleModalLabel">Formulaire d'ajout d'un article</h5>
-                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                            <span aria-hidden="true">&times;</span>
-                                                        </button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <form th:action="@{/article/save/}+${order.commandeId}" method="post" th:object="${article}">
-                                                            <div class="modal-body text-left">
-                                                                <div class="form-group">
-                                                                    <label for="title">Nom de l'article:
-                                                                    </label>
-                                                                    <input type="text" class="form-control" th:field="*{name}">
-                                                                </div>
-
-                                                                <div class="form-group">
-                                                                    <label for="title">Nombre d'exemplaires:
-                                                                    </label>
-                                                                    <input type="number" class="form-control" th:field="*{quantity}">
-                                                                </div>
-                                                                <div class="form-group">
-                                                                    <label>Devise :
-                                                                    </label>
-                                                                    <select th:field="*{monnaie}"   class="form-control">
-                                                                        <option th:each="monnai : ${T(com.derteuffel.gestioncommande.entities.EAMonaie).values()}" th:value="${monnai}" th:text="${monnai}">Conception</option>
-                                                                    </select>
-                                                                </div>
-                                                                <div class="form-group">
-                                                                    <label >Prix unitaire:
-                                                                    </label>
-                                                                    <input type="number" class="form-control" th:field="*{price}">
-                                                                </div>
-                                                                <div class="form-group">
-                                                                    <label for="description">Description de l'article:
-                                                                    </label>
-                                                                    <textarea th:field="*{description}" id="description" class="form-control" rows="5"></textarea>
-                                                                </div>
-                                                                <div class="form-group">
-                                                                    <label for="title">Type de l'article:
-                                                                    </label>
-                                                                    <select th:field="*{type}" id="" class="form-control">
-                                                                        <option value="Conception" th:each="item : ${T(com.derteuffel.gestioncommande.entities.EAType).values()}" th:value="${item}" th:text="${item}">Conception</option>
-                                                                    </select>
-                                                                </div>
-                                                                <div class="form-group">
-                                                                    <label for="title">Categorie de l'article:
-                                                                    </label>
-                                                                    <select th:field="*{category}"   class="form-control">
-                                                                        <option th:each="category : ${T(com.derteuffel.gestioncommande.entities.EACategory).values()}" th:value="${category}" th:text="${category}">Conception</option>
-                                                                    </select>
-                                                                </div>
-                                                            </div>
-                                                            <div class="modal-footer">
-                                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
-                                                                <button type="submit" class="btn btn-primary">Enregistrer...</button>
-                                                            </div>
-                                                        </form>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
                                         <!-- Modal Updating an Order-->
                                         <div class="modal fade" th:id="updateModal+${order.commandeId}" tabindex="-1" role="dialog" aria-labelledby="updateModalLabel" aria-hidden="true">
                                             <div class="modal-dialog" role="document">

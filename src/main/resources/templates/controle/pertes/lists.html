@@ -32,7 +32,7 @@
 
 
 
-    <title>Accueil</title>
+    <title>Liste des pertes</title>
     <style>
         .nav-item{
             color: #ffffff;
@@ -55,11 +55,10 @@
                     <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
                         <div>
                             <h2 class="text-white pb-2 fw-bold">Tableau de bord</h2>
-                            <h5 class="text-white op-7 mb-2">Tableau de gestion de materiel | <span th:text="${title}"></span></h5>
+                            <h5 class="text-white op-7 mb-2">Controle des pertes</h5>
                         </div>
                         <div class="ml-md-auto py-2 py-md-0">
-                            <a th:href="@{/}" class="btn btn-white btn-border btn-round mr-2">Accueil</a>
-                            <a href="#" class="btn btn-secondary btn-round">Rapports</a>
+                            <a th:href="@{/}" class="btn btn-white btn-border btn-round mr-2"><i class="fa fa-home"></i>&nbsp;Accueil</a>
                         </div>
                     </div>
                 </div>
@@ -69,13 +68,16 @@
                     <div class="card">
                         <div class="card-header">
                             <div class="d-flex align-items-center">
-                                <h4 class="card-title">
-                                    <span th:text="${message}" class="text-success"></span>
-                                    <span th:text="${deleteMessage}" class="text-success"></span>
-                                </h4>
-                                <button th:if="${role.name} == 'ROLE_ROOT' or ${role.name} == 'ROLE_DT' or ${role.name} == 'ROLE_INFO' or ${role.name} == 'ROLE_CAISSE'" class="btn btn-primary btn-round ml-auto" data-toggle="modal" data-target="#addRowModal">
+                                <h4 class="card-title">Nouvel element</h4>
+                                <div th:if="${error}" class="alert alert-danger">
+                                    <h4 th:text="${error}"></h4>
+                                </div>
+                                <div th:if="${success}" class="alert alert-success">
+                                    <h4 th:text="${success}"></h4>
+                                </div>
+                                <button  class="btn btn-primary btn-round ml-auto" data-toggle="modal" data-target="#addRowModal">
                                     <i class="fa fa-plus"></i>
-                                    Materiel
+                                    Element de perte
                                 </button>
                             </div>
                         </div>
@@ -83,129 +85,139 @@
                             <!-- Modal -->
                             <div class="modal fade" id="addRowModal" tabindex="-1" role="dialog" aria-hidden="true">
                                 <div class="modal-dialog" role="document">
-                                    <div class="modal-content" >
-                                        <div  class="modal-header no-bd">
+                                    <div class="modal-content">
+                                        <div class="modal-header no-bd">
                                             <h5 class="modal-title">
 														<span class="fw-mediumbold">
-														Formulaire d'un nouveau</span>
+														Formulaire d'un nouvel</span>
                                                 <span class="fw-light">
-															Materiel
+															element de perte
 														</span>
                                             </h5>
                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
                                         </div>
-                                        <form  th:action="@{/materiel/save}" method="post" th:object="${materiel}" >
+                                        <form th:action="@{/controle/pertes/save}" method="post" th:object="${controlePerte}">
                                             <div class="modal-body">
-                                                    <p class="small">Bien vouloir renseigner les champs ci-dessous pour ajouter un nouvel element</p>
-                                                    <div class="row">
-                                                        <div class="col-sm-12">
-                                                            <div class="form-group form-group-default">
-                                                                <label for="name">Nom  :</label>
-                                                                <input type="text" class="form-control" th:field="*{nom}" id="name" placeholder="Entrer le nom complet de l'ordinateur...">
-                                                            </div>
+                                                <p class="small">Bien vouloir renseigner les champs ci-dessous pour ajouter un nouvel element de perte</p>
+                                                <div class="row">
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group form-group-default">
+                                                            <label for="color">Date de realisation :</label>
+                                                            <input type="date" class="form-control" th:field="*{releaseDate}" id="color" placeholder="Date du jour">
                                                         </div>
-                                                        <div class="col-sm-12">
-                                                            <div class="form-group form-group-default">
-                                                                <label for="marque">Marque :</label>
-                                                                <input type="text" class="form-control" id="marque" th:field="*{marque}" placeholder="Entrer la marque">
-                                                            </div>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group form-group-default">
+                                                            <label for="amount">Description :</label>
+                                                            <textarea th:field="*{description}"  class="form-control" rows="5" placeholder="Description"></textarea>
                                                         </div>
-                                                        <div class="col-sm-12">
-                                                            <div class="form-group form-group-default">
-                                                                <label for="marque">Date d'achat :</label>
-                                                                <input type="date" class="form-control" id="buyDate" th:field="*{buyDate}" placeholder="Date d'achat">
-                                                            </div>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group form-group-default">
+                                                            <label for="quantity">Quantite :</label>
+                                                            <input type="number" class="form-control" id="quantity"  th:field="*{quantite}" placeholder="Entrer la quantité traité">
                                                         </div>
-                                                        <div class="col-sm-12">
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group form-group-default">
+                                                            <label for="amount">Valeur :</label>
+                                                            <input type="number" class="form-control" th:field="*{valeur}" id="amount" placeholder="Valeur">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group form-group-default">
+                                                            <label >Devise:
+                                                            </label>
+                                                            <select th:field="*{devise}"    class="form-control">
+                                                                <option value="">--Choisir une--</option>
+                                                                <option value="USD">USD</option>
+                                                                <option value="FC">FC</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group form-group-default">
+                                                            <label >Raison (Machine en panne ou manque de machine) :</label>
+                                                            <textarea th:field="*{raison}"  class="form-control" rows="5" placeholder="Raison (Machine en panne ou manque de machine)"></textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group form-group-default">
                                                             <div class="form-group form-group-default">
-                                                                <label for="marque">Departement :</label>
-                                                                <select class="form-control" th:field="*{departement}">
-                                                                    <option value="">--Choisir un departement--</option>
-                                                                    <option th:each="item : ${departements}" th:value="${item}"></option>
+                                                                <label >Nom du staff responsable :
+                                                                </label>
+                                                                <select th:field="*{staffReponsable}"    class="form-control">
+                                                                    <option value="">--Choisir un staff--</option>
+                                                                    <option th:each="compte : ${comptes}" th:value="${compte.login}" th:text="${compte.login}"></option>
                                                                 </select>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-sm-12">
-                                                            <div class="form-group form-group-default">
-                                                                <label for="marque">Categorie :</label>
-                                                                <select class="form-control" th:field="*{category}" >
-                                                                    <option value="">--Choisir un categorie--</option>
-                                                                    <option th:each="item : ${categories}" th:value="${item}"></option>
-                                                                </select>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-sm-12">
-                                                            <div class="form-group form-group-default">
-                                                                <label for="description">Description  :</label>
-                                                                <textarea th:field="*{description}" id="description" class="form-control"  rows="4"></textarea>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-sm-12">
-                                                            <div class="form-group form-group-default">
-                                                                <label for="status">Etat :</label>
-                                                                <input type="text" class="form-control" id="status" th:field="*{status}" placeholder="Etat de l'appareil">
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-sm-12">
-                                                            <div class="form-group form-group-default">
-                                                                <label for="marketValue">Valuer marchande :</label>
-                                                                <input type="number" class="form-control" id="marketValue" th:field="*{marketValue}" placeholder="Valeur marchande">
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
+                                            </div>
                                             <div class="modal-footer no-bd">
-                                                    <button type="button" class="btn btn-danger" data-dismiss="modal">Fermer</button>
-                                                    <button type="submit"  class="btn btn-primary">Enregistrer</button>
-                                                </div>
+                                                <button type="button" class="btn btn-danger" data-dismiss="modal">Fermer</button>
+                                                <button type="submit"  class="btn btn-primary">Enregistrer</button>
+                                            </div>
                                         </form>
-
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <div class="form-group-default">
-                                    <select class="form-control">
-                                        <option value="" th:each="item : ${departements}">
-                                            <a th:href="@{/materiel/materiels/departement+'?departement='}+${item}" th:text="${item}"></a>
-                                        </option>
-                                    </select>
-                                </div>
-                            </div>
+
+
                             <div class="table-responsive">
                                 <table id="add-row" class="display table table-striped table-hover" >
                                     <thead>
                                     <tr>
-                                    <thead>
-                                    <th>NOM</th>
-                                    <th>MARQUE</th>
+                                    <th>DATE D'ENREGISTREMENT'</th>
                                     <th>DESCRIPTION</th>
                                     <th>QUANTITE</th>
-                                    <th>DEPARTEMENT</th>
-                                    <th>VALEUR (USD)</th>
+                                    <th>VALEUR</th>
+                                    <th>RAISON (Machine en panne ou manque de machine)</th>
+                                    <th>STAFF RESPONSABLE</th>
                                     <th style="width: 10%">ACTION</th>
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <tr th:each="materiel : ${lists}">
-                                        <td th:text="${materiel.nom}"></td>
-                                        <td th:text="${materiel.marque}"></td>
-                                        <td th:text="${materiel.description}"></td>
-                                        <td th:text="${materiel.quantity}"></td>
-                                        <td th:text="${materiel.departement}"></td>
-                                        <td th:text="${materiel.marketValue}"></td>
-                                         <td>
-                                            <div  class="form-button-action">
-                                                <a th:if="${role.name} == 'ROLE_ROOT' or ${role.name} == 'ROLE_INFO' or ${role.name} == 'ROLE_DT'" class="btn text-success" th:href="@{/materiel/detail/}+${materiel.materielId}"><i class="fa fa-angle-double-right"></i></a>
-                                                <a th:if="${role.name} == 'ROLE_ROOT' or ${role.name} == 'ROLE_DT' or ${role.name} == 'ROLE_GERANT'" class="btn text-danger" data-toggle="modal" data-target="#deleteModal" th:attr="data-target='#deleteOrdinateurModal'+${materiel.materielId}"><i class="fa fa-trash"></i></a>
-                                            </div>
+                                    <tr th:each="item : ${lists}">
+                                        <td >
+                                            <span th:text="${item.releaseDate}"></span>&nbsp;
                                         </td>
+                                        <td th:text="${item.description}"></td>
+                                        <td th:text="${item.quantite}"></td>
+                                        <td th:text="${item.valeur+' '+item.devise}"></td>
+                                        <td th:text="${item.raison}"></td>
+                                        <td th:text="${item.staffReponsable}"></td>
+                                        <td>
+                                            <a class="btn" th:href="@{/controle/pertes/edit/}+${item.id}"><i class="fa fa-edit"></i></a>
+                                            <a th:if="${role.name} == 'ROLE_ROOT' or ${role.name} == 'ROLE_DT' or ${role.name} == 'ROLE_GERANT'" class="btn text-danger" data-toggle="modal" data-target="#deleteModal" th:attr="data-target='#deleteModal'+${item.id}"><i class="fa fa-trash"></i></a>
+                                        </td>
+
+                                        <!-- Modal Delete Order-->
+                                        <div class="modal fade" th:id="deleteModal+${item.id}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" >
+                                            <div class="modal-dialog" >
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="deleteModalLabel">Page de suppression</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        Etes vous sure de vouloir supprimer cet element?
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-warning" data-dismiss="modal">Fermer</button>
+                                                        <a th:href="@{/controle/pertes/delete/}+${item.id}" class="btn btn-primary">Supprimer...</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </tr>
                                     </tbody>
                                 </table>
-
                             </div>
                         </div>
                     </div>
@@ -330,7 +342,7 @@
 <script th:src="@{/js/atlantis.min.js}"></script>
 
 <!-- Atlantis DEMO methods, don't include it in your project! -->
-<script th:src="@{/js/setting-demo.js}"></script>
+<script th:src="@{js/setting-demo.js}"></script>
 <script th:src="@{/js/demo.js}"></script>
 <script>
     Circles.create({

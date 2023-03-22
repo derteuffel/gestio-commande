@@ -32,7 +32,7 @@
 
 
 
-    <title>Accueil</title>
+    <title>Modification element de controle de sous traitance</title>
     <style>
         .nav-item{
             color: #ffffff;
@@ -44,7 +44,7 @@
     </style>
 </head>
 <body>
-<div class="wrapper" th:each="role : ${compte.roles}">
+<div class="wrapper">
     <div th:replace="~{../templates/fragments/navbar :: navbar}"></div>
     <div th:replace="~{../templates/fragments/sidebar :: sidebar}"></div>
 
@@ -54,160 +54,76 @@
                 <div class="page-inner py-5">
                     <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
                         <div>
-                            <h2 class="text-white pb-2 fw-bold">Tableau de bord</h2>
-                            <h5 class="text-white op-7 mb-2">Tableau de gestion de materiel | <span th:text="${title}"></span></h5>
-                        </div>
-                        <div class="ml-md-auto py-2 py-md-0">
-                            <a th:href="@{/}" class="btn btn-white btn-border btn-round mr-2">Accueil</a>
-                            <a href="#" class="btn btn-secondary btn-round">Rapports</a>
+                            <h2 class="text-white pb-2 fw-bold"><span th:text="${controleSousTraitance.description}"></span></h2>
+                            <h5 class="text-white op-7 mb-2">Mise a jour </h5>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    <div class="card">
+                    <div class="card" style="width: 70%">
                         <div class="card-header">
-                            <div class="d-flex align-items-center">
-                                <h4 class="card-title">
-                                    <span th:text="${message}" class="text-success"></span>
-                                    <span th:text="${deleteMessage}" class="text-success"></span>
-                                </h4>
-                                <button th:if="${role.name} == 'ROLE_ROOT' or ${role.name} == 'ROLE_DT' or ${role.name} == 'ROLE_INFO' or ${role.name} == 'ROLE_CAISSE'" class="btn btn-primary btn-round ml-auto" data-toggle="modal" data-target="#addRowModal">
-                                    <i class="fa fa-plus"></i>
-                                    Materiel
-                                </button>
-                            </div>
+                            <h4 class="card-title">Modification de l'element de controle de sous traitance</h4>
                         </div>
-                        <div class="card-body">
-                            <!-- Modal -->
-                            <div class="modal fade" id="addRowModal" tabindex="-1" role="dialog" aria-hidden="true">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content" >
-                                        <div  class="modal-header no-bd">
-                                            <h5 class="modal-title">
-														<span class="fw-mediumbold">
-														Formulaire d'un nouveau</span>
-                                                <span class="fw-light">
-															Materiel
-														</span>
-                                            </h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <form  th:action="@{/materiel/save}" method="post" th:object="${materiel}" >
-                                            <div class="modal-body">
-                                                    <p class="small">Bien vouloir renseigner les champs ci-dessous pour ajouter un nouvel element</p>
-                                                    <div class="row">
-                                                        <div class="col-sm-12">
-                                                            <div class="form-group form-group-default">
-                                                                <label for="name">Nom  :</label>
-                                                                <input type="text" class="form-control" th:field="*{nom}" id="name" placeholder="Entrer le nom complet de l'ordinateur...">
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-sm-12">
-                                                            <div class="form-group form-group-default">
-                                                                <label for="marque">Marque :</label>
-                                                                <input type="text" class="form-control" id="marque" th:field="*{marque}" placeholder="Entrer la marque">
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-sm-12">
-                                                            <div class="form-group form-group-default">
-                                                                <label for="marque">Date d'achat :</label>
-                                                                <input type="date" class="form-control" id="buyDate" th:field="*{buyDate}" placeholder="Date d'achat">
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-sm-12">
-                                                            <div class="form-group form-group-default">
-                                                                <label for="marque">Departement :</label>
-                                                                <select class="form-control" th:field="*{departement}">
-                                                                    <option value="">--Choisir un departement--</option>
-                                                                    <option th:each="item : ${departements}" th:value="${item}"></option>
-                                                                </select>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-sm-12">
-                                                            <div class="form-group form-group-default">
-                                                                <label for="marque">Categorie :</label>
-                                                                <select class="form-control" th:field="*{category}" >
-                                                                    <option value="">--Choisir un categorie--</option>
-                                                                    <option th:each="item : ${categories}" th:value="${item}"></option>
-                                                                </select>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-sm-12">
-                                                            <div class="form-group form-group-default">
-                                                                <label for="description">Description  :</label>
-                                                                <textarea th:field="*{description}" id="description" class="form-control"  rows="4"></textarea>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-sm-12">
-                                                            <div class="form-group form-group-default">
-                                                                <label for="status">Etat :</label>
-                                                                <input type="text" class="form-control" id="status" th:field="*{status}" placeholder="Etat de l'appareil">
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-sm-12">
-                                                            <div class="form-group form-group-default">
-                                                                <label for="marketValue">Valuer marchande :</label>
-                                                                <input type="number" class="form-control" id="marketValue" th:field="*{marketValue}" placeholder="Valeur marchande">
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            <div class="modal-footer no-bd">
-                                                    <button type="button" class="btn btn-danger" data-dismiss="modal">Fermer</button>
-                                                    <button type="submit"  class="btn btn-primary">Enregistrer</button>
-                                                </div>
-                                        </form>
-
+                        <form th:action="@{/controle/sousTraitance/update}" method="post" th:object="${controleSousTraitance}" >
+                            <div class="card-body">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group form-group-default">
+                                        <label for="color">Date de realisation :</label>
+                                        <input type="date" class="form-control" th:field="*{releaseDate}" id="color" placeholder="Date du jour">
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="form-group form-group-default">
+                                        <label for="amount">Description :</label>
+                                        <textarea th:field="*{description}"  class="form-control" rows="5" placeholder="Description"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="form-group form-group-default">
+                                        <label for="quantity">Quantite :</label>
+                                        <input type="number" class="form-control" id="quantity"  th:field="*{quantite}" placeholder="Entrer la quantité traité">
+                                        <input type="hidden"   th:field="*{id}" >
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="form-group form-group-default">
+                                        <label for="amount">Montant payé :</label>
+                                        <input type="number" class="form-control" th:field="*{montantPaye}" id="amount" placeholder="Montant payé">
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="form-group form-group-default">
+                                        <label >Devise:
+                                        </label>
+                                        <select th:field="*{devise}"    class="form-control">
+                                            <option value="">--Choisir une--</option>
+                                            <option value="USD">USD</option>
+                                            <option value="FC">FC</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="form-group form-group-default">
+                                        <label for="lieu">Lieu de realisation :</label>
+                                        <input type="text" class="form-control" th:field="*{lieu}" id="lieu" placeholder="Lieu de realisation">
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="form-group form-group-default">
+                                        <label >Commentaire et proposition :</label>
+                                        <textarea th:field="*{commentaireEtProposition}"  class="form-control" rows="5" placeholder="Commentaire et proposition"></textarea>
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <div class="form-group-default">
-                                    <select class="form-control">
-                                        <option value="" th:each="item : ${departements}">
-                                            <a th:href="@{/materiel/materiels/departement+'?departement='}+${item}" th:text="${item}"></a>
-                                        </option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="table-responsive">
-                                <table id="add-row" class="display table table-striped table-hover" >
-                                    <thead>
-                                    <tr>
-                                    <thead>
-                                    <th>NOM</th>
-                                    <th>MARQUE</th>
-                                    <th>DESCRIPTION</th>
-                                    <th>QUANTITE</th>
-                                    <th>DEPARTEMENT</th>
-                                    <th>VALEUR (USD)</th>
-                                    <th style="width: 10%">ACTION</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr th:each="materiel : ${lists}">
-                                        <td th:text="${materiel.nom}"></td>
-                                        <td th:text="${materiel.marque}"></td>
-                                        <td th:text="${materiel.description}"></td>
-                                        <td th:text="${materiel.quantity}"></td>
-                                        <td th:text="${materiel.departement}"></td>
-                                        <td th:text="${materiel.marketValue}"></td>
-                                         <td>
-                                            <div  class="form-button-action">
-                                                <a th:if="${role.name} == 'ROLE_ROOT' or ${role.name} == 'ROLE_INFO' or ${role.name} == 'ROLE_DT'" class="btn text-success" th:href="@{/materiel/detail/}+${materiel.materielId}"><i class="fa fa-angle-double-right"></i></a>
-                                                <a th:if="${role.name} == 'ROLE_ROOT' or ${role.name} == 'ROLE_DT' or ${role.name} == 'ROLE_GERANT'" class="btn text-danger" data-toggle="modal" data-target="#deleteModal" th:attr="data-target='#deleteOrdinateurModal'+${materiel.materielId}"><i class="fa fa-trash"></i></a>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-
-                            </div>
                         </div>
+                            <div class="card-footer no-bd">
+                                <a th:href="@{/controle/sousTraitance/lists}" class="btn btn-warning" >Annuler</a>
+                                <button type="submit"  class="btn btn-primary">Enregistrer</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -330,7 +246,7 @@
 <script th:src="@{/js/atlantis.min.js}"></script>
 
 <!-- Atlantis DEMO methods, don't include it in your project! -->
-<script th:src="@{/js/setting-demo.js}"></script>
+<script th:src="@{js/setting-demo.js}"></script>
 <script th:src="@{/js/demo.js}"></script>
 <script>
     Circles.create({
@@ -426,7 +342,7 @@
         fillColor: 'rgba(255, 165, 52, .14)'
     });
 </script>
-<script >
+<!--script >
     $(document).ready(function() {
         // Add Row
         $('#add-row').DataTable({
@@ -447,11 +363,147 @@
         });
     });
 </script>
-<!-- Java Script files adding >
+<script>
+    $(document).ready(function () {
 
+        $("#submit").prop("disabled", true);
+        // Update option for avatar
+        $("#avatarOpen").click(function () {
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/js/bootstrap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
-<scrip th:src="@{/fonts/dataTables/index.js}" ></scrip-->
+            $("#avatarDiv").show();
+            $("#avatarOpen").hide();
+            $("#avatarClose").show();
+            $("#submit").prop("disabled", false);
+
+        });
+        $("#avatarClose").click(function () {
+
+            $("#avatarDiv").hide();
+            $("#avatarOpen").show();
+            $("#avatarClose").hide();
+        });
+        // Update option for cv
+        $("#cvOpen").click(function () {
+
+            $("#cvDiv").show();
+            $("#cvOpen").hide();
+            $("#cvDetail").hide();
+            $("#cvClose").show();
+            $("#submit").prop("disabled", false);
+
+        });
+        $("#cvClose").click(function () {
+
+            $("#cvDiv").hide();
+            $("#cvOpen").show();
+            $("#cvDetail").show();
+            $("#cvClose").hide();
+        });
+
+        // Name options
+        $("#nameOpen").click(function () {
+
+            $("#nameDiv").show();
+            $("#nameOpen").hide();
+            $("#nameDetail").hide();
+            $("#nameClose").show();
+            $("#submit").prop("disabled", false);
+
+        });
+        $("#nameClose").click(function () {
+
+            $("#nameDiv").hide();
+            $("#nameOpen").show();
+            $("#nameDetail").show();
+            $("#nameClose").hide();
+        });
+        // Email options
+        $("#emailOpen").click(function () {
+
+            $("#emailDiv").show();
+            $("#emailOpen").hide();
+            $("#emailDetail").hide();
+            $("#emailClose").show();
+            $("#submit").prop("disabled", false);
+
+        });
+        $("#emailClose").click(function () {
+
+            $("#emailDiv").hide();
+            $("#emailOpen").show();
+            $("#emailDetail").show();
+            $("#emailClose").hide();
+        });
+        //Born Date options
+        $("#bornDateOpen").click(function () {
+
+            $("#bornDateDiv").show();
+            $("#bornDateOpen").hide();
+            $("#bornDateDetail").hide();
+            $("#bornDateClose").show();
+            $("#submit").prop("disabled", false);
+
+        });
+        $("#bornDateClose").click(function () {
+
+            $("#bornDateDiv").hide();
+            $("#bornDateOpen").show();
+            $("#bornDateDetail").show();
+            $("#bornDateClose").hide();
+        });
+        // Sexe options
+        $("#sexeOpen").click(function () {
+
+            $("#sexeDiv").show();
+            $("#sexeOpen").hide();
+            $("#sexeDetail").hide();
+            $("#sexeClose").show();
+            $("#submit").prop("disabled", false);
+
+        });
+        $("#sexeClose").click(function () {
+
+            $("#sexeDiv").hide();
+            $("#sexeOpen").show();
+            $("#sexeDetail").show();
+            $("#sexeClose").hide();
+        });
+        //Date engagement
+        $("#dateEngagementOpen").click(function () {
+
+            $("#dateEngagementDiv").show();
+            $("#dateEngagementOpen").hide();
+            $("#dateEngagementDetail").hide();
+            $("#dateEngagementClose").show();
+            $("#submit").prop("disabled", false);
+
+        });
+        $("#dateEngagementClose").click(function () {
+
+            $("#dateEngagementDiv").hide();
+            $("#dateEngagementOpen").show();
+            $("#dateEngagementDetail").show();
+            $("#dateEngagementClose").hide();
+        });
+        //Profession Options
+        $("#professionOpen").click(function () {
+
+            $("#professionDiv").show();
+            $("#professionOpen").hide();
+            $("#professionDetail").hide();
+            $("#professionClose").show();
+            $("#submit").prop("disabled", false);
+
+        });
+        $("#professionClose").click(function () {
+
+            $("#professionDiv").hide();
+            $("#professionOpen").show();
+            $("#professionDetail").show();
+            $("#professionClose").hide();
+        });
+
+    });
+</script-->
 </body>
 </html>

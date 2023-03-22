@@ -55,7 +55,7 @@
                     <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
                         <div>
                             <h2 class="text-white pb-2 fw-bold">Tableau de bord</h2>
-                            <h5 class="text-white op-7 mb-2">Liste de tous les articles</h5>
+                            <h5 class="text-white op-7 mb-2">Liste des articles</h5>
                         </div>
                         <div class="ml-md-auto py-2 py-md-0">
                             <a th:href="@{/}" class="btn btn-white btn-border btn-round mr-2"><i class="fa fa-home"></i>&nbsp;Acceuil</a>
@@ -78,28 +78,24 @@
                                     <thead>
                                     <tr>
                                     <th>NOM</th>
-                                    <th>TYPE</th>
-                                    <th>CATEGORIE</th>
-                                    <th>QTE</th>
+                                    <th>QUANTITE</th>
                                     <th>PRIX_U</th>
                                     <th>PRIX_T</th>
                                     <th style="width: 10%">ACTION</th>
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <tr th:each="order : ${lists}">
-                                        <td th:text="${order.name}"></td>
-                                        <td th:text="${order.type}"></td>
-                                        <td th:text="${order.category}"></td>
-                                        <td th:text="${order.quantity}"></td>
-                                        <td th:text="${order.price}"></td>
-                                        <td ><span th:text="${order.totalCDF}+' CDF'"></span><br>(<span th:text="${order.totalUSD}+' $'"></span>)</td>
+                                    <tr th:each="item : ${lists}">
+                                        <td th:text="${item.name}"></td>
+                                        <td th:text="${item.quantity}"></td>
+                                        <td th:text="${item.price}"></td>
+                                        <td ><span th:text="${item.totalCDF}+' CDF'"></span><br>(<span th:text="${item.totalUSD}+' $'"></span>)</td>
                                         <td>
                                             <div class="form-button-action">
-                                                <a data-toggle="modal" data-target="#detailModal" class="btn text-success" th:attr="data-target='#detailModal'+${order.articleId}"><i class="fa fa-angle-double-right"></i></a>
+                                                <a data-toggle="modal" data-target="#detailModal" class="btn text-success" th:attr="data-target='#detailModal'+${item.articleId}"><i class="fa fa-angle-double-right"></i></a>
                                             </div>
                                         </td>
-                                        <div class="modal fade " th:id="detailModal+${order.articleId}" tabindex="-1" role="dialog" aria-hidden="true">
+                                        <div class="modal fade " th:id="detailModal+${item.articleId}" tabindex="-1" role="dialog" aria-hidden="true">
                                             <div class="modal-dialog" role="document">
                                                 <div class="modal-content">
                                                     <div class="modal-header no-bd">
@@ -117,23 +113,51 @@
                                                     <div class="modal-body">
                                                         <h4>
                                                             <strong>
+                                                                Nom :
+                                                            </strong>
+                                                            <span th:text="${item.name}"> </span>
+                                                        </h4>
+                                                        <hr>
+                                                        <h4>
+                                                            <strong>
+                                                                Quantite :
+                                                            </strong>
+                                                            <span th:text="${item.quantity}"> </span>
+                                                        </h4>
+                                                        <hr>
+                                                        <h4>
+                                                            <strong>
+                                                                Code du produit :
+                                                            </strong>
+                                                            <span th:text="${item.productCode}"> </span>
+                                                        </h4>
+                                                        <hr>
+                                                        <h4>
+                                                            <strong>
+                                                                Code article :
+                                                            </strong>
+                                                            <span th:text="${item.codeArticle}"> </span>
+                                                        </h4>
+                                                        <hr>
+                                                        <h4>
+                                                            <strong>
                                                                 Devise :
                                                             </strong>
-                                                            <span th:text="${order.monnaie}"> </span>
+                                                            <span th:text="${item.monnaie}"> </span>
                                                         </h4>
                                                         <hr>
                                                         <h4>
                                                             <strong>
                                                                 Description :
                                                             </strong>
-                                                            <span th:text="${order.description}"> </span>
+                                                            <span th:text="${item.description}"> </span>
                                                         </h4>
                                                         <hr>
                                                         <h4>
                                                             <strong>
                                                                 Date enregistrement :
                                                             </strong>
-                                                            <span th:text="${order.dateJour}"> </span>
+                                                            <span th:text="${item.dateJour}"> </span>
                                                         </h4>
                                                     </div>
                                                     <div class="modal-footer no-bd">

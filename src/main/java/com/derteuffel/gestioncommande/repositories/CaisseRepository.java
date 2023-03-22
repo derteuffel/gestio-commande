@@ -11,4 +11,5 @@ public interface CaisseRepository extends JpaRepository<Caisse, Long> {
 
     Caisse findByStatus(Boolean status);
     List<Caisse> findAllByStatus(Boolean status);
+    
 }

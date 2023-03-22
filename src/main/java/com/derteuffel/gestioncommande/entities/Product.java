@@ -6,6 +6,8 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -20,17 +22,25 @@ public class Product implements Serializable {
 
     private String name;
 
-
     private int quantity;
-     private Date addedDate = new Date();
 
+    private Date addedDate = new Date();
 
-     private String category;
+    private String category;
 
-     @OneToMany(mappedBy = "product")
-     @OnDelete(action= OnDeleteAction.NO_ACTION)
-     @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-     private List<AddedProduct> addedProducts;
+    private String color;
+
+    private  Double amount = 0.0;
+
+    @Column(unique = true)
+    @NotEmpty(message = "Cette colone doit toujours contenir une valeur")
+    //@Size(max = 10, min = 8)
+    private String productCode ;
+
+    @OneToMany(mappedBy = "product")
+    @OnDelete(action= OnDeleteAction.NO_ACTION)
+    @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    private List<AddedProduct> addedProducts;
 
     public Long getProductId() {
         return productId;
@@ -70,6 +80,30 @@ public class Product implements Serializable {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    public Double getAmount() {
+        return amount;
+    }
+
+    public void setAmount(Double amount) {
+        this.amount = amount;
+    }
+
+    public String getProductCode() {
+        return productCode;
+    }
+
+    public void setProductCode(String productCode) {
+        this.productCode = productCode;
     }
 
     public List<AddedProduct> getAddedProducts() {

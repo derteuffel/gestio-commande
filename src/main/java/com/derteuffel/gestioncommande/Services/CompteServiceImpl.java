@@ -2,7 +2,6 @@ package com.derteuffel.gestioncommande.Services;
 
 import com.derteuffel.gestioncommande.entities.Compte;
 import com.derteuffel.gestioncommande.entities.Role;
-import com.derteuffel.gestioncommande.entities.User;
 import com.derteuffel.gestioncommande.helpers.CompteRegistrationDto;
 import com.derteuffel.gestioncommande.repositories.CompteRepository;
 import com.derteuffel.gestioncommande.repositories.RoleRepository;
@@ -17,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,46 +31,46 @@ public class CompteServiceImpl implements CompteService{
     @Autowired
     private RoleRepository roleRepository;
 
-    @Autowired
-    private UserService userService;
 
     @Override
     public Compte findByLogin(String login) {
-        return compteRepository.findByLogin(login);
+        try {
+            return compteRepository.findByLogin(login);
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     @Override
     public Compte save(CompteRegistrationDto compteRegistrationDto, String s) {
         Compte compte = new Compte();
-        User user = new User();
-        user.setName(compteRegistrationDto.getLogin());
-        user.setEmail(compteRegistrationDto.getEmail());
-        user.setAvatar(s);
-        user.setContratActuel("GUEST");
-        user.setPosteActuel("GUEST");
-        user.setPostes(new ArrayList<>(Arrays.asList(user.getPosteActuel())));
-        compte.setLogin(compteRegistrationDto.getLogin());
-        compte.setPassword(passwordEncoder.encode(compteRegistrationDto.getPassword()));
-        compte.setEmail(compteRegistrationDto.getEmail());
-        compte.setAvatar(s);
-        userService.save(user);
-        Role role = new Role();
-        if (compteRepository.findAll().size()<=2){
-            role.setName("ROLE_ROOT");
-        }else {
-            role.setName("ROLE_USER");
+
+        try {
+            compte.setLogin(compteRegistrationDto.getLogin());
+            compte.setPassword(passwordEncoder.encode(compteRegistrationDto.getPassword()));
+            compte.setEmail(compteRegistrationDto.getEmail());
+            compte.setAvatar(s);
+            Role role = new Role();
+            if (compteRepository.findAll().size() <= 2) {
+                role.setName("ROLE_ROOT");
+            } else {
+                role.setName("ROLE_USER");
+            }
+            Role existRole = roleRepository.findByName(role.getName());
+            if (existRole != null) {
+                compte.setRoles(Arrays.asList(existRole));
+            } else {
+                System.out.println(role.getName());
+                roleRepository.save(role);
+                compte.setRoles(Arrays.asList(role));
+            }
+            compteRepository.save(compte);
+            return compte;
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         }
-        Role existRole =  roleRepository.findByName(role.getName());
-        if (existRole != null){
-            compte.setRoles(Arrays.asList(existRole));
-        }else {
-            System.out.println(role.getName());
-            roleRepository.save(role);
-            compte.setRoles(Arrays.asList(role));
-        }
-        compte.setUser(user);
-        compteRepository.save(compte);
-        return compte;
     }
 
     @Override
@@ -90,5 +90,10 @@ public class CompteServiceImpl implements CompteService{
         return roles.stream()
                 .map(role -> new SimpleGrantedAuthority(role.getName()))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Compte> findAll() {
+        return compteRepository.findAll();
     }
 }

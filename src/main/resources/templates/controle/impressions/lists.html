@@ -44,7 +44,7 @@
     </style>
 </head>
 <body>
-<div class="wrapper">
+<div class="wrapper" th:each="role : ${compte.roles}">
     <div th:replace="~{../templates/fragments/navbar :: navbar}"></div>
     <div th:replace="~{../templates/fragments/sidebar :: sidebar}"></div>
 
@@ -55,11 +55,10 @@
                     <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
                         <div>
                             <h2 class="text-white pb-2 fw-bold">Tableau de bord</h2>
-                            <h5 class="text-white op-7 mb-2">Liste des contrats | <span th:text="${user.name}"></span></h5>
+                            <h5 class="text-white op-7 mb-2">Controle Impression</h5>
                         </div>
                         <div class="ml-md-auto py-2 py-md-0">
-                            <a th:href="@{/user/detail/}+${user.userId}" class="btn btn-white btn-border btn-round mr-2"><i class="fa fa-long-arrow-alt-left"></i>&nbsp;Retour</a>
-                            <a href="#" class="btn btn-secondary btn-round"data-toggle="modal" data-target="#postesModal" th:attr="data-target='#postesModal'"><i class="fa fa-info"></i>&nbsp;Quelques Informations</a>
+                            <a th:href="@{/}" class="btn btn-white btn-border btn-round mr-2"><i class="fa fa-home"></i>&nbsp;Accueil</a>
                         </div>
                     </div>
                 </div>
@@ -69,13 +68,16 @@
                     <div class="card">
                         <div class="card-header">
                             <div class="d-flex align-items-center">
-                                <h4 class="card-title"> Actuellement a
-                                    <span th:text="${user.contratActuel}"></span>
-                                    <span th:text="${message}" class="text-success"></span>
-                                </h4>
-                                <button class="btn btn-primary btn-round ml-auto" data-toggle="modal" data-target="#addRowModal">
+                                <h4 class="card-title">Nouvel element</h4>
+                                <div th:if="${error}" class="alert alert-danger">
+                                    <h4 th:text="${error}"></h4>
+                                </div>
+                                <div th:if="${success}" class="alert alert-success">
+                                    <h4 th:text="${success}"></h4>
+                                </div>
+                                <button  class="btn btn-primary btn-round ml-auto" data-toggle="modal" data-target="#addRowModal">
                                     <i class="fa fa-plus"></i>
-                                    Contrat
+                                    Element de controle
                                 </button>
                             </div>
                         </div>
@@ -87,67 +89,70 @@
                                         <div class="modal-header no-bd">
                                             <h5 class="modal-title">
 														<span class="fw-mediumbold">
-														Formulaire d'un nouveau</span>
+														Formulaire d'un nouvel</span>
                                                 <span class="fw-light">
-															Personnel
+															element de controle
 														</span>
                                             </h5>
                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
                                         </div>
-                                        <form th:action="@{/contract/save/}+${user.userId}" method="post" th:object="${addContract}" enctype="multipart/form-data">
+                                        <form th:action="@{/controle/impressions/save}" method="post" th:object="${controleImpression}">
                                             <div class="modal-body">
-                                                <p class="small">Bien vouloir renseigner les champs ci-dessous pour ajouter un personnel</p>
+                                                <p class="small">Bien vouloir renseigner les champs ci-dessous pour ajouter un nouvel element de controle</p>
                                                 <div class="row">
                                                     <div class="col-sm-12">
-                                                        <div class="form-group">
-                                                            <label for="type">Type de contrat :</label>
-                                                            <select th:field="*{type}" id="type" class="form-control">
-                                                                <option value="">Choisir une valeur...</option>
-                                                                <option value="staff">Contrat Staff</option>
-                                                                <option value="consultant">Contrat Consultant</option>
-                                                                <option value="stagiaire">Contrat Stagiaire</option>
+                                                        <div class="form-group form-group-default">
+                                                            <label >Article traité:
+                                                            </label>
+                                                            <select th:field="*{nomMachine}"    class="form-control">
+                                                                <option value="">--Choisir un materiel--</option>
+                                                                <option th:each="materiel : ${materiels}" th:value="${materiel.nom}" th:text="${materiel.nom}"></option>
                                                             </select>
                                                         </div>
                                                     </div>
                                                     <div class="col-sm-12">
-                                                        <div class="form-group">
-                                                        <label for="salaire">Salaire associer :</label>
-                                                        <input type="text" class="form-control" id="salaire" th:field="*{salaire}" placeholder="Entrer un montant">
-                                                    </div>
-                                                    </div>
-                                                    <div class="col-sm-12">
-                                                        <div class="form-group">
-                                                        <label for="description">Description  du contrat :</label>
-                                                        <textarea th:field="*{description}" id="description" class="form-control"  rows="5" placeholder="Entrer une breve description du contrat"></textarea>
-                                                    </div>
+                                                        <div class="form-group form-group-default">
+                                                            <label for="color">Date de realisation :</label>
+                                                            <input type="date" class="form-control" th:field="*{dateJour}" id="color" placeholder="Date du jour">
+                                                        </div>
                                                     </div>
                                                     <div class="col-sm-12">
-                                                        <div class="form-group">
-                                                        <label for="debutContrat">Date debut du contrat :</label>
-                                                        <input type="date" class="form-control" id="debutContrat" th:field="*{debutContrat}">
+                                                        <div class="form-group form-group-default">
+                                                            <label >Article traité:
+                                                            </label>
+                                                            <select th:field="*{nomArticle}"    class="form-control">
+                                                                <option value="">--Choisir un article--</option>
+                                                                <option th:each="article : ${produits}" th:value="${article.name}" th:text="${article.name}"></option>
+                                                            </select>
+                                                        </div>
                                                     </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group form-group-default">
+                                                            <label for="quantity">Quantite :</label>
+                                                            <input type="number" class="form-control" id="quantity"  th:field="*{quantite}" placeholder="Entrer la quantité traité">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group form-group-default">
+                                                            <label for="amount">Numero du bon de commande :</label>
+                                                            <input type="text" class="form-control" th:field="*{numeroBonCommande}" id="amount" placeholder="Numero du bon de commande">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group form-group-default">
+                                                            <div class="form-group form-group-default">
+                                                                <label >Nom du staff responsable :
+                                                                </label>
+                                                                <select th:field="*{staffResponsable}"    class="form-control">
+                                                                    <option value="">--Choisir un staff--</option>
+                                                                    <option th:each="compte : ${comptes}" th:value="${compte.login}" th:text="${compte.login}"></option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
                                                     </div>
 
-                                                    <div class="col-sm-12">
-                                                        <div class="form-group">
-                                                        <label for="finContrat">Date fin de contrat :</label>
-                                                        <input type="date" class="form-control" th:field="*{finContrat}" id="finContrat" >
-                                                    </div>
-                                                    </div>
-                                                    <div class="col-sm-12">
-                                                        <div class="form-group">
-                                                        <label for="dureeContrat">Duree du contrat :</label>
-                                                        <input type="text" class="form-control" th:field="*{dureeContrat}" id="dureeContrat" placeholder="Duree du contrat...">
-                                                    </div>
-                                                    </div>
-                                                    <div class="col-sm-12">
-                                                        <div class="form-group">
-                                                        <label for="ram">Documents du contrat :</label>
-                                                        <input type="file" class="form-control-file" name="files" id="ram" multiple>
-                                                    </div>
-                                                    </div>
                                                 </div>
                                             </div>
                                             <div class="modal-footer no-bd">
@@ -159,55 +164,37 @@
                                 </div>
                             </div>
 
+
                             <div class="table-responsive">
                                 <table id="add-row" class="display table table-striped table-hover" >
                                     <thead>
                                     <tr>
-                                        <th>TYPE_CTRAT</th>
-                                        <th>DEBUT_CTRAT</th>
-                                        <th>FIN_CTRAT</th>
-                                        <th>DUREE_CTRAT</th>
-                                        <th style="width: 10%">ACTION</th>
+                                    <th>NOM DE LA MACHINE</th>
+                                    <th>DATE D'ENREGISTREMENT'</th>
+                                    <th>ARTICLE</th>
+                                    <th>QUANTITE</th>
+                                    <th>NUMERO BON DE COMMANDE</th>
+                                    <th>STAFF RESPONSABLE</th>
+                                    <th style="width: 10%">ACTION</th>
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <tr th:each="contract : ${lists}">
-                                        <td th:text="${contract.type}"></td>
-                                        <td th:text="${#strings.substring(contract.debutContrat,0,10)}"></td>
-                                        <td th:text="${#strings.substring(contract.finContrat,0,10)}"></td>
-                                        <td th:text="${contract.dureeContrat}"></td>
+                                    <tr th:each="item : ${lists}">
+                                        <td th:text="${item.nomMachine}"></td>
                                         <td >
-                                            <a class="btn " data-toggle="modal" data-target="#detailModal" th:attr="data-target='#detailModal'+${contract.contractId}">Plus...</a>
-                                            <a class="btn " data-toggle="modal" data-target="#deleteModal" th:attr="data-target='#deleteModal'+${contract.contractId}"><i class="fa fa-trash"></i></a>
+                                            <span th:text="${item.dateJour}"></span>&nbsp;
                                         </td>
-                                        <!-- Modal Detail For Contract -->
-                                        <div class="modal fade" th:id="detailModal+${contract.contractId}" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel" >
-                                            <div class="modal-dialog" >
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title" id="detailModalLabel">Plus de Detail</h5>
-                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                            <span aria-hidden="true">&times;</span>
-                                                        </button>
-                                                    </div>
-                                                    <div class="modal-body" >
-                                                        <ul>
-                                                            <li><span th:text="${contract.salaire}"></span></li>
-                                                            <li><span th:text="${contract.description}"></span></li>
-                                                        </ul>
-                                                        <ul th:each=" document : ${contract.documents}">
-                                                            <li><a th:href="${document}" th:text="${document}"></a></li>
-                                                        </ul>
+                                        <td th:text="${item.nomArticle}"></td>
+                                        <td th:text="${item.quantite}"></td>
+                                        <td th:text="${item.numeroBonCommande}"></td>
+                                        <td th:text="${item.staffResponsable}"></td>
+                                        <td>
+                                            <a class="btn" th:href="@{/controle/impressions/edit/}+${item.id}"><i class="fa fa-edit"></i></a>
+                                            <a th:if="${role.name} == 'ROLE_ROOT' or ${role.name} == 'ROLE_DT' or ${role.name} == 'ROLE_GERANT'" class="btn text-danger" data-toggle="modal" data-target="#deleteModal" th:attr="data-target='#deleteModal'+${item.id}"><i class="fa fa-trash"></i></a>
+                                        </td>
 
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- Modal Delete Contract -->
-                                        <div class="modal fade" th:id="deleteModal+${contract.contractId}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" >
+                                        <!-- Modal Delete Order-->
+                                        <div class="modal fade" th:id="deleteModal+${item.id}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" >
                                             <div class="modal-dialog" >
                                                 <div class="modal-content">
                                                     <div class="modal-header">
@@ -217,11 +204,11 @@
                                                         </button>
                                                     </div>
                                                     <div class="modal-body">
-                                                        Etes vous sure de vouloir supprimer ce contrat?
+                                                        Etes vous sure de vouloir supprimer cet element?
                                                     </div>
                                                     <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
-                                                        <a th:href="@{/contract/delete/}+${contract.contractId}" class="btn btn-primary">Supprimer...</a>
+                                                        <button type="button" class="btn btn-warning" data-dismiss="modal">Fermer</button>
+                                                        <a th:href="@{/controle/impressions/delete/}+${item.id}" class="btn btn-primary">Supprimer...</a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -235,34 +222,6 @@
                 </div>
             </div>
             <footer th:replace="~{../templates/fragments/footer :: footer}"></footer>
-        </div>
-    </div>
-    <!-- Modal Detail For posts Updated-->
-    <div class="modal fade" th:id="postesModal" tabindex="-1" role="dialog" aria-labelledby="postesModalLabel" >
-        <div class="modal-dialog" >
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="postesModalLabel">Profil de l'agent</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body" >
-                    <ul>
-                        <li><span th:text="${user.name}"></span></li>
-                        <li><span th:text="${user.email}"></span></li>
-                        <li><span th:text="${user.bornDate}"></span></li>
-                        <li><span th:text="${user.profession}"></span></li>
-                        <li><span th:text="${user.dateEngagement}"></span></li>
-                        <li><span th:text="${user.sexe}"></span></li>
-                    </ul>
-                    <hr>
-
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
-                </div>
-            </div>
         </div>
     </div>
     <!-- Custom template | don't include it in your project!-->

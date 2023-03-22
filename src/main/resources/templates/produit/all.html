@@ -55,11 +55,10 @@
                     <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
                         <div>
                             <h2 class="text-white pb-2 fw-bold">Tableau de bord</h2>
-                            <h5 class="text-white op-7 mb-2">Liste des produits en stock</h5>
+                            <h5 class="text-white op-7 mb-2">Boutique</h5>
                         </div>
                         <div class="ml-md-auto py-2 py-md-0">
                             <a th:href="@{/}" class="btn btn-white btn-border btn-round mr-2"><i class="fa fa-home"></i>&nbsp;Accueil</a>
-                            <a href="#" class="btn btn-secondary btn-round"><i class="fa fa-book"></i>&nbsp;Rapports</a>
                         </div>
                     </div>
                 </div>
@@ -86,7 +85,7 @@
 														<span class="fw-mediumbold">
 														Formulaire d'un nouveau</span>
                                                 <span class="fw-light">
-															Produit dans le stock
+															Produit
 														</span>
                                             </h5>
                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -95,16 +94,30 @@
                                         </div>
                                         <form th:action="@{/produit/save}" method="post" th:object="${produit}">
                                             <div class="modal-body">
-                                                <p class="small">Bien vouloir renseigner les champs ci-dessous pour ajouter une nouvelle commande</p>
+                                                <p class="small">Bien vouloir renseigner les champs ci-dessous pour ajouter un produit</p>
                                                 <div class="row">
                                                     <div class="col-sm-12">
                                                         <div class="form-group form-group-default">
                                                             <label for="name">Nom du Produit :</label>
                                                             <input type="text" class="form-control" th:field="*{name}" id="name" placeholder="Entrer le nom du produit...">
                                                         </div>
+                                                    </div>
+                                                    <div class="col-sm-12">
                                                         <div class="form-group form-group-default">
-                                                            <label for="quantite">Quantite dans le Stock :</label>
-                                                            <input type="text" class="form-control" id="quantite" th:field="*{quantity}" placeholder="Entrer la quantite du produit">
+                                                            <label for="quantity">Quantite :</label>
+                                                            <input type="text" class="form-control" id="quantity"  th:field="*{quantity}" placeholder="Entrer la quantite du produit">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group form-group-default">
+                                                            <label for="color">Couleur :</label>
+                                                            <input type="text" class="form-control" th:field="*{color}" id="color" placeholder="Couleur">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group form-group-default">
+                                                            <label for="amount">Montant :</label>
+                                                            <input type="number" class="form-control" th:field="*{amount}" id="amount" placeholder="Montant">
                                                         </div>
                                                     </div>
                                                     <div class="col-sm-12">
@@ -112,7 +125,8 @@
                                                             <label >Categorie du produit:
                                                             </label>
                                                             <select th:field="*{category}"    class="form-control">
-                                                                <option th:each="category : ${T(com.derteuffel.gestioncommande.entities.EACategory).values()}" th:value="${category}" th:text="${category}">Conception</option>
+                                                                <option value="">--Choisir une categorie--</option>
+                                                                <option th:each="category : ${categories}" th:value="${category}" th:text="${category}">Conception</option>
                                                             </select>
                                                         </div>
                                                     </div>
@@ -127,14 +141,15 @@
                                 </div>
                             </div>
 
+
                             <div class="table-responsive">
                                 <table id="add-row" class="display table table-striped table-hover" >
                                     <thead>
                                     <tr>
                                     <th>NOM</th>
-                                    <th>QTE_STOCK</th>
-                                    <th>DTE_AJOUT</th>
+                                    <th>QUANTITE</th>
                                     <th>CATEGORIE</th>
+                                    <th>MONTANT</th>
                                     <th style="width: 10%">ACTION</th>
                                     </tr>
                                     </thead>
@@ -143,12 +158,11 @@
                                         <td th:text="${product.name}"></td>
                                         <td >
                                             <span th:text="${product.quantity}"></span>&nbsp;
-                                            <a class="btn" data-toggle="modal" data-target="#detailModal" th:attr="data-target='#detailModal'+${product.productId}"><i class="fa fa-eye"></i></a>
                                         </td>
-                                        <td th:text="${#strings.substring(product.addedDate,0,10)}"></td>
                                         <td th:text="${product.category}"></td>
+                                        <td th:text="${product.amount}"></td>
                                         <td>
-                                            <a  data-toggle="modal" data-target="#updateModal"  class="btn text-primary" th:attr="data-target='#updateModal'+${product.productId}"><i class="fa fa-plus"></i></a>
+                                            <a class="btn" th:href="@{/produit/detail/}+${product.productId}"><i class="fa fa-eye"></i></a>
                                             <a th:if="${role.name} == 'ROLE_ROOT' or ${role.name} == 'ROLE_DT' or ${role.name} == 'ROLE_GERANT'" class="btn text-danger" data-toggle="modal" data-target="#deleteModal" th:attr="data-target='#deleteModal'+${product.productId}"><i class="fa fa-trash"></i></a>
                                         </td>
 
@@ -173,39 +187,6 @@
                                             </div>
                                         </div>
 
-                                        <!-- Modal Detail For Product Updated-->
-                                        <div class="modal fade" th:id="detailModal+${product.productId}" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel" >
-                                            <div class="modal-dialog" >
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title" id="detailModalLabel">Tableau des Mises a jours d'un Produit</h5>
-                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                            <span aria-hidden="true">&times;</span>
-                                                        </button>
-                                                    </div>
-                                                    <div class="modal-body" th:each="added : ${product.addedProducts}">
-                                                        <div class="alert-warning text-left">
-                                                            <div class="p-4">
-                                                                <h4>
-                                                                    <span>Ajouter le : </span>&nbsp;<span th:text="${#strings.substring(added.addedDate,0,10)}"></span>
-                                                                </h4>
-                                                                <hr>
-                                                                <h4>
-                                                                    <span>Nombre d'element ajouter : </span>&nbsp;<span th:text="${added.quantity}"></span>
-                                                                </h4>
-                                                                <hr>
-                                                                <h4>
-                                                                    <span>Commentaire : </span>&nbsp;<span th:text="${added.description}"></span>
-                                                                </h4>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
 
                                         <!-- Modal Updating an Order-->
                                         <div class="modal fade" th:id="updateModal+${product.productId}" tabindex="-1" role="dialog" aria-labelledby="updateModalLabel" aria-hidden="true">

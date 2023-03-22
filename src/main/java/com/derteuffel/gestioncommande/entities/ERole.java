@@ -7,7 +7,7 @@ public enum ERole {
     ROLE_GERANT,
     ROLE_DG,
     ROLE_CAISSE,
-    ROLE_DRH,
+    ROLE_BOUTIQUE,
     ROLE_INFO,
     ROLE_RECEPTION
 }

@@ -1,9 +1,8 @@
 package com.derteuffel.gestioncommande.controllers;
 
 import com.derteuffel.gestioncommande.Services.ArticleService;
-import com.derteuffel.gestioncommande.Services.ClientService;
 import com.derteuffel.gestioncommande.Services.CommandeService;
-import com.derteuffel.gestioncommande.Services.CompteService;
+import com.derteuffel.gestioncommande.Services.ProductService;
 import com.derteuffel.gestioncommande.entities.*;
 import com.derteuffel.gestioncommande.repositories.ApprobationRepository;
 import com.derteuffel.gestioncommande.repositories.CompteRepository;
@@ -23,7 +22,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.Year;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -35,9 +33,6 @@ public class CommandeController {
 
     @Autowired
     private CommandeService commandeService;
-
-    @Autowired
-    private ClientService clientService;
 
     @Autowired
     private ArticleService articleService;
@@ -52,6 +47,9 @@ public class CommandeController {
     private MouvementRepository mouvementRepository;
 
     @Autowired
+    private ProductService productService;
+
+    @Autowired
     private ApprobationRepository approbationRepository;
 
 
@@ -61,23 +59,7 @@ public class CommandeController {
 
         Principal principal = request.getUserPrincipal();
         Compte compte = compteRepository.findByLogin(principal.getName());
-        Client clientSearch = clientService.findByPhone(phone);
         System.out.println("je suis :"+phone);
-        System.out.println(clientSearch);
-        Client client = new Client();
-
-
-        if (clientSearch != null){
-            commande.setClient(clientSearch);
-        }else {
-
-            client.setAdresse(adresse);
-            client.setEmail(email);
-            client.setPhone(phone);
-            client.setName(name);
-            clientService.save(client);
-            commande.setClient(client);
-        }
 
         Date date = new Date();
         DateFormat format = new SimpleDateFormat("yyyy");
@@ -136,6 +118,7 @@ public class CommandeController {
         Principal principal = request.getUserPrincipal();
         Compte compte = compteRepository.findByLogin(principal.getName());
         Commande commande = commandeService.getOne(commandeId);
+        List<Product> produits = productService.findAll();
         List<Compte> comptes = new ArrayList<>();
         List<Article> articles = articleService.findAllByCommande_CommandeId(commande.getCommandeId());
         List<Approbation> approbations = approbationRepository.findAllByCommande_CommandeId(commande.getCommandeId());
@@ -157,6 +140,7 @@ public class CommandeController {
         }
         model.addAttribute("lists",articles);
         model.addAttribute("compte",compte);
+        model.addAttribute("produits",produits);
         model.addAttribute("approbations", approbations);
         model.addAttribute("approbation",new Approbation());
         model.addAttribute("article",new Article());

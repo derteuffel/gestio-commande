@@ -32,11 +32,7 @@ public class Compte implements Serializable {
                     name = "role_id", referencedColumnName = "id"))
     private Collection<Role> roles;
 
-    @OneToOne
-    private User user;
 
-    /*@OneToMany(mappedBy = "compte")
-    private List<Commande> commandes;*/
 
     @OneToMany(mappedBy = "compte")
     @OnDelete(action= OnDeleteAction.NO_ACTION)
@@ -91,13 +87,6 @@ public class Compte implements Serializable {
         this.roles = roles;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
 
     public List<Visiteur> getVisiteurs() {
         return visiteurs;

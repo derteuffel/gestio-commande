@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 
 
@@ -25,13 +27,16 @@ public class Article implements Serializable {
     private Double totalUSD;
     private Double totalCDF;
 
-
-    private String type;
-    private String category;
-
     private String Description;
 
     private String dateJour;
+
+    private String productCode;
+
+    @Column(unique = true)
+    @NotEmpty(message = "Cette colone doit toujours contenir une valeur")
+    //@Size(max = 10, min = 8)
+    private String codeArticle;
 
     @ManyToOne
     @JsonIgnoreProperties("articles")
@@ -93,22 +98,6 @@ public class Article implements Serializable {
         this.totalCDF = totalCDF;
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
     public String getDescription() {
         return Description;
     }
@@ -131,5 +120,21 @@ public class Article implements Serializable {
 
     public void setCommande(Commande commande) {
         this.commande = commande;
+    }
+
+    public String getProductCode() {
+        return productCode;
+    }
+
+    public void setProductCode(String productCode) {
+        this.productCode = productCode;
+    }
+
+    public String getCodeArticle() {
+        return codeArticle;
+    }
+
+    public void setCodeArticle(String codeArticle) {
+        this.codeArticle = codeArticle;
     }
 }

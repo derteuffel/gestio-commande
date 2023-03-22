@@ -1,11 +1,9 @@
 package com.derteuffel.gestioncommande.repositories;
 
-import com.derteuffel.gestioncommande.entities.Client;
+import com.derteuffel.gestioncommande.entities.ControleSousTraitance;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ClientRepository extends JpaRepository<Client,Long> {
-
-    Client findByPhone(String phone);
+public interface ControleSousTraitanceRepository extends JpaRepository<ControleSousTraitance, Long> {
 }
