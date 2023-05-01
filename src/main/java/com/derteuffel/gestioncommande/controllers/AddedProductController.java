@@ -11,9 +11,13 @@ import com.derteuffel.gestioncommande.repositories.CommandeRepository;
 import com.derteuffel.gestioncommande.repositories.MouvementRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @Controller
 @RequestMapping("/added")
@@ -32,10 +36,40 @@ public class AddedProductController {
     private CommandeRepository commandeRepository;
 
 
-    @PostMapping("/update/{productId}")
-    public String save(AddedProduct addedProduct, @PathVariable Long productId){
+    @PostMapping("/update/save/{productId}")
+    public String saveAjout(AddedProduct addedProduct, @PathVariable Long productId){
 
         Product product = productService.getOne(productId);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm");
+        addedProduct.setAddedDate(sdf.format(new Date()));
+        addedProduct.setActionType("AJOUT");
+        addedProduct.setProduct(product);
+        addedProduct.setValide(false);
+        addedProductRepository.save(addedProduct);
+
+        return "redirect:/produit/detail/"+product.getProductId();
+    }
+    @PostMapping("/update/save/retrait/{productId}")
+    public String saveRetrait(AddedProduct addedProduct, @PathVariable Long productId){
+
+        Product product = productService.getOne(productId);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm");
+        addedProduct.setAddedDate(sdf.format(new Date()));
+        addedProduct.setActionType("RETRAIT");
+        addedProduct.setValide(false);
+
+        addedProduct.setProduct(product);
+        addedProductRepository.save(addedProduct);
+
+        return "redirect:/produit/detail/"+product.getProductId();
+    }
+    @GetMapping("/update/activate/{addedProductId}")
+    public String updateAction(@PathVariable Long addedProductId){
+
+        AddedProduct addedProduct = addedProductRepository.getOne(addedProductId);
+        Product product = addedProduct.getProduct();
+        addedProduct.setValide(true);
+
         if (addedProduct.getActionType().equals("AJOUT")){
             product.setQuantity(product.getQuantity() + addedProduct.getQuantity());
         }else {
@@ -65,13 +99,13 @@ public class AddedProductController {
 
             Commande commandeSaved = commandeRepository.save(commande);
             articleService.save(article, commandeSaved.getCommandeId());
-        }
 
+
+        }
         productService.save(product);
-        addedProduct.setProduct(product);
         addedProductRepository.save(addedProduct);
 
-        return "redirect:/produit/produits";
+        return "redirect:/produit/detail/"+product.getProductId();
     }
 
 

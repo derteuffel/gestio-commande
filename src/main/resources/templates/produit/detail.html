@@ -32,7 +32,7 @@
 
 
 
-    <title>Accueil</title>
+    <title>Detail produit</title>
     <style>
         .nav-item{
             color: #ffffff;
@@ -44,7 +44,7 @@
     </style>
 </head>
 <body>
-<div class="wrapper">
+<div class="wrapper" th:each="role : ${compte.roles}">
     <div th:replace="~{../templates/fragments/navbar :: navbar}"></div>
     <div th:replace="~{../templates/fragments/sidebar :: sidebar}"></div>
 
@@ -58,7 +58,7 @@
                             <h5 class="text-white op-7 mb-2">Contenu detaille d'un produit</h5>
                         </div>
                         <div class="ml-md-auto py-2 py-md-0">
-                            <a th:href="@{/materiel/materiels}" class="btn btn-white btn-border btn-round mr-2">Retour</a>
+                            <a th:href="@{/produit/produits}" class="btn btn-white btn-border btn-round mr-2">Retour</a>
                             <a data-toggle="modal" data-target="#createArticleModal" th:attr="data-target='#createArticleModal'"  class="btn btn-secondary btn-round">Editer</a>
                         </div>
                         <!-- Modal create Article -->
@@ -102,6 +102,17 @@
                                                     </div>
                                                     <div class="col-sm-12">
                                                         <div class="form-group form-group-default">
+                                                            <label >Devise:
+                                                            </label>
+                                                            <select th:field="*{devise}"    class="form-control">
+                                                                <option value="">--Choisir une--</option>
+                                                                <option value="USD">USD</option>
+                                                                <option value="FC">FC</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group form-group-default">
                                                             <label >Categorie du produit:
                                                             </label>
                                                             <select th:field="*{category}"    class="form-control">
@@ -110,10 +121,22 @@
                                                             </select>
                                                         </div>
                                                     </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group form-group-default">
+                                                            <label >Qualité:
+                                                            </label>
+                                                            <select th:field="*{quality}"    class="form-control">
+                                                                <option value="">--Choisir une qualité--</option>
+                                                                <option value="PREMIERE">PREMIERE</option>
+                                                                <option value="DEUXIEME">DEUXIEME</option>
+                                                                <option value="TROISIEME">TROISIEME</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                                                <button type="button" class="btn btn-warning" data-dismiss="modal">Fermer</button>
                                                 <button type="submit" class="btn btn-primary">Enregistrer...</button>
                                             </div>
                                         </form>
@@ -145,7 +168,7 @@
                                     <strong>Montant :</strong>
                                 </div>
                                 <div class="col-md-7">
-                                    <span th:text="${produit.amount}"></span>
+                                    <span th:text="${produit.amount+' '+produit.devise}"></span>
                                 </div>
                             </div>
                             <hr>
@@ -180,7 +203,265 @@
                     </div>
                 </div>
             </div>
-            <footer th:replace="~{../templates/demo1/fragments/footer :: footer}"></footer>
+            <br>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title">Gestion du produit</h4>
+                        </div>
+                        <div class="card-body">
+                            <a data-toggle="modal" data-target="#updateModal" th:attr="data-target='#updateModal'"  class="btn btn-secondary btn-round">Ajout produit</a>
+                            <div class="table-responsive">
+                                <table id="add-row" class="display table table-striped table-hover" >
+                                    <thead>
+                                    <tr>
+                                        <th>ACTION MENEE</th>
+                                        <th>QUANTITE</th>
+                                        <th>MONTANT_U</th>
+                                        <th>MONTANT_T</th>
+                                        <th>DESCRIPTION</th>
+                                        <th>DATE AJOUT</th>
+                                        <th style="width: 10%">ACTION</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="item : ${addedItems}">
+                                        <td th:text="${item.actionType}"></td>
+                                        <td >
+                                            <span th:text="${item.quantity}"></span>&nbsp;
+                                        </td>
+                                        <td th:text="${item.unitCost+' '+item.devise}"></td>
+                                        <td th:text="${item.totalCost+' '+item.devise}"></td>
+                                        <td th:text="${item.description}"></td>
+                                        <td th:text="${item.addedDate}"></td>
+                                        <td>
+                                            <a  class="btn text-success" th:if="${item.valide}" th:disabled="disabled" data-toggle="modal" data-target="#activateModal" th:attr="data-target='#activateModal'+${item.addedProductId}"><i class="fa fa-check-circle"></i></a>
+                                            <a th:if="${role.name} == 'ROLE_ROOT' or ${role.name} == 'ROLE_DT' or ${role.name} == 'ROLE_GERANT'" class="btn text-warning" th:unless="${item.valide}" data-toggle="modal" data-target="#activateModal" th:attr="data-target='#activateModal'+${item.addedProductId}"><i class="fa fa-check"></i></a>
+                                            <a th:if="${role.name} == 'ROLE_ROOT' or ${role.name} == 'ROLE_DT' or ${role.name} == 'ROLE_GERANT'" class="btn text-danger" data-toggle="modal" data-target="#deleteModal" th:attr="data-target='#deleteModal'+${item.addedProductId}"><i class="fa fa-trash"></i></a>
+                                        </td>
+
+                                        <!-- Modal Delete Order-->
+                                        <div class="modal fade" th:id="activateModal+${item.addedProductId}" tabindex="-1" role="dialog" aria-labelledby="activateModalLabel" >
+                                            <div class="modal-dialog" >
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="activateModalLabel">Page d'activation d'une mise a jours</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        Etes vous sure de vouloir confirme cette operation? Nous tenons a vous rapeler qu'elle est irreversible
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                                                        <a th:href="@{/added/update/activate/}+${item.addedProductId}" class="btn btn-success">Supprimer...</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal fade" th:id="deleteModal+${item.addedProductId}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" >
+                                            <div class="modal-dialog" >
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="deleteModalLabel">Page de suppression</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        Etes vous sure de vouloir supprimer cet element?
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                                                        <a th:href="@{/added/delete/}+${item.addedProductId}" class="btn btn-primary">Supprimer...</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="modal fade" th:id="updateModal" tabindex="-1" role="dialog" aria-labelledby="updateModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="updateModalLabel">Formulaire d'ajout d'un Produit <span th:text="${produit.name}"></span></h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <form th:action="@{/added/update/save/}+${produit.productId}" method="post" th:object="${added_product}">
+                                            <div class="modal-body">
+
+                                                <div class="form-group">
+                                                    <label for="quantite">Quantite a traite : </label>
+                                                    <input type="number" class="form-control" id="quantity" th:field="*{quantity}" placeholder="Entrer la quantite du produit">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="quantite">Montant unitaire : </label>
+                                                    <input type="number" class="form-control" id="montant" th:field="*{unitCost}" placeholder="Entrer le montant unitaire du produit">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="quantite">Devise : </label>
+                                                    <select th:field="*{devise}" class="form-control" id="devise">
+                                                        <option value="">--- Select devise ---</option>
+                                                        <option value="USD">USD</option>
+                                                        <option value="FC">FC</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="tauxDuJours">Taux du jours : </label>
+                                                    <input type="number" class="form-control" id="tauxDuJours" th:field="*{tauxDuJour}" placeholder="Entrer le taux du jours">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="description">Description de l'action:
+                                                    </label>
+                                                    <textarea th:field="*{description}" id="description"  rows="5" class="form-control"></textarea>
+                                                </div>
+
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                                                <button type="submit" class="btn btn-primary">Enregistrer...</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="card-body">
+                            <a data-toggle="modal" data-target="#updateRetraitModal" th:attr="data-target='#updateRetraitModal'"  class="btn btn-secondary btn-round">Commande produit</a>
+                            <div class="table-responsive">
+                                <table id="add-row1" class="display table table-striped table-hover" >
+                                    <thead>
+                                    <tr>
+                                        <th>ACTION MENEE</th>
+                                        <th>QUANTITE</th>
+                                        <th>MONTANT_U</th>
+                                        <th>MONTANT_T</th>
+                                        <th>DESCRIPTION</th>
+                                        <th>DATE AJOUT</th>
+                                        <th style="width: 10%">ACTION</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="item : ${removedItems}">
+                                        <td th:text="${item.actionType}"></td>
+                                        <td >
+                                            <span th:text="${item.quantity}"></span>&nbsp;
+                                        </td>
+                                        <td th:text="${item.unitCost+' '+item.devise}"></td>
+                                        <td th:text="${item.totalCost+' '+item.devise}"></td>
+                                        <td th:text="${item.description}"></td>
+                                        <td th:text="${item.addedDate}"></td>
+                                        <td>
+                                            <a  class="btn text-success" th:if="${item.valide}" th:disabled="disabled" data-toggle="modal" data-target="#activateModal" th:attr="data-target='#activateModal'+${item.addedProductId}"><i class="fa fa-check-circle"></i></a>
+                                            <a th:if="${role.name} == 'ROLE_ROOT' or ${role.name} == 'ROLE_DT' or ${role.name} == 'ROLE_GERANT'" class="btn text-warning" th:unless="${item.valide}" data-toggle="modal" data-target="#activateModal" th:attr="data-target='#activateModal'+${item.addedProductId}"><i class="fa fa-check"></i></a>
+                                            <a th:if="${role.name} == 'ROLE_ROOT' or ${role.name} == 'ROLE_DT' or ${role.name} == 'ROLE_GERANT'" class="btn text-danger" data-toggle="modal" data-target="#deleteModal" th:attr="data-target='#deleteModal'+${item.addedProductId}"><i class="fa fa-trash"></i></a>
+                                        </td>
+
+                                        <!-- Modal Delete Order-->
+                                        <div class="modal fade" th:id="activateModal+${item.addedProductId}" tabindex="-1" role="dialog" aria-labelledby="activateModalLabel" >
+                                            <div class="modal-dialog" >
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="activateModalLabel">Page d'activation d'une mise a jours</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        Etes vous sure de vouloir confirme cette operation? Nous tenons a vous rapeler qu'elle est irreversible
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                                                        <a th:href="@{/added/update/activate/}+${item.addedProductId}" class="btn btn-success">Supprimer...</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal fade" th:id="deleteModal+${item.addedProductId}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" >
+                                            <div class="modal-dialog" >
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="deleteModalLabel">Page de suppression</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        Etes vous sure de vouloir supprimer cet element?
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                                                        <a th:href="@{/added/delete/}+${item.addedProductId}" class="btn btn-primary">Supprimer...</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="modal fade" th:id="updateRetraitModal" tabindex="-1" role="dialog" aria-labelledby="updateRetraitModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="updateRetraitModalLabel">Formulaire de commande d'un Produit <span th:text="${produit.name}"></span></h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <form th:action="@{/added/update/save/retrait/}+${produit.productId}" method="post" th:object="${added_product}">
+                                            <div class="modal-body">
+
+                                                <div class="form-group">
+                                                    <label for="quantite">Quantite a traite : </label>
+                                                    <input type="number" class="form-control" id="quantity" th:field="*{quantity}" placeholder="Entrer la quantite du produit">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="quantite">Montant unitaire : </label>
+                                                    <input type="number" class="form-control" id="montant" th:field="*{unitCost}" placeholder="Entrer le montant unitaire du produit">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="quantite">Devise : </label>
+                                                    <select th:field="*{devise}" class="form-control" id="devise">
+                                                        <option value="">--- Select devise ---</option>
+                                                        <option value="USD">USD</option>
+                                                        <option value="FC">FC</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="tauxDuJours">Taux du jours : </label>
+                                                    <input type="number" class="form-control" id="tauxDuJours" th:field="*{tauxDuJour}" placeholder="Entrer le taux du jours">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="description">Description de l'action:
+                                                    </label>
+                                                    <textarea th:field="*{description}" id="description"  rows="5" class="form-control"></textarea>
+                                                </div>
+
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                                                <button type="submit" class="btn btn-primary">Enregistrer...</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <footer th:replace="~{../templates/fragments/footer :: footer}"></footer>
         </div>
     </div>
     <!-- Custom template | don't include it in your project!-->
@@ -401,11 +682,20 @@
         $('#add-row').DataTable({
             "pageLength": 5,
         });
+        $('#add-row1').DataTable({
+            "pageLength": 5,
+        });
 
         var action = '<td> <div class="form-button-action"> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task"> <i class="fa fa-edit"></i> </button> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove"> <i class="fa fa-times"></i> </button> </div> </td>';
 
         $('#addRowButton').click(function() {
             $('#add-row').dataTable().fnAddData([
+                $("#addName").val(),
+                $("#addPosition").val(),
+                $("#addOffice").val(),
+                action
+            ]);
+            $('#add-row1').dataTable().fnAddData([
                 $("#addName").val(),
                 $("#addPosition").val(),
                 $("#addOffice").val(),

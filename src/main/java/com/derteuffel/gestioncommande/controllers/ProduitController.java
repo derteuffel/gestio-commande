@@ -82,6 +82,8 @@ public class ProduitController {
         pageModel.initPageAndSize();
         model.addAttribute("compte",compte);
         model.addAttribute("added_product",new AddedProduct());
+        model.addAttribute("addedItems", addedProductRepository.findAllByProduct_ProductIdAndActionType(id,"AJOUT"));
+        model.addAttribute("removedItems", addedProductRepository.findAllByProduct_ProductIdAndActionType(id,"RETRAIT"));
         model.addAttribute("produit",productService.getOne(id));
         model.addAttribute("categories", categories);
         return "produit/detail";

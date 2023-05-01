@@ -31,9 +31,15 @@ public class AddedProduct {
 
     private int tauxDuJour;
 
+    private Boolean valide;
+
     @ManyToOne
     @JsonIgnoreProperties("addedProducts")
     private Product product;
+
+    @OneToOne
+    @JsonIgnoreProperties("addedProduct")
+    private Article article;
 
     public Long getAddedProductId() {
         return addedProductId;
@@ -113,5 +119,21 @@ public class AddedProduct {
 
     public void setTauxDuJour(int tauxDuJour) {
         this.tauxDuJour = tauxDuJour;
+    }
+
+    public Boolean getValide() {
+        return valide;
+    }
+
+    public void setValide(Boolean valide) {
+        this.valide = valide;
+    }
+
+    public Article getArticle() {
+        return article;
+    }
+
+    public void setArticle(Article article) {
+        this.article = article;
     }
 }

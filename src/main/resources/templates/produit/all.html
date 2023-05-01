@@ -32,7 +32,7 @@
 
 
 
-    <title>Accueil</title>
+    <title>Liste des produits</title>
     <style>
         .nav-item{
             color: #ffffff;
@@ -122,11 +122,34 @@
                                                     </div>
                                                     <div class="col-sm-12">
                                                         <div class="form-group form-group-default">
+                                                            <label >Devise:
+                                                            </label>
+                                                            <select th:field="*{devise}"    class="form-control">
+                                                                <option value="">--Choisir une--</option>
+                                                                <option value="USD">USD</option>
+                                                                <option value="FC">FC</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group form-group-default">
                                                             <label >Categorie du produit:
                                                             </label>
                                                             <select th:field="*{category}"    class="form-control">
                                                                 <option value="">--Choisir une categorie--</option>
                                                                 <option th:each="category : ${categories}" th:value="${category}" th:text="${category}">Conception</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group form-group-default">
+                                                            <label >Qualité:
+                                                            </label>
+                                                            <select th:field="*{quality}"    class="form-control">
+                                                                <option value="">--Choisir une qualité--</option>
+                                                                <option value="PREMIERE">PREMIERE</option>
+                                                                <option value="DEUXIEME">DEUXIEME</option>
+                                                                <option value="TROISIEME">TROISIEME</option>
                                                             </select>
                                                         </div>
                                                     </div>
@@ -160,7 +183,7 @@
                                             <span th:text="${product.quantity}"></span>&nbsp;
                                         </td>
                                         <td th:text="${product.category}"></td>
-                                        <td th:text="${product.amount}"></td>
+                                        <td th:text="${product.amount+' '+product.devise}"></td>
                                         <td>
                                             <a class="btn" th:href="@{/produit/detail/}+${product.productId}"><i class="fa fa-eye"></i></a>
                                             <a th:if="${role.name} == 'ROLE_ROOT' or ${role.name} == 'ROLE_DT' or ${role.name} == 'ROLE_GERANT'" class="btn text-danger" data-toggle="modal" data-target="#deleteModal" th:attr="data-target='#deleteModal'+${product.productId}"><i class="fa fa-trash"></i></a>
@@ -198,12 +221,36 @@
                                                             <span aria-hidden="true">&times;</span>
                                                         </button>
                                                     </div>
-                                                    <form th:action="@{/added/update/}+${product.productId}" method="post" th:object="${added_product}">
+                                                    <form th:action="@{/added/update/save/}+${product.productId}" method="post" th:object="${added_product}">
                                                         <div class="modal-body">
 
                                                             <div class="form-group">
-                                                                <label for="quantite">Quantite a ajouter dans le Stock : </label>
+                                                                <label for="quantite">Quantite a traite : </label>
                                                                 <input type="number" class="form-control" id="quantite" th:field="*{quantity}" placeholder="Entrer la quantite du produit">
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label for="quantite">Action : </label>
+                                                                <select th:field="*{actionType}" class="form-control" id="actionType">
+                                                                    <option value="">--- Select action ---</option>
+                                                                    <option value="AJOUT">USD</option>
+                                                                    <option value="RETRAIT">FC</option>
+                                                                </select>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label for="quantite">Montant unitaire : </label>
+                                                                <input type="number" class="form-control" id="montant" th:field="*{unitCost}" placeholder="Entrer le montant unitaire du produit">
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label for="quantite">Devise : </label>
+                                                                <select th:field="*{devise}" class="form-control" id="devise">
+                                                                    <option value="">--- Select devise ---</option>
+                                                                    <option value="USD">USD</option>
+                                                                    <option value="FC">FC</option>
+                                                                </select>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label for="tauxDuJours">Taux du jours : </label>
+                                                                <input type="number" class="form-control" id="tauxDuJours" th:field="*{tauxDuJour}" placeholder="Entrer le taux du jours">
                                                             </div>
                                                             <div class="form-group">
                                                                 <label for="description">Description de l'action:

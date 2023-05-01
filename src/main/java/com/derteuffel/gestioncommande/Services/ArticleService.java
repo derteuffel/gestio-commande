@@ -7,6 +7,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,6 +28,8 @@ public class ArticleService {
 
     @Autowired
     private CaisseRepository caisseRepository;
+    @Autowired
+    private AddedProductRepository addedProductRepository;
 
 
     public List<Article> findAll(){
@@ -81,8 +85,10 @@ public class ArticleService {
 
     public  Article  save(Article s, Long commandId) {
 
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMM");
         try {
-            s.setCodeArticle("#"+ UUID.randomUUID());
+            s.setCodeArticle("ART"+simpleDateFormat.format(new Date())+(articleRepository.findAll().size()+1));
             Caisse caisse = caisseRepository.findByStatus(true);
             Product product = productRepository.findByProductCode(s.getName().split("_")[1]);
             System.out.println(s.getName().split("_")[1]);
@@ -90,10 +96,8 @@ public class ArticleService {
             if (product != null){
                 System.out.println("Je suis ici : "+product.getName());
                 s.setProductCode(product.getProductCode());
-                    product.setQuantity(product.getQuantity() - s.getQuantity());
-                    productRepository.save(product);
-
             }
+
             Mouvement mouvement = new Mouvement();
             mouvement.setType("ENTRER");
             mouvement.setCaisse(caisse);
@@ -129,6 +133,19 @@ public class ArticleService {
 
             System.out.println("Test to print"+s.getCodeArticle());
             Article savedArticle = articleRepository.save(s);
+            AddedProduct addedProduct = new AddedProduct();
+            addedProduct.setValide(false);
+            addedProduct.setActionType("RETRAIT");
+            addedProduct.setDescription("Commande d'un produit depuis une commande");
+            addedProduct.setDevise(s.getMonnaie());
+            addedProduct.setQuantity(s.getQuantity());
+            addedProduct.setTauxDuJour(1);
+            addedProduct.setUnitCost(s.getPrice());
+            addedProduct.setTotalCost(s.getPrice() * s.getQuantity());
+            addedProduct.setAddedDate(sdf.format(new Date()));
+            addedProduct.setProduct(product);
+            addedProduct.setArticle(savedArticle);
+            addedProductRepository.save(addedProduct);
             commandeRepository.save(commande);
             caisseRepository.save(caisse);
             mouvement.setArticleCode(savedArticle.getCodeArticle());
@@ -145,7 +162,13 @@ public class ArticleService {
         try {
             Article existedArticle = articleRepository.getOne(id);
             Mouvement mouvement = mouvementRepository.findByArticleCode(article.getCodeArticle());
+            AddedProduct addedProduct = addedProductRepository.findByArticle_ArticleId(existedArticle.getArticleId());
+            addedProduct.setDevise(article.getMonnaie());
+            addedProduct.setQuantity(article.getQuantity());
+            addedProduct.setUnitCost(article.getPrice());
+            addedProduct.setTotalCost(article.getPrice() * article.getQuantity());
             Commande commande = article.getCommande();
+            addedProductRepository.save(addedProduct);
             Caisse caisse = mouvement.getCaisse();
             // Remove  first old mouvement value in caisse
             caisse.setSoldeFinMoisDollard(caisse.getSoldeFinMoisDollard() - mouvement.getMontantDollard());

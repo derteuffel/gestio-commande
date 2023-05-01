@@ -11,6 +11,8 @@ import java.util.List;
 public interface AddedProductRepository extends JpaRepository<AddedProduct, Long> {
 
     List<AddedProduct> findAllByProduct(Long productId);
+    List<AddedProduct> findAllByProduct_ProductIdAndActionType(Long productId,String actionType);
+    AddedProduct findByArticle_ArticleId(Long articleId);
     List<AddedProduct> findAllByActionType(String actionType);
     List<AddedProduct> findAllByActionTypeAndAddedDate(String actionType, Date addedDate);
 }

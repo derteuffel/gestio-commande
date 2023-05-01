@@ -24,6 +24,8 @@ public class Product implements Serializable {
 
     private int quantity;
 
+    private String quality;
+
     private Date addedDate = new Date();
 
     private String category;
@@ -31,6 +33,7 @@ public class Product implements Serializable {
     private String color;
 
     private  Double amount = 0.0;
+    private String devise;
 
     @Column(unique = true)
     @NotEmpty(message = "Cette colone doit toujours contenir une valeur")
@@ -112,5 +115,21 @@ public class Product implements Serializable {
 
     public void setAddedProducts(List<AddedProduct> addedProducts) {
         this.addedProducts = addedProducts;
+    }
+
+    public String getDevise() {
+        return devise;
+    }
+
+    public void setDevise(String devise) {
+        this.devise = devise;
+    }
+
+    public String getQuality() {
+        return quality;
+    }
+
+    public void setQuality(String quality) {
+        this.quality = quality;
     }
 }
