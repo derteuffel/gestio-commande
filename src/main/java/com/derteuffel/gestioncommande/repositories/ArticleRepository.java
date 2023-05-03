@@ -9,7 +9,7 @@ import java.util.List;
 @Repository
 public interface ArticleRepository  extends JpaRepository<Article,Long> {
 
-    List<Article> findAllByCommande_CommandeId(Long commandeId);
+    List<Article> findAllByCommande_CommandeIdOrderByArticleIdDesc(Long commandeId);
 
     List<Article> findAllByProductCode(String productCode);
 

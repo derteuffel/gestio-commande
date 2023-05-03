@@ -236,8 +236,8 @@
                                         <td th:text="${item.description}"></td>
                                         <td th:text="${item.addedDate}"></td>
                                         <td>
-                                            <a  class="btn text-success" th:if="${item.valide}" th:disabled="disabled" data-toggle="modal" data-target="#activateModal" th:attr="data-target='#activateModal'+${item.addedProductId}"><i class="fa fa-check-circle"></i></a>
-                                            <a th:if="${role.name} == 'ROLE_ROOT' or ${role.name} == 'ROLE_DT' or ${role.name} == 'ROLE_GERANT'" class="btn text-warning" th:unless="${item.valide}" data-toggle="modal" data-target="#activateModal" th:attr="data-target='#activateModal'+${item.addedProductId}"><i class="fa fa-check"></i></a>
+                                            <a  class="btn text-success" th:if="${item.valide && item.caisseValidation}" th:disabled="disabled" data-toggle="modal" data-target="#activateModal" th:attr="data-target='#activateModal'+${item.addedProductId}"><i class="fa fa-check-circle"></i></a>
+                                            <a th:if="${role.name} == 'ROLE_ROOT' or ${role.name} == 'ROLE_DT' or ${role.name} == 'ROLE_GERANT'" class="btn text-warning" th:unless="${item.valide && item.caisseValidation}" data-toggle="modal" data-target="#activateModal" th:attr="data-target='#activateModal'+${item.addedProductId}"><i class="fa fa-check"></i></a>
                                             <a th:if="${role.name} == 'ROLE_ROOT' or ${role.name} == 'ROLE_DT' or ${role.name} == 'ROLE_GERANT'" class="btn text-danger" data-toggle="modal" data-target="#deleteModal" th:attr="data-target='#deleteModal'+${item.addedProductId}"><i class="fa fa-trash"></i></a>
                                         </td>
 

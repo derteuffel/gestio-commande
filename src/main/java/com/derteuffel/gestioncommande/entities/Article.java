@@ -20,18 +20,23 @@ public class Article implements Serializable {
     private String name;
 
 
-    private Double price;
+    private Double buyedPrice;
+    private Double sellPrice;
 
     private int quantity;
     private String monnaie;
-    private Double totalUSD;
-    private Double totalCDF;
+    private Double totalBuyedUSD;
+    private Double totalSellUSD;
+    private Double totalBuyedCDF;
+    private Double totalSellCDF;
 
     private String Description;
 
     private String dateJour;
 
     private String productCode;
+
+    private Boolean activate;
 
     @Column(unique = true)
     @NotEmpty(message = "Cette colone doit toujours contenir une valeur")
@@ -58,12 +63,20 @@ public class Article implements Serializable {
         this.name = name;
     }
 
-    public Double getPrice() {
-        return price;
+    public Double getBuyedPrice() {
+        return buyedPrice;
     }
 
-    public void setPrice(Double price) {
-        this.price = price;
+    public void setBuyedPrice(Double buyedPrice) {
+        this.buyedPrice = buyedPrice;
+    }
+
+    public Double getSellPrice() {
+        return sellPrice;
+    }
+
+    public void setSellPrice(Double sellPrice) {
+        this.sellPrice = sellPrice;
     }
 
     public int getQuantity() {
@@ -82,20 +95,36 @@ public class Article implements Serializable {
         this.monnaie = monnaie;
     }
 
-    public Double getTotalUSD() {
-        return totalUSD;
+    public Double getTotalBuyedUSD() {
+        return totalBuyedUSD;
     }
 
-    public void setTotalUSD(Double totalUSD) {
-        this.totalUSD = totalUSD;
+    public void setTotalBuyedUSD(Double totalBuyedUSD) {
+        this.totalBuyedUSD = totalBuyedUSD;
     }
 
-    public Double getTotalCDF() {
-        return totalCDF;
+    public Double getTotalSellUSD() {
+        return totalSellUSD;
     }
 
-    public void setTotalCDF(Double totalCDF) {
-        this.totalCDF = totalCDF;
+    public void setTotalSellUSD(Double totalSellUSD) {
+        this.totalSellUSD = totalSellUSD;
+    }
+
+    public Double getTotalBuyedCDF() {
+        return totalBuyedCDF;
+    }
+
+    public void setTotalBuyedCDF(Double totalBuyedCDF) {
+        this.totalBuyedCDF = totalBuyedCDF;
+    }
+
+    public Double getTotalSellCDF() {
+        return totalSellCDF;
+    }
+
+    public void setTotalSellCDF(Double totalSellCDF) {
+        this.totalSellCDF = totalSellCDF;
     }
 
     public String getDescription() {
@@ -136,5 +165,13 @@ public class Article implements Serializable {
 
     public void setCodeArticle(String codeArticle) {
         this.codeArticle = codeArticle;
+    }
+
+    public Boolean getActivate() {
+        return activate;
+    }
+
+    public void setActivate(Boolean activate) {
+        this.activate = activate;
     }
 }

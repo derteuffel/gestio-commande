@@ -32,7 +32,7 @@
 
 
 
-    <title>Accueil</title>
+    <title>Modification Article</title>
     <style>
         .nav-item{
             color: #ffffff;
@@ -54,167 +54,73 @@
                 <div class="page-inner py-5">
                     <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
                         <div>
-                            <h2 class="text-white pb-2 fw-bold">Tableau de bord</h2>
-                            <h5 class="text-white op-7 mb-2">Liste des commandes</h5>
+                            <h2 class="text-white pb-2 fw-bold">Article</h2>
+                            <h5 class="text-white op-7 mb-2">Modification d'un article</h5>
                         </div>
-                        <!--div class="ml-md-auto py-2 py-md-0">
-                            <a href="#" class="btn btn-white btn-border btn-round mr-2">Tous les articles</a>
-                            <a href="#" class="btn btn-secondary btn-round">Rapports</a>
-                        </div-->
+                        <div class="ml-md-auto py-2 py-md-0">
+                            <a th:href="@{/commande/details/}+${article.commande.commandeId}" class="btn btn-white btn-border btn-round mr-2">Retour</a>
+                        </div>
+                        <!-- Modal create Article -->
+
                     </div>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    <div class="card">
+                    <div class="card"  >
                         <div class="card-header">
-                            <div class="d-flex align-items-center">
-                                <h4 class="card-title">Nouvelle commande</h4>
-                                <span class="alert alert-success" th:if="${success}" th:text="${success}"></span>
-                                <button class="btn btn-primary btn-round ml-auto" data-toggle="modal" data-target="#addRowModal">
-                                    <i class="fa fa-plus"></i>
-                                    Commande
-                                </button>
-                            </div>
+                            <h5 class="card-title" id="createArticleModalLabel">Formulaire de mise a jour d'un article</h5>
                         </div>
-                        <div class="card-body">
-                            <!-- Modal -->
-                            <div class="modal fade" id="addRowModal" tabindex="-1" role="dialog" aria-hidden="true">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header no-bd">
-                                            <h5 class="modal-title">
-														<span class="fw-mediumbold">
-														Formulaire d'une nouvelle</span>
-                                                <span class="fw-light">
-															Commande
-														</span>
-                                            </h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <form th:action="@{/commande/save}" method="post" th:object="${commande}">
-                                            <div class="modal-body">
-                                                <p class="small">Bien vouloir renseigner les champs ci-dessous pour ajouter une nouvelle commande</p>
-                                                <div class="row">
-                                                    <div class="col-sm-12">
-                                                        <div class="form-group form-group-default">
-                                                            <label>Titre :</label>
-                                                            <input id="addPosition" type="text" th:field="*{title}" class="form-control" placeholder="Titre de la commande">
-                                                        </div>
-                                                        <div class="form-group form-group-default">
-                                                            <label>Taux du jour :</label>
-                                                            <input  type="number" th:field="*{tauxJour}" class="form-control" placeholder="Taux du jour">
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-sm-12">
-                                                        <div class="form-group form-group-default">
-                                                            <label for="clientName">Nom du Client :</label>
-                                                            <input type="text" class="form-control" id="clientName" th:field="*{nomClient}" placeholder="Entrer le Nom du Client">
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-sm-12">
-                                                        <div class="form-group form-group-default">
-                                                            <label for="clientEmail">E-Mail du Client :</label>
-                                                            <input type="email" class="form-control" id="clientEmail" th:field="*{emailClient}" placeholder="Entrer l'adresse e-mail du client">
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-sm-12">
-                                                        <div class="form-group form-group-default">
-                                                            <label for="clientPhone">Numero du Client :</label>
-                                                            <input type="text" class="form-control" id="clientPhone" th:field="*{phoneClient}" placeholder="Entrer le numero de telephone du Client">
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-sm-12">
-                                                        <div class="form-group form-group-default">
-                                                            <label for="clientAdresse">Adresse du Client :</label>
-                                                            <input type="text" class="form-control" id="clientAdresse" th:field="*{adresseClient}" placeholder="Entrer l'adresse p   hysique du Client">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer no-bd">
-                                                <button type="button" class="btn btn-danger" data-dismiss="modal">Fermer</button>
-                                                <button type="submit"  class="btn btn-primary">Enregistrer</button>
-                                            </div>
-                                        </form>
-                                    </div>
+                        <form th:action="@{/article/update/{articleId}(articleId=${article.articleId})}" method="post" th:object="${article}">
+                            <div class="card-body text-left">
+                                <div class="form-group">
+                                    <label>Nom de l'article:
+                                    </label>
+                                    <input type="text" class="form-control" th:field="*{name}" placeholder="Titre de l'article">
                                 </div>
+                                <div class="form-group">
+                                    <label>Montant boutique:
+                                    </label>
+                                    <select type="text" th:field="*{buyedPrice}"   class="form-control">
+                                        <option th:each="item : ${lists}" th:value="${item.unitCost}" th:text="${item.product.name+', '+item.unitCost+' '+item.devise+', ('+item.quantity+')'}">Conception</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label >Quantite:
+                                    </label>
+                                    <input type="number" class="form-control" th:field="*{quantity}">
+                                </div>
+                                <div class="form-group">
+                                    <label>Devise :
+                                    </label>
+                                    <select th:field="*{monnaie}"   class="form-control">
+                                        <option th:each="monnai : ${T(com.derteuffel.gestioncommande.entities.EAMonaie).values()}" th:value="${monnai}" th:text="${monnai}">Conception</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label >Montant imprimerie:
+                                    </label>
+                                    <input type="number" class="form-control" th:field="*{sellPrice}">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Description de l'article:
+                                    </label>
+                                    <textarea th:field="*{description}"  class="form-control" rows="4"></textarea>
+                                </div>
+
                             </div>
-
-                            <div class="table-responsive">
-                                <table id="add-row" class="display table table-striped table-hover" >
-                                    <thead>
-                                    <tr>
-                                    <th>TITRE</th>
-                                    <th>CLIENT</th>
-                                    <th>DTE_AJOUT</th>
-                                    <th>CODE</th>
-                                    <th>NBRE_ARTICLES</th>
-                                    <th>ETAT</th>
-                                    <th>M_TOTAL</th>
-                                    <th style="width: 10%">ACTION</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr th:each="order : ${lists}">
-                                        <td th:text="${order.title}"></td>
-                                        <td th:text="${order.nomClient}"></td>
-                                        <td >
-                                            <span th:if="${#strings.length(order.createdDate)}>10" th:text="${#strings.substring(order.createdDate,0,10)}"></span>
-                                            <span th:unless="${#strings.length(order.createdDate)}>10" th:text="${order.createdDate}"></span>
-                                        </td>
-                                        <td th:text="${order.code}"></td>
-                                        <td>
-                                            (<span th:text="${order.nbreArticle}"></span> )
-
-                                        </td>
-                                        <td th:if="${order.status} == true">Livree</td>
-                                        <td th:unless="${order.status} == true">Encours</td>
-                                        <td th:if="${order.amountUSD} != 0.0"><span th:text="${order.amountCDF}+' CDF'"></span><br>(<span th:if="${#strings.length(order.amountUSD)}>5" th:text="${#strings.substring(order.amountUSD,0,5)}+' $'"></span><span th:unless="${#strings.length(order.amountUSD)}>5" th:text="${order.amountUSD}+' $'"></span>)</td>
-                                        <td th:unless="${order.amountUSD} != 0.0"><span th:text="${order.amountCDF}+' CDF'"></span><br>(<span th:text="${order.amountUSD}+' $'"></span>)</td>
-                                        <td>
-                                            <div class="form-button-action">
-                                                <a th:href="@{/commande/details/}+${order.commandeId}"  class="btn text-success" ><i class="fa fa-eye"></i></a>
-                                                <a class="btn text-danger" data-toggle="modal" data-target="#deleteModal" th:attr="data-target='#deleteModal'+${order.commandeId}"><i class="fa fa-trash"></i></a>
-                                            </div>
-
-                                        </td>
-                                        <div class="modal fade " th:id="deleteModal+${order.commandeId}" tabindex="-1" role="dialog" aria-hidden="true">
-                                            <div class="modal-dialog" role="document">
-                                                <div class="modal-content">
-                                                    <div class="modal-header no-bd">
-                                                        <h5 class="modal-title">
-														<span class="fw-mediumbold">
-														Fenetre de suppression d'une</span>
-                                                            <span class="fw-light">
-															Commande
-														</span>
-                                                        </h5>
-                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                            <span aria-hidden="true">&times;</span>
-                                                        </button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <p class="small">etes vous sure de vouloir supprimer cet element ?</p>
-                                                    </div>
-                                                    <div class="modal-footer no-bd">
-                                                        <button type="button" class="btn btn-danger" data-dismiss="modal">Non</button>
-                                                        <a th:href="@{/commande/delete/}+${order.commandeId}"  class="btn btn-success">Oui</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </tr>
-                                    </tbody>
-                                </table>
+                            <div class="card-footer">
+                                <a th:href="@{/commande/details/}+${article.commande.commandeId}"  class="btn btn-secondary" >Annuler</a>
+                                <button type="submit" class="btn btn-success">Enregistrer...</button>
                             </div>
-                        </div>
+                        </form>
+
                     </div>
                 </div>
             </div>
-            <footer th:replace="~{../templates/fragments/footer :: footer}"></footer>
+            <footer th:replace="~{../templates/demo1/fragments/footer :: footer}"></footer>
         </div>
     </div>
     <!-- Custom template | don't include it in your project!-->

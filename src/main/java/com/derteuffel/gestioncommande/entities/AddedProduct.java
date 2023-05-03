@@ -33,6 +33,12 @@ public class AddedProduct {
 
     private Boolean valide;
 
+    private Boolean caisseValidation;
+
+    private String validationCode;
+
+    private String validationComment;
+
     @ManyToOne
     @JsonIgnoreProperties("addedProducts")
     private Product product;
@@ -135,5 +141,29 @@ public class AddedProduct {
 
     public void setArticle(Article article) {
         this.article = article;
+    }
+
+    public Boolean getCaisseValidation() {
+        return caisseValidation;
+    }
+
+    public void setCaisseValidation(Boolean caisseValidation) {
+        this.caisseValidation = caisseValidation;
+    }
+
+    public String getValidationCode() {
+        return validationCode;
+    }
+
+    public void setValidationCode(String validationCode) {
+        this.validationCode = validationCode;
+    }
+
+    public String getValidationComment() {
+        return validationComment;
+    }
+
+    public void setValidationComment(String validationComment) {
+        this.validationComment = validationComment;
     }
 }

@@ -32,7 +32,7 @@
 
 
 
-    <title>Visiteur</title>
+    <title>Detail commande</title>
     <style>
         .nav-item{
             color: #ffffff;
@@ -59,29 +59,79 @@
                         </div>
                         <div class="ml-md-auto py-2 py-md-0">
                             <a th:href="@{/}" class="btn btn-white btn-border btn-round mr-2"><i class="fa fa-long-arrow-alt-left"></i>&nbsp;Liste des commandes</a>
-                            <button type="button" data-toggle="modal" data-target="#listsModal"  class="btn btn-secondary btn-round"><i class="fa fa-list"></i>&nbsp;Liste des articles</button>
-                            <button type="button" data-toggle="modal" data-target="#createArticleModal"  class="btn success btn-round"><i class="fa fa-plus"></i>&nbsp;Ajouter un article</button>
-                            <!-- Modal create Article -->
-                            <div class="modal fade" id="listsModal" tabindex="-1" role="dialog" aria-labelledby="listsArticleModalLabel" >
-                                <div class="modal-dialog" >
+                            <button type="button" data-toggle="modal" data-target="#editModal"  class="btn btn-info btn-round"><i class="fa fa-edit"></i>&nbsp;Editer</button>
+                            <button type="button" data-toggle="modal" data-target="#createArticleModal"  class="btn btn-primary success btn-round"><i class="fa fa-plus"></i>&nbsp;Ajouter un article</button>
+                            <!-- Modal -->
+                            <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
                                     <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="listsArticleModalLabel">Listes des articles</h5>
+                                        <div class="modal-header no-bd">
+                                            <h5 class="modal-title">
+														<span class="fw-mediumbold">
+														Formulaire de modification d'une</span>
+                                                <span class="fw-light">
+															Commande
+														</span>
+                                            </h5>
                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
                                         </div>
-                                        <div class="modal-body">
-                                            <ul th:each="item : ${lists}">
-                                                <li>
-                                                    <span th:text="${item.quantity+'  '+item.name}"></span></br>
-                                                    <span th:text="${item.description}"></span>
-                                                </li>
-                                            </ul>
-                                        </div>
+                                        <form th:action="@{/commande/update/}+${commande.commandeId}" method="post" th:object="${commande}">
+                                            <div class="modal-body">
+                                                <p class="small">Bien vouloir renseigner les champs ci-dessous pour modifier votre commande</p>
+                                                <div class="row">
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group form-group-default">
+                                                            <label>Titre :</label>
+                                                            <input id="addPosition" type="text" th:field="*{title}" class="form-control" placeholder="Titre de la commande">
+                                                        </div>
+                                                        <div class="form-group form-group-default">
+                                                            <label>Taux du jour :</label>
+                                                            <input  type="number" th:field="*{tauxJour}" class="form-control" placeholder="Taux du jour">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group form-group-default">
+                                                            <label for="clientName">Nom du Client :</label>
+                                                            <input type="text" class="form-control" id="clientName" th:field="*{nomClient}" placeholder="Entrer le Nom du Client">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group form-group-default">
+                                                            <label for="clientEmail">E-Mail du Client :</label>
+                                                            <input type="email" class="form-control" id="clientEmail" th:field="*{emailClient}" placeholder="Entrer l'adresse e-mail du client">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group form-group-default">
+                                                            <label for="clientPhone">Numero du Client :</label>
+                                                            <input type="text" class="form-control" id="clientPhone" th:field="*{phoneClient}" placeholder="Entrer le numero de telephone du Client">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group form-group-default">
+                                                            <label for="clientAdresse">Adresse du Client :</label>
+                                                            <input type="text" class="form-control" id="clientAdresse" th:field="*{adresseClient}" placeholder="Entrer l'adresse p   hysique du Client">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group form-group-default">
+                                                            <label for="delaisRealisation">Delais de realisation :</label>
+                                                            <input type="date" class="form-control" id="delaisRealisation" th:field="*{realeseDate}" placeholder="Entrer la date de realisation">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer no-bd">
+                                                <button type="button" class="btn btn-danger" data-dismiss="modal">Fermer</button>
+                                                <button type="submit"  class="btn btn-primary">Enregistrer</button>
+                                            </div>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
+
                         </div>
                     </div>
                 </div>
@@ -102,8 +152,13 @@
                                     <div class="form-group">
                                         <label>Nom de l'article:
                                         </label>
-                                        <select th:field="*{name}"   class="form-control">
-                                            <option th:each="item : ${produits}" th:value="${item.name+'_'+item.productCode}" th:text="${item.name+', ('+item.quantity+')'}">Conception</option>
+                                        <input type="text" class="form-control" th:field="*{name}" placeholder="Titre de l'article">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Montant boutique:
+                                        </label>
+                                        <select type="text" name="price"   class="form-control">
+                                            <option th:each="item : ${produits}" th:value="${item.unitCost+'_'+item.addedProductId}" th:text="${item.product.name+', '+item.unitCost+' '+item.devise+', ('+item.quantity+')'}">Conception</option>
                                         </select>
                                     </div>
 
@@ -120,9 +175,9 @@
                                         </select>
                                     </div>
                                     <div class="form-group">
-                                        <label >Prix unitaire:
+                                        <label >Montant imprimerie:
                                         </label>
-                                        <input type="number" class="form-control" th:field="*{price}">
+                                        <input type="number" class="form-control" th:field="*{sellPrice}">
                                     </div>
 
                                     <div class="form-group">
@@ -321,6 +376,176 @@
                 </div>
             </div>
 
+            <br>
+            <div class="table-responsive">
+                <table id="add-row" class="display table table-striped table-hover" >
+                    <thead>
+                    <tr>
+                        <th>NUMERO</th>
+                        <th>NOM</th>
+                        <th>QUANTITE</th>
+                        <th>PRIX_U_ACHAT</th>
+                        <th>PRIX_T_ACHAT</th>
+                        <th>PRIX_U_VENTE</th>
+                        <th>PRIX_T_VENTE</th>
+                        <th style="width: 10%">ACTION</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="item : ${lists}">
+                        <td th:text="${item.codeArticle}"></td>
+                        <td th:text="${item.name}"></td>
+                        <td th:text="${item.quantity}"></td>
+                        <td th:text="${item.buyedPrice}"></td>
+                        <td ><span th:text="${item.totalBuyedCDF+' CDF'}"></span><br><span th:text="${item.totalBuyedUSD+' $'}"></span></td>
+                        <td th:text="${item.sellPrice+' '+item.monnaie}"></td>
+                        <td ><span th:text="${item.totalSellCDF}+' CDF'"></span><br>(<span th:text="${item.totalSellUSD}+' $'"></span>)</td>
+                        <td>
+                            <div class="form-button-action">
+                                <a data-toggle="modal" data-target="#detailModal" class="btn text-success" th:attr="data-target='#detailModal'+${item.articleId}"><i class="fa fa-eye"></i></a>
+                                <a  class="btn text-info" th:if="${item.activate}" ><i class="fa fa-check-circle"></i></a>
+                                <a data-toggle="modal" data-target="#validateModal" class="btn text-info" th:unless="${item.activate}" th:attr="data-target='#validateModal'+${item.articleId}"><i class="fa fa-check"></i></a>
+                                <a th:href="@{/article/edit/form/}+${item.articleId}"  class="btn text-primary" ><i class="fa fa-edit"></i></a>
+                            </div>
+                        </td>
+                        <div class="modal fade " th:id="detailModal+${item.articleId}" tabindex="-1" role="dialog" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header no-bd">
+                                        <h5 class="modal-title">
+														<span class="fw-mediumbold">
+														Plus de detail d'un</span>
+                                            <span class="fw-light">
+															Article
+														</span>
+                                        </h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <h4>
+                                            <strong>
+                                                Titre de l'article :
+                                            </strong>
+                                            <span th:text="${item.name}"> </span>
+                                        </h4>
+                                        <hr>
+                                        <h4>
+                                            <strong>
+                                                Quantite :
+                                            </strong>
+                                            <span th:text="${item.quantity}"> </span>
+                                        </h4>
+                                        <hr>
+                                        <h4>
+                                            <strong>
+                                                Code du produit :
+                                            </strong>
+                                            <span th:text="${item.productCode}"> </span>
+                                        </h4>
+                                        <hr>
+                                        <h4>
+                                            <strong>
+                                                Code article :
+                                            </strong>
+                                            <span th:text="${item.codeArticle}"> </span>
+                                        </h4>
+                                        <hr>
+                                        <h4>
+                                            <strong>
+                                                Devise :
+                                            </strong>
+                                            <span th:text="${item.monnaie}"> </span>
+                                        </h4>
+                                        <hr>
+                                        <h4>
+                                            <strong>
+                                                Montant boutique :
+                                            </strong>
+                                            <span th:text="${item.buyedPrice+' '+item.monnaie}"> </span>
+                                        </h4>
+                                        <hr>
+                                        <h4>
+                                            <strong>
+                                                Montant total boutique :
+                                            </strong>
+                                            <span th:text="${item.totalBuyedUSD+' $, '+item.totalBuyedCDF+' CDF'}"> </span>
+                                        </h4>
+                                        <hr>
+                                        <h4>
+                                            <strong>
+                                                Montant imprimerie :
+                                            </strong>
+                                            <span th:text="${item.sellPrice+' '+item.monnaie}"> </span>
+                                        </h4>
+                                        <hr>
+                                        <h4>
+                                            <strong>
+                                                Montant total imprimerie :
+                                            </strong>
+                                            <span th:text="${item.totalSellUSD+' $, '+item.totalSellCDF+' CDF'}"> </span>
+                                        </h4>
+                                        <hr>
+                                        <h4>
+                                            <strong>
+                                                Description :
+                                            </strong>
+                                            <span th:text="${item.description}"> </span>
+                                        </h4>
+                                        <hr>
+                                        <h4>
+                                            <strong>
+                                                Date enregistrement :
+                                            </strong>
+                                            <span th:text="${item.dateJour}"> </span>
+                                        </h4>
+                                    </div>
+                                    <div class="modal-footer no-bd">
+                                        <button type="button" class="btn btn-warning" data-dismiss="modal">Fermer</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal fade " th:id="validateModal+${item.articleId}" tabindex="-1" role="dialog" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header no-bd">
+                                        <h5 class="modal-title">
+														<span class="fw-mediumbold">
+														Page de valitation</span>
+                                            <span class="fw-light">
+															Article
+														</span>
+                                        </h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form th:action="@{/added/update/activate/}+${item.articleId}" method="post" th:object="${added}">
+                                            <div class="modal-body text-left">
+
+                                                <div class="form-group">
+                                                    <label>Commentaires:
+                                                    </label>
+                                                    <textarea th:field="*{validationComment}"  class="form-control" rows="4"></textarea>
+                                                </div>
+
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                                                <button type="submit" class="btn btn-primary">Enregistrer...</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
 
             <div class="modal fade" id="approbationModalWithoutCaisse" tabindex="-1" role="dialog" aria-hidden="true">
                 <div class="modal-dialog" role="document">
@@ -425,11 +650,11 @@
                         </div>
                         <form >
                             <div class="modal-body">
-                                <p class="small">Bien vouloir renseigner les champs ci-dessous pour ajouter une nouvelle commande</p>
+                                <p class="small">Liste des elements</p>
                                 <div th:each="item : ${approbations}">
                                     <span th:text="${item.date}"></span><br>
                                     <span th:text="${item.comment}"></span><br>
-                                    <span th:text="${item.compte}"></span>
+                                    <span th:text="${item.compte.login}"></span>
                                     <hr>
                                 </div>
                             </div>

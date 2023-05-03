@@ -2,10 +2,10 @@ package com.derteuffel.gestioncommande.controllers;
 
 import com.derteuffel.gestioncommande.Services.ArticleService;
 import com.derteuffel.gestioncommande.Services.CompteService;
-import com.derteuffel.gestioncommande.entities.Article;
-import com.derteuffel.gestioncommande.entities.Compte;
-import com.derteuffel.gestioncommande.entities.Product;
+import com.derteuffel.gestioncommande.entities.*;
 import com.derteuffel.gestioncommande.helpers.PageModel;
+import com.derteuffel.gestioncommande.repositories.AddedProductRepository;
+import com.derteuffel.gestioncommande.repositories.CommandeRepository;
 import com.derteuffel.gestioncommande.repositories.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -38,6 +38,10 @@ public class ArticleController {
 
     @Autowired
     private PageModel pageModel;
+    @Autowired
+    private AddedProductRepository addedProductRepository;
+    @Autowired
+    private CommandeRepository commandeRepository;
 
     @GetMapping("/articles/commande/{id}")
     public String findAll(Model model, HttpServletRequest request, @PathVariable Long id) {
@@ -76,15 +80,15 @@ public class ArticleController {
 
 
     @PostMapping("/save/{commandId}")
-    public String save(Article s, @PathVariable Long commandId, RedirectAttributes model) {
+    public String save(Article s, @PathVariable Long commandId,String price, RedirectAttributes model) {
 
         Date date = new Date();
         DateFormat dateFormat = new SimpleDateFormat("dd/mm/yyyy hh:mm");
         s.setDateJour(dateFormat.format(date));
 
-        if (s.getName().split("_")[1] != null){
-            String codeProduit = s.getName().split("_")[1];
-            Product product = productRepository.findByProductCode(codeProduit);
+        if (price.split("_")[1] != null){
+            AddedProduct addedProduct = addedProductRepository.getOne(Long.parseLong(price.split("_")[1]));
+            Product product = addedProduct.getProduct();
             if (product != null) {
                 if (product.getQuantity() <= 0 || s.getQuantity() > product.getQuantity()) {
                     model.addFlashAttribute("message", "Desole,  veuilez approvisionner le stock dans le magasin");
@@ -92,17 +96,29 @@ public class ArticleController {
                 }
             }
         }
-        articleService.save(s, commandId);
+        articleService.save(s, commandId,price);
          return "redirect:/commande/details/"+commandId;
     }
 
+    @GetMapping("/edit/form/{id}")
+    public String editForm(@PathVariable Long id, Model model, HttpServletRequest request ){
+        Principal principal = request.getUserPrincipal();
+        Compte compte = compteService.findByLogin(principal.getName());
+        Article article = articleService.getOne(id);
+        List<AddedProduct> elements = addedProductRepository.findAllByActionType("AJOUT");
+
+        model.addAttribute("compte",compte);
+        model.addAttribute("lists",elements);
+        model.addAttribute("article",article);
+        return "article/edit";
+    }
     @PostMapping("/update/{articleId}")
     public String update(Article s, @PathVariable Long articleId) {
 
-
         articleService.update(s, articleId);
+        Article article = articleService.getOne(articleId);
 
-        return "redirect:/article/get/"+ s.getArticleId();
+        return "redirect:/commande/details/"+article.getCommande().getCommandeId();
     }
 
     public void deleteById(Long articleId) {

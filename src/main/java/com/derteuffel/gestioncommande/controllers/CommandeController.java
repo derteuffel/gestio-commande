@@ -4,10 +4,7 @@ import com.derteuffel.gestioncommande.Services.ArticleService;
 import com.derteuffel.gestioncommande.Services.CommandeService;
 import com.derteuffel.gestioncommande.Services.ProductService;
 import com.derteuffel.gestioncommande.entities.*;
-import com.derteuffel.gestioncommande.repositories.ApprobationRepository;
-import com.derteuffel.gestioncommande.repositories.CompteRepository;
-import com.derteuffel.gestioncommande.repositories.MouvementRepository;
-import com.derteuffel.gestioncommande.repositories.RoleRepository;
+import com.derteuffel.gestioncommande.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
@@ -51,6 +48,8 @@ public class CommandeController {
 
     @Autowired
     private ApprobationRepository approbationRepository;
+    @Autowired
+    private AddedProductRepository addedProductRepository;
 
 
     //------------ Save Command method Start -----------------//
@@ -67,7 +66,7 @@ public class CommandeController {
         Approbation approbation = new Approbation();
         approbation.setComment("Initializing order");
         approbation.setDate(format1.format(date));
-        commande.setCode("N°"+commandeService.findAll().size()+1+"/"+format.format(date));
+        commande.setCode("CO"+format.format(date)+(commandeService.findAll().size()+1));
         commande.setStates(ECommande.EN_ATTENTE.toString());
         commande.setCompte(compte);
         commande.setNbreArticle(0);
@@ -90,17 +89,20 @@ public class CommandeController {
     //------------ Update form for a Command ------------------//
 
     @PostMapping("/update/{commandeId}")
-    public String update( @PathVariable Long commandeId, String title, int tauxJour,
-                          @DateTimeFormat(pattern = "yyyy-MM-dd") Date realeseDate, RedirectAttributes redirectAttributes){
+    public String update( @PathVariable Long commandeId, Commande commande, RedirectAttributes redirectAttributes){
 
-        Commande commande= commandeService.getOne(commandeId);
-        commande.setTauxJour(tauxJour);
-        commande.setTitle(title);
-        commande.setRealeseDate(realeseDate);
+        Commande existedCommande = commandeService.getOne(commandeId);
+        existedCommande.setTauxJour(commande.getTauxJour());
+        existedCommande.setTitle(commande.getTitle());
+        existedCommande.setAdresseClient(commande.getAdresseClient());
+        existedCommande.setEmailClient(commande.getEmailClient());
+        existedCommande.setPhoneClient(commande.getPhoneClient());
+        existedCommande.setNomClient(commande.getNomClient());
+        existedCommande.setRealeseDate(commande.getRealeseDate());
 
-        commandeService.update(commande);
+        commandeService.update(existedCommande);
         redirectAttributes.addFlashAttribute("success","Commande modifier avec succes");
-        return "redirect:/";
+        return "redirect:/commande/details/"+existedCommande.getCommandeId();
     }
 
     //----------- Delete Item for commande ------------------//
@@ -118,7 +120,7 @@ public class CommandeController {
         Principal principal = request.getUserPrincipal();
         Compte compte = compteRepository.findByLogin(principal.getName());
         Commande commande = commandeService.getOne(commandeId);
-        List<Product> produits = productService.findAll();
+        List<AddedProduct> elements = addedProductRepository.findAllByActionType("AJOUT");
         List<Compte> comptes = new ArrayList<>();
         List<Article> articles = articleService.findAllByCommande_CommandeId(commande.getCommandeId());
         List<Approbation> approbations = approbationRepository.findAllByCommande_CommandeId(commande.getCommandeId());
@@ -140,9 +142,10 @@ public class CommandeController {
         }
         model.addAttribute("lists",articles);
         model.addAttribute("compte",compte);
-        model.addAttribute("produits",produits);
+        model.addAttribute("produits",elements);
         model.addAttribute("approbations", approbations);
         model.addAttribute("approbation",new Approbation());
+        model.addAttribute("added",new AddedProduct());
         model.addAttribute("article",new Article());
         model.addAttribute("commande",commande);
         return "commande/detail";
@@ -165,14 +168,14 @@ public class CommandeController {
                commande.setGerantState(false);
             }
         }else if (compte.getRoles().contains(caisse)){
-            if (commande.getGerantState() == false){
+            if (commande.getGerantState() != null && commande.getGerantState() == false){
                 redirectAttributes.addFlashAttribute("message", "Le gerant doit avoir approuve, vueillez confirmer avec votre gerant");
             }else {
                 if (valeur.toLowerCase().equals("ACCORDER".toLowerCase()))
                 commande.setCaisseState(true);
             }
         }else {
-            if (commande.getGerantState() == false){
+            if (commande.getGerantState() != null && commande.getGerantState() == false){
                 redirectAttributes.addFlashAttribute("message", "Le gerant doit avoir approuve, vueillez confirmer avec votre gerant");
             }else {
                 commande.setTechniqueState(true);

@@ -16,9 +16,9 @@ public class Mouvement implements Serializable {
     @GeneratedValue
     private Long id;
 
-
     private String createdDate;
     private String libelle;
+    private String milieu;
     private String type;
     private Double montantDollard;
     private Double montantFranc;
@@ -131,5 +131,13 @@ public class Mouvement implements Serializable {
 
     public void setArticleCode(String articleCode) {
         this.articleCode = articleCode;
+    }
+
+    public String getMilieu() {
+        return milieu;
+    }
+
+    public void setMilieu(String milieu) {
+        this.milieu = milieu;
     }
 }
